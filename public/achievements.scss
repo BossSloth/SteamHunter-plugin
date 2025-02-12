@@ -1,0 +1,218 @@
+// Variables
+$background-color: #1b2838;
+$text-color: #c6d4df;
+$accent-color: #66c0f4;
+$border-color: rgba(255, 255, 255, 0.1);
+$hover-background: rgba(103, 193, 245, 0.1);
+$button-background: rgba(103, 193, 245, 0.2);
+$button-hover-background: rgba(103, 193, 245, 0.4);
+$secondary-text: #8f98a0;
+$tooltip-background: #16202d;
+
+// Mixins
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-gap($gap) {
+  display: flex;
+  gap: $gap;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.steam-hunters-achievements-page {
+  background-color: $background-color;
+  color: $text-color;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  .achievements-header {
+    @include flex-between;
+    margin-bottom: 20px;
+  }
+
+  .left-controls {
+    @include flex-gap(10px);
+    align-items: center;
+  }
+
+  .right-controls {
+    @include flex-gap(10px);
+  }
+
+  .achievement-group {
+    background-color: rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+
+  .group-header {
+    @include flex-between;
+    padding: 15px;
+    cursor: pointer;
+  }
+
+  .group-content {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .group-title {
+    @include flex-gap(10px);
+    align-items: center;
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      color: $text-color;
+    }
+  }
+
+  .date {
+    color: $accent-color;
+  }
+
+  .group-stats {
+    @include flex-gap(10px);
+    align-items: center;
+    color: $text-color;
+  }
+
+  .expand-button {
+    background: none;
+    border: none;
+    color: $accent-color;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+    transition: transform 0.2s ease;
+
+    &.expanded {
+      transform: rotate(180deg);
+    }
+  }
+
+  .achievement-item {
+    @include flex-between;
+    padding: 15px;
+    border-top: 1px solid $border-color;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: $hover-background;
+    }
+  }
+
+  .achievement-content {
+    h3 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      color: $text-color;
+    }
+
+    p {
+      margin: 0;
+      color: $secondary-text;
+      font-size: 14px;
+    }
+  }
+
+  .achievement-stats {
+    @include flex-gap(15px);
+    align-items: center;
+  }
+
+  .points {
+    color: $accent-color;
+  }
+
+  button {
+    background-color: $button-background;
+    border: none;
+    color: $accent-color;
+    padding: 8px 15px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $button-hover-background;
+      transform: translateY(-1px);
+    }
+  }
+
+  select {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid #4f94bc;
+    color: $accent-color;
+    padding: 5px;
+    border-radius: 2px;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: $accent-color;
+    }
+
+    option {
+      background-color: $background-color;
+      color: $accent-color;
+    }
+  }
+}
+
+// Achievement rarity colors
+.steam-hunters-percentage {
+  &.Legendary {
+    color: #ffa040 !important;
+  }
+
+  &.Epic {
+    color: #d040ff !important;
+  }
+
+  &.Rare {
+    color: #40d0ff !important;
+  }
+
+  &.Uncommon {
+    color: #40ff40 !important;
+  }
+
+  &.Common {
+    color: #fff !important;
+  }
+}
+
+.steam-hunters-percentage-tooltip .__TextToolTip__ {
+  text-align: center;
+  background: none;
+  background-color: $tooltip-background;
+  color: #FFF;
+  overflow: visible;
+  text-shadow: none;
+}
+
+.steam-hunters-tooltip-arrow {
+  position: absolute;
+  left: 50%;
+  border-color: transparent;
+  bottom: -5px;
+  margin-left: -5px;
+  border-width: 5px 5px 0;
+  border-style: solid;
+  width: 0;
+  height: 0;
+  border-top-color: $tooltip-background;
+}
