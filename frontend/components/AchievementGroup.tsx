@@ -1,13 +1,6 @@
 import React from 'react';
 import { AchievementItem } from './AchievementItem';
-
-interface Achievement {
-  name: string;
-  description: string;
-  steamPercentage: number;
-  points: number;
-  localPercentage: number;
-}
+import { Achievement, SortBy } from './AchievementPage';
 
 interface AchievementGroupProps {
   title: string;
@@ -15,6 +8,7 @@ interface AchievementGroupProps {
   achievements: Achievement[];
   totalPoints: number;
   isExpanded?: boolean;
+  sortedBy: SortBy;
 }
 
 export const AchievementGroup: React.FC<AchievementGroupProps> = ({
@@ -23,6 +17,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   achievements,
   totalPoints,
   isExpanded = false,
+  sortedBy,
 }) => {
   const [expanded, setExpanded] = React.useState(isExpanded);
 
@@ -46,6 +41,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
             <AchievementItem
               key={index}
               achievement={achievement}
+              sortedBy={sortedBy}
             />
           ))}
         </div>

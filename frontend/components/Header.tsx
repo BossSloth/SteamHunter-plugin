@@ -1,16 +1,20 @@
 import React from 'react';
+import { SortBy } from './AchievementPage';
+import { Toggle } from '@steambrew/client';
 
 interface HeaderProps {
   onGroupingChange: (grouping: string) => void;
-  onSortChange: (sort: string) => void;
-  onCompareClick: () => void;
+  onSortChange: (sort: SortBy) => void;
+  reverse: boolean;
+  onReverseChange: (reverse: boolean) => void;
   onExpandAllClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onGroupingChange,
   onSortChange,
-  onCompareClick,
+  reverse,
+  onReverseChange,
   onExpandAllClick,
 }) => {
   return (
@@ -22,17 +26,17 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Add other grouping options */}
         </select>
         <span>sorted by</span>
-        <select onChange={(e) => onSortChange(e.target.value)}>
-          <option value="sh">SH%</option>
-          {/* Add other sorting options */}
+        <select onChange={(e) => onSortChange(e.target.value as SortBy)}>
+          {Object.values(SortBy).map(sortBy => (
+            <option key={sortBy} value={sortBy}>{sortBy}</option>
+          ))}
         </select>
-        <label>
-          <input type="checkbox" onChange={(e) => onSortChange(e.target.checked ? 'reverse' : '')} />
+        <div className='reverse-toggle'>
+          <Toggle value={reverse} onChange={onReverseChange} />
           reverse
-        </label>
+        </div>
       </div>
       <div className="right-controls">
-        <button onClick={onCompareClick}>Compare</button>
         <button onClick={onExpandAllClick}>Expand All</button>
       </div>
     </div>

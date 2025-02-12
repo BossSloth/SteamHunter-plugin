@@ -105,33 +105,65 @@ $tooltip-background: #16202d;
   }
 
   .achievement-item {
-    @include flex-between;
-    padding: 15px;
-    border-top: 1px solid $border-color;
-    transition: background-color 0.2s ease;
+    @include flex-gap(1rem);
+    margin: 15px;
+    
+    .center {
+      @include flex-between;
+      position: relative;
+      width: 100%;
+      padding: 0 1rem;
+      transition: background-color 0.2s ease;
 
-    &:hover {
-      background-color: $hover-background;
+      &:hover {
+        background-color: $hover-background;
+        border-radius: 5px;
+      }
     }
-  }
 
-  .achievement-content {
-    h3 {
-      margin: 0 0 5px 0;
-      font-size: 16px;
-      color: $text-color;
+    * {
+      z-index: 1;
     }
 
-    p {
-      margin: 0;
-      color: $secondary-text;
-      font-size: 14px;
+    .achievement-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      background-color: rgba(103,112,123,.2);
+      user-select: none;
+      border-radius: 5px;
     }
-  }
 
-  .achievement-stats {
-    @include flex-gap(15px);
-    align-items: center;
+    .achievement-image {
+      width: 64px;
+      height: 64px;
+  
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  
+    .achievement-content {
+      h3 {
+        margin: 0 0 5px 0;
+        font-size: 16px;
+        color: $text-color;
+      }
+  
+      p {
+        margin: 0;
+        color: $secondary-text;
+        font-size: 14px;
+      }
+    }
+  
+    .achievement-stats {
+      @include flex-gap(15px);
+      align-items: center;
+    }
   }
 
   .points {
@@ -169,6 +201,13 @@ $tooltip-background: #16202d;
       background-color: $background-color;
       color: $accent-color;
     }
+  }
+
+  .reverse-toggle {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1rem;
   }
 }
 
@@ -208,9 +247,9 @@ $tooltip-background: #16202d;
   position: absolute;
   left: 50%;
   border-color: transparent;
-  bottom: -5px;
-  margin-left: -5px;
-  border-width: 5px 5px 0;
+  bottom: -9px;
+  margin-left: -10px;
+  border-width: 10px 10px 0;
   border-style: solid;
   width: 0;
   height: 0;

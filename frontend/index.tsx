@@ -21,7 +21,7 @@ React.createElement = function (type: any, props: any, ...children: any[]) {
         console.log(type, props, children)
 
         props.tabs = props.tabs.concat([
-            {content: <AchievementPage />, id: 'achievement-groups', title: 'Achievement Groups'}
+            {content: <AchievementPage appId={'427410'} />, id: 'achievement-groups', title: 'Achievement Groups'}
         ]);
     }
 
