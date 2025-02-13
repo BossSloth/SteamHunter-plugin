@@ -1,9 +1,9 @@
 import React from 'react';
 import { SteamTooltip } from '../SteamComponents';
-import { Achievement, SortBy } from './AchievementPage';
+import { AchievementData, SortBy } from './types';
 
 interface AchievementItemProps {
-  achievement: Achievement;
+  achievement: AchievementData;
   sortedBy: SortBy;
 }
 

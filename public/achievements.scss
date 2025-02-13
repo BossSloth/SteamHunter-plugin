@@ -33,7 +33,7 @@ $tooltip-background: #16202d;
 }
 
 .steam-hunters-achievements-page {
-  background-color: $background-color;
+  // background-color: $background-color;
   color: $text-color;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -44,12 +44,16 @@ $tooltip-background: #16202d;
   }
 
   .left-controls {
-    @include flex-gap(10px);
-    align-items: center;
+    & > div {
+      @include flex-gap(10px);
+      align-items: center;
+      margin-bottom: 5px;
+    }
   }
 
   .right-controls {
     @include flex-gap(10px);
+    margin-bottom: auto;
   }
 
   .achievement-group {
@@ -66,6 +70,7 @@ $tooltip-background: #16202d;
 
   .group-content {
     animation: slideDown 0.3s ease-out;
+    padding-bottom: 5px;
   }
 
   .group-title {
@@ -138,12 +143,7 @@ $tooltip-background: #16202d;
     .achievement-image {
       width: 64px;
       height: 64px;
-  
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+      font-size: 0;
     }
   
     .achievement-content {
@@ -192,6 +192,7 @@ $tooltip-background: #16202d;
     padding: 5px;
     border-radius: 2px;
     transition: border-color 0.2s ease;
+    outline: none;
 
     &:hover {
       border-color: $accent-color;
@@ -203,11 +204,11 @@ $tooltip-background: #16202d;
     }
   }
 
-  .reverse-toggle {
+  .toggle-container > div {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-left: 1rem;
+    gap: 0.5rem;
+    cursor: pointer;
   }
 }
 
@@ -254,4 +255,26 @@ $tooltip-background: #16202d;
   width: 0;
   height: 0;
   border-top-color: $tooltip-background;
+}
+
+.steam-hunters-error-message {
+  padding: 1rem;
+  color: #FFF;
+
+  svg {
+    max-width: 10%;
+    color: crimson;
+  }
+}
+
+.steam-hunters-spinner {
+  max-width: 128px;
+  margin: auto;
+  display: flex;
+  padding-bottom: 80vh;
+  padding-top: 100px;
+}
+
+._1jNhbFODJy7sNdcnEeZkz4:has(+ div .steam-hunters-achievements-page)::before {
+  display: none;
 }

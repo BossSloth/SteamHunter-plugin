@@ -1,13 +1,16 @@
 import React from 'react';
-import { SortBy } from './AchievementPage';
+import { GroupBy, SortBy } from './types';
 import { Toggle } from '@steambrew/client';
 
 interface HeaderProps {
-  onGroupingChange: (grouping: string) => void;
+  onGroupingChange: (grouping: GroupBy) => void;
   onSortChange: (sort: SortBy) => void;
   reverse: boolean;
   onReverseChange: (reverse: boolean) => void;
   onExpandAllClick: () => void;
+  showUnlocked: boolean;
+  onShowUnlockedChange: (showUnlocked: boolean) => void;
+  groupBy: GroupBy;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -16,24 +19,36 @@ export const Header: React.FC<HeaderProps> = ({
   reverse,
   onReverseChange,
   onExpandAllClick,
+  showUnlocked,
+  onShowUnlockedChange,
+  groupBy,
 }) => {
   return (
     <div className="achievements-header">
       <div className="left-controls">
-        <span>{39} achievements grouped by</span>
-        <select onChange={(e) => onGroupingChange(e.target.value)}>
-          <option value="dlc_update">DLC & update</option>
-          {/* Add other grouping options */}
-        </select>
-        <span>sorted by</span>
-        <select onChange={(e) => onSortChange(e.target.value as SortBy)}>
-          {Object.values(SortBy).map(sortBy => (
-            <option key={sortBy} value={sortBy}>{sortBy}</option>
-          ))}
-        </select>
-        <div className='reverse-toggle'>
-          <Toggle value={reverse} onChange={onReverseChange} />
-          reverse
+        <div>
+          <span>{39} achievements grouped by</span>
+          <select value={groupBy} onChange={(e) => onGroupingChange(e.target.value as GroupBy)}>
+            {Object.values(GroupBy).map(group => (
+              <option key={group} value={group}>{group}</option>
+            ))}
+          </select>
+          <span>sorted by</span>
+          <select onChange={(e) => onSortChange(e.target.value as SortBy)}>
+            {Object.values(SortBy).map(sortBy => (
+              <option key={sortBy} value={sortBy}>{sortBy}</option>
+            ))}
+          </select>
+        </div>
+        <div className='toggle-container'>
+          <div onClick={() => onReverseChange(!reverse)}>
+            <Toggle value={reverse} onChange={onReverseChange} />
+            <span>reverse</span>
+          </div>
+          <div onClick={() => onShowUnlockedChange(!showUnlocked)}>
+            <Toggle value={showUnlocked} onChange={onShowUnlockedChange} />
+            <span>show unlocked</span>
+          </div>
         </div>
       </div>
       <div className="right-controls">

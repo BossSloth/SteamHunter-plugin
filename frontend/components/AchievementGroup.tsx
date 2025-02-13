@@ -1,11 +1,11 @@
 import React from 'react';
 import { AchievementItem } from './AchievementItem';
-import { Achievement, SortBy } from './AchievementPage';
+import { AchievementData, SortBy } from './types';
 
 interface AchievementGroupProps {
   title: string;
   date?: string;
-  achievements: Achievement[];
+  achievements: AchievementData[];
   totalPoints: number;
   isExpanded?: boolean;
   sortedBy: SortBy;
