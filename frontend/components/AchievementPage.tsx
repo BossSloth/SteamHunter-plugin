@@ -16,7 +16,7 @@ export const AchievementPage: React.FC<{appId: string}> = ({appId}) => {
   const [reverse, setReverse] = useState(false);
   const [expandAll, setExpandAll] = useState(true);
   const [showUnlocked, setShowUnlocked] = useState(true);
-  const [ViewError, setViewError] = useState<null | Error>(null);
+  const [ViewError, setViewError] = useState<Error[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -67,7 +67,7 @@ export const AchievementPage: React.FC<{appId: string}> = ({appId}) => {
         setGroups([baseGameGroup, ...groupsData]);
       } catch (error) {
         console.error('Error loading achievement data:', error);
-        setViewError(error);
+        setViewError((prevErrors) => [...prevErrors, error]);
       }
     };
 
@@ -89,7 +89,7 @@ export const AchievementPage: React.FC<{appId: string}> = ({appId}) => {
       return response.groups;
     } catch (error) {
       console.error('Error fetching achievement groups:', error);
-      setViewError(error);
+      setViewError((prevErrors) => [...prevErrors, error]);
     }
       return null;
   }
@@ -108,7 +108,7 @@ export const AchievementPage: React.FC<{appId: string}> = ({appId}) => {
       return response;
     } catch (error) {
       console.error('Error fetching achievements:', error);
-      setViewError(error);
+      setViewError((prevErrors) => [...prevErrors, error]);
     }
     return null;
   }
@@ -165,11 +165,16 @@ export const AchievementPage: React.FC<{appId: string}> = ({appId}) => {
   };
 
   return (<>
-    {ViewError !== null ? (
+    {ViewError.length > 0 ? (
       <div className="steam-hunters-error-message">
         <IconsModule.ExclamationPoint />
         <p>
-          An error occurred: "{ViewError.message}". <br />
+          An error occurred: 
+          <ul>
+            {ViewError.map((error, index) => (
+              <li key={index}>{error.message}</li>
+            ))}
+          </ul>
           Please try again later or create an issue on GitHub with your browser logs/console output attached.
         </p>
       </div>

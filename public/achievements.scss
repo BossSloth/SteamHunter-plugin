@@ -260,10 +260,15 @@ $tooltip-background: #16202d;
 .steam-hunters-error-message {
   padding: 1rem;
   color: #FFF;
+  user-select: text;
 
   svg {
     max-width: 10%;
     color: crimson;
+  }
+
+  ul {
+    user-select: all;
   }
 }
 
