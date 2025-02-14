@@ -1,126 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Header } from './Header';
 import { AchievementGroup } from './AchievementGroup';
-// import groupsData from '../Data/achievement_groups.json';
-import { callable, IconsModule, sleep, Spinner, SteamSpinner } from '@steambrew/client';
-import { AchievementData, AchievementGroupData, ApiName, RequestAchievementGroupsResponse, SortBy, SteamAchievementData, GroupBy } from './types';
+import { Spinner } from '@steambrew/client';
+import { AchievementData, AchievementGroupData, GroupBy, SortBy, SteamGameInfo } from './types';
+import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
+import { ErrorDisplay } from './ErrorDisplay';
 
-const RequestAchievementGroups = callable<[{appId: string}], string>('RequestAchievementGroups');
-const RequestAchievements = callable<[{appId: string}], string>('RequestAchievements');
+interface AchievementPageProps {
+  appId: string;
+}
 
-export const AchievementPage: React.FC<{appId: string}> = ({appId}) => {
-  const [achievements, setAchievements] = useState<AchievementData[]>([]);
-  const [groups, setGroups] = useState<AchievementGroupData[]>(null);
-  const [groupBy, setGroupBy] = useState<GroupBy>(GroupBy.DLCAndUpdate);
-  const [sortBy, setSortBy] = useState<SortBy>(SortBy.SteamHunters);
-  const [reverse, setReverse] = useState(false);
-  const [expandAll, setExpandAll] = useState(true);
-  const [showUnlocked, setShowUnlocked] = useState(true);
-  const [ViewError, setViewError] = useState<Error[]>([]);
+interface AchievementSettings {
+  groupBy: GroupBy;
+  sortBy: SortBy;
+  reverse: boolean;
+  expandAll: boolean;
+  showUnlocked: boolean;
+}
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [groupsData, achievementsData, steamAchievements] = await Promise.all([
-          getGroups(),
-          getAchievements(),
-          // NOTE: We currently call this to get the achievement icons but this api return MY achievement icons meaning it will be gray if they are not achieved
-          SteamClient.Apps.GetMyAchievementsForApp(appId).then((res: any) => res?.data?.rgAchievements) as SteamAchievementData[]
-        ]);
-        if (!groupsData) {
-          throw new Error('Failed to load groups');
-        }
-        if (!achievementsData) {
-          throw new Error('Failed to load achievements');
-        }
-        if (!steamAchievements) {
-          throw new Error('Failed to load Steam achievements');
-        }
-
-        const updatedAchievements = achievementsData.map(achievement => {
-          const steamAchievement = steamAchievements.find(sa => sa.strID === achievement.apiName);
-          return {
-            ...achievement,
-            strImage: steamAchievement?.strImage || '',
-            unlocked: steamAchievement?.bAchieved || false,
-            name: steamAchievement?.strName || achievement.name,
-            description: steamAchievement?.strDescription || achievement.description,
-          };
-        });
-
-        setAchievements(updatedAchievements);
-        
-        // Create base game group by finding achievements not in any group
-        const allGroupAchievements = new Set(
-          groupsData.flatMap(group => group.achievementApiNames)
-        );
-        
-        const baseGameAchievements = achievementsData
-          .filter(achievement => !allGroupAchievements.has(achievement.apiName))
-          .map(achievement => achievement.apiName);
-
-        const baseGameGroup: AchievementGroupData = {
-          name: "Base Game",
-          achievementApiNames: baseGameAchievements
-        };  
-
-        setGroups([baseGameGroup, ...groupsData]);
-      } catch (error) {
-        console.error('Error loading achievement data:', error);
-        setViewError((prevErrors) => [...prevErrors, error]);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  const getGroups = async (): Promise<AchievementGroupData[]|null> => {
-    try {
-      console.log('Requesting groups')
-      const response = JSON.parse(await RequestAchievementGroups({appId})) as RequestAchievementGroupsResponse;
-      if (!response) {
-        throw new Error('Invalid response: ' + JSON.stringify(response)); 
-      }
-      // @ts-ignore
-      if (response?.error) {
-        // @ts-ignore
-        throw new Error(response.error);
-      }
-      return response.groups;
-    } catch (error) {
-      console.error('Error fetching achievement groups:', error);
-      setViewError((prevErrors) => [...prevErrors, error]);
-    }
-      return null;
-  }
-
-  const getAchievements = async (): Promise<AchievementData[]|null> => {
-    try {
-      const response = JSON.parse(await RequestAchievements({appId})) as AchievementData[];
-      if (!response) {
-        throw new Error('Invalid response: ' + JSON.stringify(response)); 
-      }
-      // @ts-ignore
-      if (response?.error) {
-        // @ts-ignore
-        throw new Error(response.error);
-      }
-      return response;
-    } catch (error) {
-      console.error('Error fetching achievements:', error);
-      setViewError((prevErrors) => [...prevErrors, error]);
-    }
-    return null;
-  }
-
-  const getAchievementsForGroup = (groupAchievementApiNames: ApiName[]) => {
-    return achievements.filter(achievement => 
-      groupAchievementApiNames.includes(achievement.apiName)
-    );
-  };
-
-  const filterAchievements = (groupAchievements: AchievementData[]) => {
-    return groupAchievements.sort((a, b) => {
+const filterAndSortAchievements = (achievements: AchievementData[], settings: AchievementSettings) => {
+  const { sortBy, reverse, showUnlocked } = settings;
+  
+  return achievements
+    .sort((a, b) => {
       switch (sortBy) {
         case SortBy.SteamHunters:
           return reverse ? a.localPercentage - b.localPercentage : b.localPercentage - a.localPercentage;
@@ -131,88 +33,140 @@ export const AchievementPage: React.FC<{appId: string}> = ({appId}) => {
         default:
           return 0;
       }
-    }).filter(achievement => showUnlocked || !achievement.unlocked);
-  };
+    })
+    .filter(achievement => showUnlocked || !achievement.unlocked);
+};
 
-  const calculateTotalPoints = (groupAchievements: AchievementData[]) => {
-    return groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
-  };
+const getGroupedAchievements = (
+  achievements: AchievementData[],
+  groups: AchievementGroupData[],
+  groupBy: GroupBy
+): AchievementGroupData[] => {
+  if (!groups || !achievements) return [];
 
-  const getGroupedAchievements = () => {
-    if (!groups || !achievements) return [];
-
-    switch (groupBy) {
-      case GroupBy.DLCAndUpdate:
-        return groups;
-      case GroupBy.Nothing:
-        return [{
-          name: "All Achievements",
-          achievementApiNames: achievements.map(a => a.apiName)
-        }];
-      case GroupBy.Unlocked:
-        const unlockedGroup = {
+  switch (groupBy) {
+    case GroupBy.DLCAndUpdate:
+      return groups.map(group => ({
+        ...group,
+        // Fix all broken &nbsp; characters
+        name: (group.name?.replace('Â', '\u00A0') ?? group.dlcAppName?.replace('Â', '\u00A0')),
+      }));
+    case GroupBy.Nothing:
+      return [{
+        name: null,
+        achievementApiNames: achievements.map(a => a.apiName)
+      }];
+    case GroupBy.Unlocked:
+      return [
+        {
           name: "Unlocked Achievements",
           achievementApiNames: achievements.filter(a => a.unlocked).map(a => a.apiName)
-        };
-        const lockedGroup = {
+        },
+        {
           name: "Locked Achievements",
           achievementApiNames: achievements.filter(a => !a.unlocked).map(a => a.apiName)
-        };
-        return [unlockedGroup, lockedGroup];
-      default:
-        return [];
-    }
+        }
+      ];
+    default:
+      return [];
+  }
+};
+
+const AchievementContent: React.FC<{
+  data: AchievementDataHook;
+  settings: AchievementSettings;
+  onSettingsChange: (settings: Partial<AchievementSettings>) => void
+}> = ({ data, settings, onSettingsChange }) => {
+  const { groupBy, sortBy, reverse, expandAll, showUnlocked } = settings;
+
+  const getAchievementsForGroup = (apiNames: string[]) => 
+    data.achievements.filter(achievement => apiNames.includes(achievement.apiName));
+
+  const calculateTotalPoints = (groupAchievements: AchievementData[]) =>
+    groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
+
+  const getGroupDate= (index: number, group: AchievementGroupData) => {
+    const dateString = data.achievementUpdates.find(update => {
+      if (group.dlcAppId) {
+        return update.dlcAppId === group.dlcAppId
+      }
+
+      return update.updateNumber === index && update.dlcAppId === group.dlcAppId
+    })?.displayReleaseDate;
+
+    return dateString ? new Date(dateString) : null;
+  }
+
+  return (
+    <>
+      <Header
+        onGroupingChange={(newGroupBy) => onSettingsChange({ groupBy: newGroupBy })}
+        onSortChange={(newSortBy) => onSettingsChange({ sortBy: newSortBy })}
+        reverse={reverse}
+        onReverseChange={(newReverse) => onSettingsChange({ reverse: newReverse })}
+        onExpandAllClick={() => onSettingsChange({ expandAll: !expandAll })}
+        showUnlocked={showUnlocked}
+        onShowUnlockedChange={(newShowUnlocked) => onSettingsChange({ showUnlocked: newShowUnlocked })}
+        groupBy={groupBy}
+        achievementCount={data.achievements.length}
+      />
+      
+      <div className="achievement-groups">
+        {getGroupedAchievements(data.achievements, data.groups, groupBy).map((group, index) => {
+          const groupAchievements = filterAndSortAchievements(
+            getAchievementsForGroup(group.achievementApiNames),
+            settings
+          );
+          const totalPoints = calculateTotalPoints(groupAchievements);
+          
+          return (
+            <AchievementGroup
+              key={index}
+              title={group.name}
+              achievements={groupAchievements}
+              totalPoints={totalPoints}
+              isExpanded={expandAll}
+              sortedBy={sortBy}
+              gameInfo={data.gameInfo}
+              dlcAppId={group.dlcAppId}
+              date={getGroupDate(index, group)}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
+  const data = useAchievementData(appId);
+  const [settings, setSettings] = React.useState<AchievementSettings>({
+    groupBy: GroupBy.DLCAndUpdate,
+    sortBy: SortBy.SteamHunters,
+    reverse: false,
+    expandAll: true,
+    showUnlocked: true
+  });
+
+  const handleSettingsChange = (newSettings: Partial<AchievementSettings>) => {
+    setSettings(prev => ({ ...prev, ...newSettings }));
   };
 
-  return (<>
-    {ViewError.length > 0 ? (
-      <div className="steam-hunters-error-message">
-        <IconsModule.ExclamationPoint />
-        <p>
-          An error occurred: 
-          <ul>
-            {ViewError.map((error, index) => (
-              <li key={index}>{error.message}</li>
-            ))}
-          </ul>
-          Please try again later or create an issue on GitHub with your browser logs/console output attached.
-        </p>
-      </div>
-    ) : (
-      <div className="steam-hunters-achievements-page">
-        {groups === null ? <Spinner className='steam-hunters-spinner' /> : (
-        <>
-          <Header
-            onGroupingChange={setGroupBy}
-            onSortChange={setSortBy}
-            reverse={reverse}
-            onReverseChange={setReverse}
-            onExpandAllClick={() => setExpandAll(!expandAll)}
-            showUnlocked={showUnlocked}
-            onShowUnlockedChange={setShowUnlocked}
-            groupBy={groupBy}
-          />
-          
-          <div className="achievement-groups">
-            {getGroupedAchievements().map((group, index) => {
-              const groupAchievements = filterAchievements(getAchievementsForGroup(group.achievementApiNames));
-              const totalPoints = calculateTotalPoints(groupAchievements);
-              
-              return (
-                <AchievementGroup
-                  key={index}
-                  title={group.name}
-                  achievements={groupAchievements}
-                  totalPoints={totalPoints}
-                  isExpanded={expandAll}
-                  sortedBy={sortBy}
-                />
-              );
-            })}
-          </div>
-        </>
-        )}
-      </div>
-    )}
-  </>);
+  if (data.errors.length > 0) {
+    return <ErrorDisplay errors={data.errors} />;
+  }
+
+  return (
+    <div className="steam-hunters-achievements-page">
+      {data.loading ? (
+        <Spinner className='steam-hunters-spinner' />
+      ) : (
+        <AchievementContent
+          data={data}
+          settings={settings}
+          onSettingsChange={handleSettingsChange}
+        />
+      )}
+    </div>
+  );
 };

@@ -12,7 +12,9 @@ export interface AchievementData {
 }
 
 export interface AchievementGroupData {
-  name: string;
+  name?: string;
+  dlcAppName?: string;
+  dlcAppId?: number;
   achievementApiNames: ApiName[];
 }
 
@@ -44,6 +46,19 @@ export interface SteamAchievementData {
   flCurrentProgress: number;
   flMaxProgress: number;
   flAchieved: number;
+}
+
+export interface SteamGameInfo {
+  name: string;
+  playersQualifiedCount: number;
+}
+
+export interface AchievementUpdateData {
+  appId: number;
+  updateId: number; // Incremental id pretty much equal to array key but 1 indexed
+  displayReleaseDate: string;
+  updateNumber?: number; // Index of group excluding DLC
+  dlcAppId?: number;
 }
 
 export enum SortBy {

@@ -11,6 +11,7 @@ interface HeaderProps {
   showUnlocked: boolean;
   onShowUnlockedChange: (showUnlocked: boolean) => void;
   groupBy: GroupBy;
+  achievementCount: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -22,12 +23,13 @@ export const Header: React.FC<HeaderProps> = ({
   showUnlocked,
   onShowUnlockedChange,
   groupBy,
+  achievementCount
 }) => {
   return (
     <div className="achievements-header">
       <div className="left-controls">
         <div>
-          <span>{39} achievements grouped by</span>
+          <span>{achievementCount} achievements grouped by</span>
           <select value={groupBy} onChange={(e) => onGroupingChange(e.target.value as GroupBy)}>
             {Object.values(GroupBy).map(group => (
               <option key={group} value={group}>{group}</option>

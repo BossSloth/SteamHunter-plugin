@@ -33,9 +33,13 @@ def RequestAchievementGroups(appId: int) -> str:
     return Request(f'https://steamhunters.com/api/GetAchievementGroups/v1', {'appid': int(appId)})
 
 def RequestAchievements(appId: int) -> str:
-    response = Request(f'https://steamhunters.com/api/apps/{appId}/achievements', {})
-    logger.log(response)
-    return response
+    return Request(f'https://steamhunters.com/api/apps/{appId}/achievements', {})
+
+def RequestSteamGameInfo(appId: int) -> str:
+    return Request(f'https://steamhunters.com/api/apps/{appId}', {})
+
+def RequestAchievementUpdates(appId: int) -> str:
+    return Request(f'https://steamhunters.com/api/apps/{appId}/updates', {})
 
 class Plugin:
     def _front_end_loaded(self):

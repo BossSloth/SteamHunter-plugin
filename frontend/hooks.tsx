@@ -2,7 +2,10 @@ import React from 'react';
 import { findClass, IconsModule } from '@steambrew/client';
 import { AchievementPage } from './components/AchievementPage';
 import { ComponentZoo } from './components/ComponentZoo';
-import { mainDocument } from '.';
+
+declare const SteamUIStore: any;
+
+export let mainDocument: () => Document = () => SteamUIStore?.WindowStore?.SteamUIWindows?.[0]?.m_BrowserWindow?.document;
 
 export function InitHooks() {
     const originalCreateElement = React.createElement
@@ -35,7 +38,7 @@ export function InitHooks() {
 
 const AchievementPageWrapper: React.FC = () => {
     const appIdClass = `.${findClass('AchievementsPageContainer')} img`;
-    const appIdImage = mainDocument.querySelector(appIdClass) as HTMLImageElement|null;
+    const appIdImage = mainDocument().querySelector(appIdClass) as HTMLImageElement|null;
     if (!appIdImage) {
         const errorMessage = `Could not find element with class ${appIdClass} to get app ID`;
         console.error(errorMessage);
