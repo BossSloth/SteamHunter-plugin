@@ -1,21 +1,20 @@
-# SteamHunters Plugin for Millennium
+# Achievement groups plugin for Millennium
 
-This plugin ports the functionality of the [SteamHunters website](https://steamhunters.com/) right into your Steam client using Millennium.
-This includes things like achievement groups
+This plugin ports the achievement groups and many other features of the [SteamHunters website](https://steamhunters.com/) right into your Steam client using Millennium.
 
 ## Features
-- Achievement groups
+- Achievement groups based on updates and dlc from [SteamHunters.com](https://steamhunters.com/)
 - Achievement points
-- A better achievements screen
+- A better achievements screen (that also works in the steam overlay)
 
-TODO: Put actual images here
-|                           Groups                           |                         Points                          |
-|:----------------------------------------------------------:|:-------------------------------------------------------------:|
-|       ![SteamDB store page](Images/steam_store.png)        |        ![SteamDB options](Images/steamdb_options.png)         |
-|                **Store Achievement Groups**                |                **Personal Achievement Groups**                |
-| ![Achievement groups](Images/store_achievement_groups.png) | ![Achievement groups](Images/personal_achievement_groups.png) |
-|                       **Inventory**                        |                       **Inventory**                        |
-| ![Inventory](Images/inventory.png)                         | ![Inventory](Images/inventory.png)                         |
+|            **Main interface**            |                **Groups**                 |
+|:----------------------------------------:|:-----------------------------------------:|
+| ![Main interface](images/main-view.png)  |      ![Groups](images/grouping.png)       |
+|               **Sorting**                |       **Working in steam overlay**        |
+|      ![Sorting](images/sorting.png)      |   ![Steam overlay](images/overlay.png)    |
+|           **Reverse sorting**            |      **Great grouping for many dlc**      |
+| ![Inventory](images/reverse-sorting.png) | ![Many dlc](images/many-dlc-grouping.png) |
+
 
 ## Installation
 1. Ensure you have Millennium installed on your Steam client
@@ -32,8 +31,7 @@ TODO: Put actual images here
 Once installed it should just work out of the box.
 <br>
 To see if the plugin is working click the View my achievements button on a game page and see that there is a new tab called `ACHIEVEMENT GROUPS`.
-TODO: Put actual images here
-![SteamDB icons](Images/steam_store.png)
+![Main interface](Images/main-view.png)
 
 ## Contributing
 
