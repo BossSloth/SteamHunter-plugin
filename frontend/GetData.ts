@@ -22,7 +22,7 @@ function decodeUtf8(binaryString: string) {
 
 function handleTimeoutError(error: string, context: string): never {
     if (error.includes('timed out')) {
-        throw new Error(`Timed out getting ${context}. Check if website is up <a href="https://steamhunters.com/">https://steamhunters.com/</a>. ${error}`);
+        throw new Error(`Timed out getting ${context}. Check if website is up. ${error}`);
     }
     throw new Error(error);
 }

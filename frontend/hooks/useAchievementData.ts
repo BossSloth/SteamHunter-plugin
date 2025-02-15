@@ -24,14 +24,14 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
   const loadData = useCallback(async () => {
     try {
       const [
-         groupsData,
          achievementsData, 
+         groupsData,
          gameInfoData, 
          achievementUpdates, 
          steamAchievements
         ] = await Promise.all([
-          getGroups(appId),
           getAchievements(appId),
+          getGroups(appId),
           getSteamGameInfo(appId),
           getAchievementUpdates(appId),
           SteamClient.Apps.GetMyAchievementsForApp(appId).then((res: any) => res?.data?.rgAchievements) as Promise<SteamAchievementData[]>,

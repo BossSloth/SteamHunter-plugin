@@ -12,7 +12,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ errors }) => (
       An error occurred:
       <ul>
         {errors.map((error, index) => (
-          <li key={index} dangerouslySetInnerHTML={{ __html: error.message }} />
+          <li key={index}>{error.message}</li>
         ))}
       </ul>
       Please try again later or create an issue on GitHub with your browser logs/console output attached.
