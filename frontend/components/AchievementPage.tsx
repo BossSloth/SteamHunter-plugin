@@ -77,14 +77,20 @@ const AchievementContent: React.FC<{
   data: AchievementDataHook;
   settings: AchievementSettings;
   onSettingsChange: (settings: Partial<AchievementSettings>) => void
-}> = ({ data, settings, onSettingsChange }) => {
+  onCacheCleared: () => void
+  appId: string;
+}> = ({ data, settings, onSettingsChange, onCacheCleared, appId }) => {
   const { groupBy, sortBy, expandAll } = settings;
-  const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(new Set());
+  const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
+
+  // Initialize expandedGroups with all group indices
+  const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(
+    () => new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i))
+  );
 
   const allGroupsExpanded = React.useMemo(() => {
-    const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
     return expandedGroups.size === groupedAchievements.length;
-  }, [expandedGroups, data.achievements, data.groups, groupBy]);
+  }, [expandedGroups, groupedAchievements.length]);
 
   React.useEffect(() => {
     if (expandAll !== allGroupsExpanded) {
@@ -105,7 +111,6 @@ const AchievementContent: React.FC<{
   };
 
   const handleExpandAllClick = () => {
-    const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
     if (allGroupsExpanded) {
       setExpandedGroups(new Set());
     } else {
@@ -119,7 +124,7 @@ const AchievementContent: React.FC<{
   const calculateTotalPoints = (groupAchievements: AchievementData[]) =>
     groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
 
-  const getGroupDate= (index: number, group: AchievementGroupData) => {
+  const getGroupDate = (index: number, group: AchievementGroupData) => {
     const dateString = data.achievementUpdates.find(update => {
       if (settings.groupBy === GroupBy.Unlocked) {
         index = 0;
@@ -135,8 +140,6 @@ const AchievementContent: React.FC<{
     return dateString ? new Date(dateString) : null;
   }
 
-  const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
-
   return (
     <>
       <Header
@@ -145,6 +148,8 @@ const AchievementContent: React.FC<{
         achievementCount={data.achievements.length}
         groupCount={groupedAchievements.length}
         onExpandAllClick={handleExpandAllClick}
+        onCacheCleared={onCacheCleared}
+        appId={appId}
       />
       
       <div className="achievement-groups">
@@ -184,6 +189,10 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
   };
 
+  const handleCacheCleared = () => {
+    data.reload();
+  };
+
   if (data.errors.length > 0) {
     return <ErrorDisplay errors={data.errors} />;
   }
@@ -197,6 +206,8 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
           data={data}
           settings={settings}
           onSettingsChange={handleSettingsChange}
+          onCacheCleared={handleCacheCleared}
+          appId={appId}
         />
       )}
     </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { GroupBy, SortBy, AchievementSettings } from './types';
 import { Toggle } from '@steambrew/client';
 import { SteamTooltip } from '../SteamComponents';
+import { clearAppCache, getCacheDate } from '../utils/cache';
 
 interface HeaderProps {
   settings: AchievementSettings;
@@ -9,6 +10,8 @@ interface HeaderProps {
   achievementCount: number;
   groupCount: number;
   onExpandAllClick: () => void;
+  onCacheCleared?: () => void;
+  appId: string;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,6 +20,8 @@ export const Header: React.FC<HeaderProps> = ({
   achievementCount,
   groupCount,
   onExpandAllClick,
+  onCacheCleared,
+  appId,
 }) => {
   return (
     <div className="achievements-header">
@@ -60,8 +65,19 @@ export const Header: React.FC<HeaderProps> = ({
         <button onClick={onExpandAllClick}>
           {settings.expandAll ? 'Collapse All' : 'Expand All'}
         </button>
-        <SteamTooltip toolTipContent={<span>Clears the steamhunters cache.<br/> Only do this if the cache is getting out of date.</span>} nDelayShowMS={100} direction='top'>
-          <button>
+        <SteamTooltip toolTipContent={
+          <span>
+            Cache was last updated on<br/>{getCacheDate(appId)?.toLocaleString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true}) ?? 'never'}
+            <br/><br/>
+            Clears the SteamHunters cache for this game.
+            <br/>
+            Use this if achievement data seems outdated or incorrect.
+          </span>
+        } nDelayShowMS={100} direction='top'>
+          <button onClick={() => {
+            clearAppCache(appId);
+            onCacheCleared?.();
+          }}>
             Clear cache
           </button>
         </SteamTooltip>

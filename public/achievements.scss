@@ -50,11 +50,18 @@ $tooltip-background: #16202d;
   }
 
   .left-controls {
+    @include flex-gap(10px);
+    flex-direction: column;
     & > div {
       @include flex-gap(5px);
       align-items: center;
       margin-bottom: 10px;
     }
+  }
+
+  .cache-info {
+    margin-top: auto;
+    margin-bottom: 10px;
   }
 
   .right-controls {
@@ -334,7 +341,7 @@ $tooltip-background: #16202d;
   max-width: 128px;
   margin: auto;
   display: flex;
-  padding-bottom: 80vh;
+  padding-bottom: 70vh;
   padding-top: 100px;
 }
 

@@ -20,7 +20,7 @@ def GetPluginDir():
 def Request(url: str, params: dict) -> str:
     response = None
     try:
-        response = requests.get(url, params=params, headers=DEFAULT_HEADERS)
+        response = requests.get(url, params=params, headers=DEFAULT_HEADERS, timeout=20)
         response.raise_for_status()
         return response.text
     except Exception as error:
