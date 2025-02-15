@@ -1,8 +1,8 @@
 {
   "scripts": {
     "dev": "millennium-ttc --build dev",
-    "sass": "sass .\\public\\achievements.scss .\\public\\achievements.css --style compressed --embed-sources --embed-source-map",
-    "watch": "nodemon --watch webkit --watch frontend --watch public\\achievements.scss --ext ts,tsx,js,jsx --exec \"npm run sass && npm run dev\"",
+    "sass": "sass ./public/achievements.scss ./public/achievements.css --style compressed --embed-sources --embed-source-map",
+    "watch": "nodemon --watch webkit --watch frontend --watch public/achievements.scss --ext ts,tsx,js,jsx --exec \"npm run sass && npm run dev\"",
     "build": "npm run sass && millennium-ttc --build prod"
   },
   "devDependencies": {
