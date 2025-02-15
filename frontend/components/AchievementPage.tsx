@@ -59,11 +59,11 @@ const getGroupedAchievements = (
     case GroupBy.Unlocked:
       return [
         {
-          name: "Unlocked Achievements",
+          name: "Achieved",
           achievementApiNames: achievements.filter(a => a.unlocked).map(a => a.apiName)
         },
         {
-          name: "Locked Achievements",
+          name: "Unachieved",
           achievementApiNames: achievements.filter(a => !a.unlocked).map(a => a.apiName)
         }
       ];
@@ -87,6 +87,10 @@ const AchievementContent: React.FC<{
 
   const getGroupDate= (index: number, group: AchievementGroupData) => {
     const dateString = data.achievementUpdates.find(update => {
+      if (settings.groupBy === GroupBy.Unlocked) {
+        index = 0;
+      }
+
       if (group.dlcAppId) {
         return update.dlcAppId === group.dlcAppId
       }
@@ -96,6 +100,8 @@ const AchievementContent: React.FC<{
 
     return dateString ? new Date(dateString) : null;
   }
+
+  const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
 
   return (
     <>
@@ -109,10 +115,11 @@ const AchievementContent: React.FC<{
         onShowUnlockedChange={(newShowUnlocked) => onSettingsChange({ showUnlocked: newShowUnlocked })}
         groupBy={groupBy}
         achievementCount={data.achievements.length}
+        groupCount={groupedAchievements.length}
       />
       
       <div className="achievement-groups">
-        {getGroupedAchievements(data.achievements, data.groups, groupBy).map((group, index) => {
+        {groupedAchievements.map((group, index) => {
           const groupAchievements = filterAndSortAchievements(
             getAchievementsForGroup(group.achievementApiNames),
             settings

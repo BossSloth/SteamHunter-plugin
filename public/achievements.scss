@@ -32,6 +32,13 @@ $tooltip-background: #16202d;
   }
 }
 
+// Hide header when pinned in game overlay
+.__PinnedView__ {
+  .achievements-header {
+    visibility: hidden;
+  }
+}
+
 .steam-hunters-achievements-page {
   // background-color: $background-color;
   color: $text-color;
@@ -45,7 +52,7 @@ $tooltip-background: #16202d;
 
   .left-controls {
     & > div {
-      @include flex-gap(10px);
+      @include flex-gap(5px);
       align-items: center;
       margin-bottom: 5px;
     }
@@ -68,30 +75,56 @@ $tooltip-background: #16202d;
     cursor: pointer;
   }
 
-  .group-content {
-    animation: slideDown 0.3s ease-out;
-    padding-bottom: 5px;
+  .group-info {
+    @include flex-gap(15px);
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0; 
   }
 
-  .group-title {
-    @include flex-gap(10px);
-    align-items: center;
+  .group-image {
+    width: 133px;
+    height: 50px;
+    border-radius: 3px;
+    object-fit: cover;
+    flex-shrink: 0;
+    transition: all 0.2s ease; 
+    transition-delay: 0.1s;
 
-    h2 {
-      margin: 0;
-      font-size: 18px;
-      color: $text-color;
+    &:hover {
+      width: 200px;
+      height: 75px;
     }
   }
 
-  .date {
-    color: $accent-color;
+  .group-title {
+    min-width: 0; 
+    h2 {
+      margin: 0 0 5px 0;
+      font-size: 18px;
+      color: $text-color;
+      line-height: 1.2;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
   }
 
   .group-stats {
     @include flex-gap(10px);
     align-items: center;
     color: $text-color;
+    flex-shrink: 0; 
+    margin-left: 15px;
+    margin-bottom: auto;
+  }
+
+  .group-content {
+    animation: slideDown 0.3s ease-out;
+    padding-bottom: 5px;
+  }
+
+  .date {
+    color: $accent-color;
   }
 
   .expand-button {

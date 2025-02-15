@@ -48,7 +48,8 @@ export interface SteamAchievementData {
   flAchieved: number;
 }
 
-export interface SteamGameInfo {
+export interface SteamGameInfo {  
+  appId: number;
   name: string;
   playersQualifiedCount: number;
 }

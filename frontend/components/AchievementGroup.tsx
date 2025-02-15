@@ -35,13 +35,27 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
     }
   }
 
+  const getImageUrl = () => {
+    const appId = dlcAppId || gameInfo.appId;
+    return appId ? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg` : null;
+  };
+
   return (
     <div className="achievement-group">
       <div className="group-header" onClick={() => setExpanded(!expanded)}>
-        <div className="group-title">
-          <h2>{getTitle()}</h2>
-          {/* Date will be formatted like this: "1 Jan 2025" */}
-          {date && <span className="date">{date.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"})}</span>}
+        <div className="group-info">
+          {getImageUrl() && (
+            <img 
+              src={getImageUrl()} 
+              alt={getTitle()} 
+              className="group-image"
+            />
+          )}
+          <div className="group-title">
+            <h2>{getTitle()}</h2>
+            {/* Date will be formatted like this: "1 Jan 2025" */}
+            {date && <span className="date">{date.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"})}</span>}
+          </div>
         </div>
         <div className="group-stats">
           <span>{achievements.length} achievements worth {totalPoints}</span>
