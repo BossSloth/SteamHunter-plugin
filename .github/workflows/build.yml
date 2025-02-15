@@ -49,12 +49,12 @@ jobs:
       - name: Extract zip for artifact
         run: |
           mkdir -p temp_artifact
-          unzip "SteamHunters-plugin-${{ inputs.version }}.zip" -d temp_artifact/
+          unzip "Achievement-Groups-plugin-${{ inputs.version }}.zip" -d temp_artifact/
           
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SteamHunters-plugin-${{ inputs.version }}
+          name: Achievement-Groups-plugin-${{ inputs.version }}
           path: temp_artifact/*
           if-no-files-found: error
           overwrite: true

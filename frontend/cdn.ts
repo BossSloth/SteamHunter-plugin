@@ -22,7 +22,3 @@ export function getCdn(path: string) {
 
     return `${CDN}/${path}`;
 }
-
-export function testing() {
-    console.log('this is my testing func')
-}

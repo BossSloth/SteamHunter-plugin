@@ -1,6 +1,7 @@
 # SteamHunters Plugin for Millennium
 
 This plugin ports the functionality of the [SteamHunters website](https://steamhunters.com/) right into your Steam client using Millennium.
+This includes things like achievement groups
 
 ## Features
 - Achievement groups
@@ -8,7 +9,7 @@ This plugin ports the functionality of the [SteamHunters website](https://steamh
 - A better achievements screen
 
 TODO: Put actual images here
-|                           Groups                            |                         Points                          |
+|                           Groups                           |                         Points                          |
 |:----------------------------------------------------------:|:-------------------------------------------------------------:|
 |       ![SteamDB store page](Images/steam_store.png)        |        ![SteamDB options](Images/steamdb_options.png)         |
 |                **Store Achievement Groups**                |                **Personal Achievement Groups**                |
@@ -18,11 +19,12 @@ TODO: Put actual images here
 
 ## Installation
 1. Ensure you have Millennium installed on your Steam client
-2. Download the latest release of this plugin or from the [Steambrew](https://steambrew.app/plugins) website
+2. Download the [latest release](https://github.com/tddebart/SteamHunter-plugin/releases/latest) of this plugin from GitHub or from the [Steambrew](https://steambrew.app/plugins) website
 3. Place the plugin files in your Millennium plugins directory (should be a plugins folder in your Steam client directory)
 4. Restart your Steam client
-5. Enable the Augmented Steam plugin in the Millennium plugin menu
-6. FULLY restart the Steam client again
+5. Enable the Achievement Groups plugin in the Millennium plugin menu
+6. Right click steam on your taskbar and Click "Exit Steam" to make sure the plugin is fully loaded
+7. Startup steam
 
 
 ## Usage
@@ -32,12 +34,6 @@ Once installed it should just work out of the box.
 To see if the plugin is working click the View my achievements button on a game page and see that there is a new tab called `ACHIEVEMENT GROUPS`.
 TODO: Put actual images here
 ![SteamDB icons](Images/steam_store.png)
-
-## Configuration
-
-To configure the plugin:
-
-TODO: Add configuration instructions here
 
 ## Contributing
 

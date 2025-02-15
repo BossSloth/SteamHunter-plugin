@@ -1,8 +1,9 @@
 {
   "scripts": {
     "dev": "millennium-ttc --build dev",
-    "watch": "nodemon --watch webkit --watch frontend --watch public\\achievements.scss --ext ts,tsx,js,jsx --exec \"sass .\\public\\achievements.scss .\\public\\achievements.css --style compressed && millennium-ttc --build dev\"",
-    "build": "millennium-ttc --build prod"
+    "sass": "sass .\\public\\achievements.scss .\\public\\achievements.css --style compressed --embed-sources --embed-source-map",
+    "watch": "nodemon --watch webkit --watch frontend --watch public\\achievements.scss --ext ts,tsx,js,jsx --exec \"npm run sass && npm run dev\"",
+    "build": "npm run sass && millennium-ttc --build prod"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
@@ -13,7 +14,6 @@
     "@types/webpack": "^5.28.5",
     "clipboardy": "^4.0.0",
     "nodemon": "^3.1.7",
-    "sass-embedded": "^1.83.4",
     "semantic-release": "^24.2.0"
   },
   "type": "module",
@@ -27,6 +27,7 @@
     "@steambrew/api": "^4.2.0",
     "@steambrew/client": "^4.2.0",
     "@steambrew/ttc": "^1.0.5",
-    "@steambrew/webkit": "^4.2.0"
+    "@steambrew/webkit": "^4.2.0",
+    "sass-embedded": "^1.85.0"
   }
 }

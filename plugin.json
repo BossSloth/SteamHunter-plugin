@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/SteamClientHomebrew/Millennium/main/src/sys/plugin-schema.json",
-  "name": "steamhunters",
-  "common_name": "SteamHunters extension",
-  "description": "SteamHunters browser extension for your Steam client",
+  "name": "achievement-groups",
+  "common_name": "Achievement Groups",
+  "description": "SteamHunters achievement groups and other info right in your Steam client",
   "version": "1.0.0",
   "include": [
-    "public"
+    "public/achievements.css"
   ]
 }

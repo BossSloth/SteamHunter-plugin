@@ -1,7 +1,6 @@
 import React from 'react';
-import { findClass, IconsModule, Spinner } from '@steambrew/client';
+import { findClass, Spinner } from '@steambrew/client';
 import { AchievementPage } from './components/AchievementPage';
-import { ComponentZoo } from './components/ComponentZoo';
 import { ErrorDisplay } from './components/ErrorDisplay';
 import { getCdn } from './cdn';
 
@@ -61,8 +60,6 @@ export function InitHooks() {
             && props?.autoFocusContents !== undefined
             && props.tabs.filter((t: any) => t.id === 'achievement-groups').length == 0
         ) {
-            console.log(type, props, children)
-
             const isOverlay = props.tabs.filter((t: any) => t.id === 'inprogress').length > 0;
 
             props.tabs = props.tabs.concat([
@@ -70,14 +67,6 @@ export function InitHooks() {
             ]);
         }
 
-        // Inject into settings page list
-        if (props?.title && props?.pages && props?.fnSetNavigateToPage && props?.className) {
-            console.log(type, props, children)
-
-            props.pages = props.pages.concat([
-                {visible: true, title: 'All components', icon: <IconsModule.Settings />, route: '/settings/components', content: <ComponentZoo />}
-            ]);
-        }
         return originalCreateElement(type, props, ...children);
     }
 }
@@ -92,10 +81,10 @@ const AchievementPageWrapper: React.FC<{isOverlay: boolean}> = ({isOverlay}) => 
                 if (isOverlay) {
                     const overlayInfo = await SteamClient.Overlay.GetOverlayBrowserInfo() as OverlayBrowserInfo[];
                     if (overlayInfo.length > 1) {
-                        throw new Error('More than one overlay open. Cannot determine app ID.\n\nNote: Having two games open is not supported, do not report this. If you only have one game open, please report this.');
+                        throw new Error('Multiple steam overlays detected. Unable to determine the correct app ID.\n\nNote: This error occurs when more than one game is open simultaneously, which is not supported. If you only have one game open, please report this issue with details about your current setup.');
                     }
                     if (overlayInfo.length == 0) {
-                        throw new Error('No overlay open. Cannot determine app ID.');
+                        throw new Error('No steam overlay open? Unable to determine the correct app ID.');
                     }
                     setAppId(overlayInfo[0].appID.toString());
                 } else {
