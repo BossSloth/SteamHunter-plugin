@@ -1,5 +1,5 @@
-import { findClass, Millennium, sleep } from '@steambrew/client';
-import { getCdn, initCdn } from './cdn';
+import { Millennium, sleep } from '@steambrew/client';
+import { initCdn } from './cdn';
 import { CreateCssElement, InitHooks, mainDocument } from './hooks';
 import { WindowHook } from './WindowHook';
 

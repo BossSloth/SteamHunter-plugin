@@ -2,7 +2,6 @@
 $background-color: #1b2838;
 $text-color: #c6d4df;
 $accent-color: #66c0f4;
-$border-color: rgba(255, 255, 255, 0.1);
 $hover-background: rgba(103, 193, 245, 0.1);
 $button-background: rgba(103, 193, 245, 0.2);
 $button-hover-background: rgba(103, 193, 245, 0.4);
@@ -116,6 +115,12 @@ $tooltip-background: #16202d;
     flex-shrink: 0; 
     margin-left: 15px;
     margin-bottom: auto;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
   }
 
   .group-content {
@@ -196,6 +201,25 @@ $tooltip-background: #16202d;
     .achievement-stats {
       @include flex-gap(15px);
       align-items: center;
+
+      .points {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+    }
+  }
+
+  .points-icon {
+    display: flex;
+    align-items: center;
+    height: 0.8em;
+    margin-top: 3px;
+    
+    svg {
+      height: 100%;
+      width: auto;
+      fill: currentColor;
     }
   }
 

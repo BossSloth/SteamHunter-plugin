@@ -66,7 +66,7 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
 
         const baseGameGroup: AchievementGroupData = {
           name: null,
-          achievementApiNames: baseGameAchievements
+          achievementApiNames: baseGameAchievements,
         };
 
         setErrors([]);

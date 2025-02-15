@@ -2,7 +2,7 @@ import React from 'react';
 import { Header } from './Header';
 import { AchievementGroup } from './AchievementGroup';
 import { Spinner } from '@steambrew/client';
-import { AchievementData, AchievementGroupData, GroupBy, SortBy, SteamGameInfo } from './types';
+import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, SortBy } from './types';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { ErrorDisplay } from './ErrorDisplay';
 
@@ -10,13 +10,14 @@ interface AchievementPageProps {
   appId: string;
 }
 
-interface AchievementSettings {
-  groupBy: GroupBy;
-  sortBy: SortBy;
-  reverse: boolean;
-  expandAll: boolean;
-  showUnlocked: boolean;
-}
+const defaultSettings: AchievementSettings = {
+  groupBy: GroupBy.DLCAndUpdate,
+  sortBy: SortBy.SteamHunters,
+  reverse: false,
+  expandAll: true,
+  showUnlocked: true,
+  showPoints: true
+};
 
 const filterAndSortAchievements = (achievements: AchievementData[], settings: AchievementSettings) => {
   const { sortBy, reverse, showUnlocked } = settings;
@@ -77,7 +78,7 @@ const AchievementContent: React.FC<{
   settings: AchievementSettings;
   onSettingsChange: (settings: Partial<AchievementSettings>) => void
 }> = ({ data, settings, onSettingsChange }) => {
-  const { groupBy, sortBy, reverse, expandAll, showUnlocked } = settings;
+  const { groupBy, sortBy, expandAll } = settings;
 
   const getAchievementsForGroup = (apiNames: string[]) => 
     data.achievements.filter(achievement => apiNames.includes(achievement.apiName));
@@ -106,14 +107,8 @@ const AchievementContent: React.FC<{
   return (
     <>
       <Header
-        onGroupingChange={(newGroupBy) => onSettingsChange({ groupBy: newGroupBy })}
-        onSortChange={(newSortBy) => onSettingsChange({ sortBy: newSortBy })}
-        reverse={reverse}
-        onReverseChange={(newReverse) => onSettingsChange({ reverse: newReverse })}
-        onExpandAllClick={() => onSettingsChange({ expandAll: !expandAll })}
-        showUnlocked={showUnlocked}
-        onShowUnlockedChange={(newShowUnlocked) => onSettingsChange({ showUnlocked: newShowUnlocked })}
-        groupBy={groupBy}
+        settings={settings}
+        onSettingsChange={onSettingsChange}
         achievementCount={data.achievements.length}
         groupCount={groupedAchievements.length}
       />
@@ -134,6 +129,7 @@ const AchievementContent: React.FC<{
               totalPoints={totalPoints}
               isExpanded={expandAll}
               sortedBy={sortBy}
+              showPoints={settings.showPoints}
               gameInfo={data.gameInfo}
               dlcAppId={group.dlcAppId}
               date={getGroupDate(index, group)}
@@ -147,13 +143,7 @@ const AchievementContent: React.FC<{
 
 export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
   const data = useAchievementData(appId);
-  const [settings, setSettings] = React.useState<AchievementSettings>({
-    groupBy: GroupBy.DLCAndUpdate,
-    sortBy: SortBy.SteamHunters,
-    reverse: false,
-    expandAll: true,
-    showUnlocked: true
-  });
+  const [settings, setSettings] = React.useState<AchievementSettings>(defaultSettings);
 
   const handleSettingsChange = (newSettings: Partial<AchievementSettings>) => {
     setSettings(prev => ({ ...prev, ...newSettings }));

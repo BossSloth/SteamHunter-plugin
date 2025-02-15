@@ -1,6 +1,7 @@
 import React from 'react';
 import { AchievementItem } from './AchievementItem';
 import { AchievementData, SortBy, SteamGameInfo } from './types';
+import { PointsIcon } from './Icons';
 
 interface AchievementGroupProps {
   title: string;
@@ -11,6 +12,7 @@ interface AchievementGroupProps {
   sortedBy: SortBy;
   gameInfo: SteamGameInfo;
   dlcAppId?: number;
+  showPoints?: boolean;
 }
 
 export const AchievementGroup: React.FC<AchievementGroupProps> = ({
@@ -22,6 +24,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   sortedBy,
   gameInfo,
   dlcAppId,
+  showPoints = true,
 }) => {
   const [expanded, setExpanded] = React.useState(isExpanded);
 
@@ -58,7 +61,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
           </div>
         </div>
         <div className="group-stats">
-          <span>{achievements.length} achievements worth {totalPoints}</span>
+          <span>{achievements.length} achievements{showPoints && ` worth ${totalPoints}`}{showPoints && <PointsIcon />}</span>
           <span className="expand-button">
             {expanded ? '▼' : '▶'}
           </span>
@@ -66,11 +69,12 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
       </div>
       {expanded && (
         <div className="group-content">
-          {achievements.map((achievement, index) => (
+          {achievements.map((achievement) => (
             <AchievementItem
-              key={index}
+              key={achievement.apiName}
               achievement={achievement}
               sortedBy={sortedBy}
+              showPoints={showPoints}
             />
           ))}
         </div>

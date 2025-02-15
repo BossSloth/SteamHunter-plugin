@@ -1,29 +1,17 @@
 import React from 'react';
-import { GroupBy, SortBy } from './types';
+import { GroupBy, SortBy, AchievementSettings } from './types';
 import { Toggle } from '@steambrew/client';
 
 interface HeaderProps {
-  onGroupingChange: (grouping: GroupBy) => void;
-  onSortChange: (sort: SortBy) => void;
-  reverse: boolean;
-  onReverseChange: (reverse: boolean) => void;
-  onExpandAllClick: () => void;
-  showUnlocked: boolean;
-  onShowUnlockedChange: (showUnlocked: boolean) => void;
-  groupBy: GroupBy;
+  settings: AchievementSettings;
+  onSettingsChange: (settings: Partial<AchievementSettings>) => void;
   achievementCount: number;
   groupCount: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  onGroupingChange,
-  onSortChange,
-  reverse,
-  onReverseChange,
-  onExpandAllClick,
-  showUnlocked,
-  onShowUnlockedChange,
-  groupBy,
+  settings,
+  onSettingsChange,
   achievementCount,
   groupCount,
 }) => {
@@ -32,31 +20,43 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="left-controls">
         <div>
           <span>{achievementCount} achievements grouped by ({groupCount})</span>
-          <select value={groupBy} onChange={(e) => onGroupingChange(e.target.value as GroupBy)}>
+          <select 
+            value={settings.groupBy} 
+            onChange={(e) => onSettingsChange({ groupBy: e.target.value as GroupBy })}
+          >
             {Object.values(GroupBy).map(group => (
               <option key={group} value={group}>{group}</option>
             ))}
           </select>
           <span>sorted by</span>
-          <select onChange={(e) => onSortChange(e.target.value as SortBy)}>
+          <select 
+            value={settings.sortBy}
+            onChange={(e) => onSettingsChange({ sortBy: e.target.value as SortBy })}
+          >
             {Object.values(SortBy).map(sortBy => (
               <option key={sortBy} value={sortBy}>{sortBy}</option>
             ))}
           </select>
         </div>
         <div className='toggle-container'>
-          <div onClick={() => onReverseChange(!reverse)}>
-            <Toggle value={reverse} onChange={onReverseChange} />
+          <div onClick={() => onSettingsChange({ reverse: !settings.reverse })}>
+            <Toggle value={settings.reverse} onChange={(value) => onSettingsChange({ reverse: value })} />
             <span>reverse</span>
           </div>
-          <div onClick={() => onShowUnlockedChange(!showUnlocked)}>
-            <Toggle value={showUnlocked} onChange={onShowUnlockedChange} />
+          <div onClick={() => onSettingsChange({ showPoints: !settings.showPoints })}>
+            <Toggle value={settings.showPoints} onChange={(value) => onSettingsChange({ showPoints: value })} />
+            <span>show points</span>
+          </div>
+          <div onClick={() => onSettingsChange({ showUnlocked: !settings.showUnlocked })}>
+            <Toggle value={settings.showUnlocked} onChange={(value) => onSettingsChange({ showUnlocked: value })} />
             <span>show unlocked</span>
           </div>
         </div>
       </div>
       <div className="right-controls">
-        <button onClick={onExpandAllClick}>Expand All</button>
+        <button onClick={() => onSettingsChange({ expandAll: !settings.expandAll })}>
+          {settings.expandAll ? 'Collapse All' : 'Expand All'}
+        </button>
       </div>
     </div>
   );

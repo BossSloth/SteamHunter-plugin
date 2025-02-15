@@ -75,6 +75,15 @@ export enum GroupBy {
     Unlocked = "unlocked"
   }
 
+export interface AchievementSettings {
+  groupBy: GroupBy;
+  sortBy: SortBy;
+  reverse: boolean;
+  expandAll: boolean;
+  showUnlocked: boolean;
+  showPoints: boolean;
+}
+
 export interface RequestAchievementGroupsResponse {
   groups: AchievementGroupData[];
 }
