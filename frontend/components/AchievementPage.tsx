@@ -16,13 +16,26 @@ const defaultSettings: AchievementSettings = {
   reverse: false,
   expandAll: true,
   showUnlocked: true,
-  showPoints: true
+  showPoints: true,
+  searchQuery: ''
 };
 
 const filterAndSortAchievements = (achievements: AchievementData[], settings: AchievementSettings) => {
-  const { sortBy, reverse, showUnlocked } = settings;
+  const { sortBy, reverse, showUnlocked, searchQuery } = settings;
   
   return achievements
+    .filter(achievement => {
+      // Filter by search query
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        return (
+          achievement.name.toLowerCase().includes(query) ||
+          achievement.description.toLowerCase().includes(query)
+        );
+      }
+      return true;
+    })
+    .filter(achievement => showUnlocked || !achievement.unlocked)
     .sort((a, b) => {
       switch (sortBy) {
         case SortBy.SteamHunters:
@@ -34,8 +47,7 @@ const filterAndSortAchievements = (achievements: AchievementData[], settings: Ac
         default:
           return 0;
       }
-    })
-    .filter(achievement => showUnlocked || !achievement.unlocked);
+    });
 };
 
 const getGroupedAchievements = (
@@ -47,11 +59,7 @@ const getGroupedAchievements = (
 
   switch (groupBy) {
     case GroupBy.DLCAndUpdate:
-      return groups.map(group => ({
-        ...group,
-        // Fix all broken &nbsp; characters
-        name: (group.name?.replace('Â', '\u00A0') ?? group.dlcAppName?.replace('Â', '\u00A0')),
-      }));
+      return groups;
     case GroupBy.Nothing:
       return [{
         name: null,
@@ -163,6 +171,7 @@ const AchievementContent: React.FC<{
           return (
             <AchievementGroup
               key={index}
+              groupInfo={group}
               title={group.name}
               achievements={groupAchievements}
               totalPoints={totalPoints}
@@ -170,7 +179,6 @@ const AchievementContent: React.FC<{
               sortedBy={sortBy}
               showPoints={settings.showPoints}
               gameInfo={data.gameInfo}
-              dlcAppId={group.dlcAppId}
               date={getGroupDate(index, group)}
               onExpandChange={(isExpanded) => handleGroupExpand(index, isExpanded)}
             />

@@ -55,7 +55,32 @@ $tooltip-background: #16202d;
     & > div {
       @include flex-gap(5px);
       align-items: center;
-      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-container {
+      margin-left: 19px;
+
+      input {
+        width: 100%;
+        padding: 5px 10px;
+        border-radius: 3px;
+        background: hsla(0, 0%, 0%, 0.2);
+        border: 1px solid hsla(0, 0%, 50%, 0.1);
+        color: #fff;
+        margin-top: 5px;
+        padding-bottom: 7px;
+
+        &::placeholder {
+          color: hsla(0, 0%, 100%, 0.5);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: hsla(0, 0%, 100%, 0.3);
+          background: hsla(0, 0%, 0%, 0.3);
+        }
+      }
     }
   }
 

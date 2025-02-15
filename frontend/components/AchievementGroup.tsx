@@ -1,9 +1,10 @@
 import React from 'react';
 import { AchievementItem } from './AchievementItem';
-import { AchievementData, SortBy, SteamGameInfo } from './types';
+import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './types';
 import { PointsIcon } from './Icons';
 
 interface AchievementGroupProps {
+  groupInfo: AchievementGroupData;
   title: string;
   date?: Date;
   achievements: AchievementData[];
@@ -11,12 +12,12 @@ interface AchievementGroupProps {
   isExpanded?: boolean;
   sortedBy: SortBy;
   gameInfo: SteamGameInfo;
-  dlcAppId?: number;
   showPoints?: boolean;
   onExpandChange: (isExpanded: boolean) => void;
 }
 
 export const AchievementGroup: React.FC<AchievementGroupProps> = ({
+  groupInfo,
   title,
   date,
   achievements,
@@ -24,7 +25,6 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   isExpanded = false,
   sortedBy,
   gameInfo,
-  dlcAppId,
   showPoints = true,
   onExpandChange,
 }) => {
@@ -40,8 +40,11 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   };
 
   const getTitle = () => {
-    if (dlcAppId) {
-      return title;
+    if (groupInfo.dlcAppId) {
+      if (groupInfo.name) {
+        return `${groupInfo.dlcAppName} — ${groupInfo.name}`;
+      }
+      return `${groupInfo.dlcAppName}`;
     } else if (title) {
       return `${gameInfo.name} — ${title}`;
     } else {
@@ -50,7 +53,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   }
 
   const getImageUrl = () => {
-    const appId = dlcAppId || gameInfo.appId;
+    const appId = groupInfo.dlcAppId || gameInfo.appId;
     return appId ? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg` : null;
   };
 

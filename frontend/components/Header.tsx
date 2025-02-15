@@ -1,6 +1,6 @@
 import React from 'react';
 import { GroupBy, SortBy, AchievementSettings } from './types';
-import { Toggle } from '@steambrew/client';
+import { Toggle, TextField } from '@steambrew/client';
 import { SteamTooltip } from '../SteamComponents';
 import { clearAppCache, getCacheDate } from '../utils/cache';
 
@@ -58,6 +58,13 @@ export const Header: React.FC<HeaderProps> = ({
           <div onClick={() => onSettingsChange({ showUnlocked: !settings.showUnlocked })}>
             <Toggle value={settings.showUnlocked} onChange={(value) => onSettingsChange({ showUnlocked: value })} />
             <span>show unlocked</span>
+          </div>
+          <div className='search-container'>
+            <TextField
+              value={settings.searchQuery || ''}
+              onChange={(e) => onSettingsChange({ searchQuery: e.target.value })}
+              placeholder="Search achievements..."
+            />
           </div>
         </div>
       </div>

@@ -82,6 +82,7 @@ export interface AchievementSettings {
   expandAll: boolean;
   showUnlocked: boolean;
   showPoints: boolean;
+  searchQuery?: string;
 }
 
 export interface RequestAchievementGroupsResponse {
