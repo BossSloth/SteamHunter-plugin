@@ -1,12 +1,14 @@
 import React from 'react';
 import { GroupBy, SortBy, AchievementSettings } from './types';
 import { Toggle } from '@steambrew/client';
+import { SteamTooltip } from '../SteamComponents';
 
 interface HeaderProps {
   settings: AchievementSettings;
   onSettingsChange: (settings: Partial<AchievementSettings>) => void;
   achievementCount: number;
   groupCount: number;
+  onExpandAllClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -14,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSettingsChange,
   achievementCount,
   groupCount,
+  onExpandAllClick,
 }) => {
   return (
     <div className="achievements-header">
@@ -54,9 +57,14 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
       <div className="right-controls">
-        <button onClick={() => onSettingsChange({ expandAll: !settings.expandAll })}>
+        <button onClick={onExpandAllClick}>
           {settings.expandAll ? 'Collapse All' : 'Expand All'}
         </button>
+        <SteamTooltip toolTipContent={<span>Clears the steamhunters cache.<br/> Only do this if the cache is getting out of date.</span>} nDelayShowMS={100} direction='top'>
+          <button>
+            Clear cache
+          </button>
+        </SteamTooltip>
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ interface AchievementGroupProps {
   gameInfo: SteamGameInfo;
   dlcAppId?: number;
   showPoints?: boolean;
+  onExpandChange: (isExpanded: boolean) => void;
 }
 
 export const AchievementGroup: React.FC<AchievementGroupProps> = ({
@@ -25,8 +26,18 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   gameInfo,
   dlcAppId,
   showPoints = true,
+  onExpandChange,
 }) => {
   const [expanded, setExpanded] = React.useState(isExpanded);
+
+  React.useEffect(() => {
+    setExpanded(isExpanded);
+  }, [isExpanded]);
+
+  const handleExpand = (newExpanded: boolean) => {
+    setExpanded(newExpanded);
+    onExpandChange(newExpanded);
+  };
 
   const getTitle = () => {
     if (dlcAppId) {
@@ -45,13 +56,14 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
 
   return (
     <div className="achievement-group">
-      <div className="group-header" onClick={() => setExpanded(!expanded)}>
+      <div className="group-header" onClick={() => handleExpand(!expanded)}>
         <div className="group-info">
           {getImageUrl() && (
             <img 
               src={getImageUrl()} 
               alt={getTitle()} 
               className="group-image"
+              onClick={(e) => {SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`); e.stopPropagation();}}
             />
           )}
           <div className="group-title">

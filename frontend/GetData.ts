@@ -7,7 +7,7 @@ const RequestSteamGameInfo = callable<[{appId: string}], string>('RequestSteamGa
 const RequestAchievementUpdates = callable<[{appId: string}], string>('RequestAchievementUpdates');
 
 export async function getGroups(appId: string): Promise<AchievementGroupData[] | null> {
-    const response = JSON.parse(await RequestAchievementGroups({ appId })) as RequestAchievementGroupsResponse;
+    const response = JSON.parse(decodeUtf8(await RequestAchievementGroups({ appId }))) as RequestAchievementGroupsResponse;
     if (!response) {
         throw new Error('Invalid group response: ' + JSON.stringify(response));
     }
@@ -21,7 +21,7 @@ export async function getGroups(appId: string): Promise<AchievementGroupData[] |
 }
 
 export async function getAchievements(appId: string): Promise<AchievementData[] | null> {
-    const response = JSON.parse(await RequestAchievements({ appId })) as AchievementData[];
+    const response = JSON.parse(decodeUtf8(await RequestAchievements({ appId }))) as AchievementData[];
     if (!response) {
         throw new Error('Invalid achievements response: ' + JSON.stringify(response));
     }
@@ -35,7 +35,7 @@ export async function getAchievements(appId: string): Promise<AchievementData[] 
 }
 
 export async function getSteamGameInfo(appId: string): Promise<SteamGameInfo | null> {
-    const response = JSON.parse(await RequestSteamGameInfo({ appId })) as SteamGameInfo;
+    const response = JSON.parse(decodeUtf8(await RequestSteamGameInfo({ appId }))) as SteamGameInfo;
     if (!response) {
         throw new Error('Invalid game info response: ' + JSON.stringify(response));
     }
@@ -49,7 +49,7 @@ export async function getSteamGameInfo(appId: string): Promise<SteamGameInfo | n
 }
 
 export async function getAchievementUpdates(appId: string): Promise<AchievementUpdateData[] | null> {
-    const response = JSON.parse(await RequestAchievementUpdates({ appId })) as AchievementUpdateData[];
+    const response = JSON.parse(decodeUtf8(await RequestAchievementUpdates({ appId }))) as AchievementUpdateData[];
     if (!response) {
         throw new Error('Invalid achievement updates response: ' + JSON.stringify(response));
     }
@@ -60,4 +60,9 @@ export async function getAchievementUpdates(appId: string): Promise<AchievementU
     }
 
     return response;
+}
+
+function decodeUtf8(binaryString: string) {
+    const bytes = Uint8Array.from(binaryString, char => char.charCodeAt(0));
+    return new TextDecoder("utf-8").decode(bytes);
 }

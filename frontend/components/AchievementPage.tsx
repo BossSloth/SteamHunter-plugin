@@ -79,6 +79,39 @@ const AchievementContent: React.FC<{
   onSettingsChange: (settings: Partial<AchievementSettings>) => void
 }> = ({ data, settings, onSettingsChange }) => {
   const { groupBy, sortBy, expandAll } = settings;
+  const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(new Set());
+
+  const allGroupsExpanded = React.useMemo(() => {
+    const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
+    return expandedGroups.size === groupedAchievements.length;
+  }, [expandedGroups, data.achievements, data.groups, groupBy]);
+
+  React.useEffect(() => {
+    if (expandAll !== allGroupsExpanded) {
+      onSettingsChange({ expandAll: allGroupsExpanded });
+    }
+  }, [allGroupsExpanded, expandAll, onSettingsChange]);
+
+  const handleGroupExpand = (index: number, isExpanded: boolean) => {
+    setExpandedGroups(prev => {
+      const newSet = new Set(prev);
+      if (isExpanded) {
+        newSet.add(index);
+      } else {
+        newSet.delete(index);
+      }
+      return newSet;
+    });
+  };
+
+  const handleExpandAllClick = () => {
+    const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
+    if (allGroupsExpanded) {
+      setExpandedGroups(new Set());
+    } else {
+      setExpandedGroups(new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)));
+    }
+  };
 
   const getAchievementsForGroup = (apiNames: string[]) => 
     data.achievements.filter(achievement => apiNames.includes(achievement.apiName));
@@ -111,6 +144,7 @@ const AchievementContent: React.FC<{
         onSettingsChange={onSettingsChange}
         achievementCount={data.achievements.length}
         groupCount={groupedAchievements.length}
+        onExpandAllClick={handleExpandAllClick}
       />
       
       <div className="achievement-groups">
@@ -127,12 +161,13 @@ const AchievementContent: React.FC<{
               title={group.name}
               achievements={groupAchievements}
               totalPoints={totalPoints}
-              isExpanded={expandAll}
+              isExpanded={expandedGroups.has(index)}
               sortedBy={sortBy}
               showPoints={settings.showPoints}
               gameInfo={data.gameInfo}
               dlcAppId={group.dlcAppId}
               date={getGroupDate(index, group)}
+              onExpandChange={(isExpanded) => handleGroupExpand(index, isExpanded)}
             />
           );
         })}

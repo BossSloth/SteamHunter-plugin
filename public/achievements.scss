@@ -53,12 +53,13 @@ $tooltip-background: #16202d;
     & > div {
       @include flex-gap(5px);
       align-items: center;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
   }
 
   .right-controls {
     @include flex-gap(10px);
+    flex-direction: column;
     margin-bottom: auto;
   }
 
