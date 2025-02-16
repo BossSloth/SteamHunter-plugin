@@ -55,6 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Achievement-Groups-plugin-${{ inputs.version }}
-          path: build/*.zip
+          path: temp_artifact/*
           if-no-files-found: error
           overwrite: true
+          include-hidden-files: true
