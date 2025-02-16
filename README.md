@@ -7,9 +7,9 @@ This plugin ports the achievement groups and many other features of the [SteamHu
 - Achievement points
 - A better achievements screen (that also works in the steam overlay)
 
-|            **Main interface**            |                **Groups**                 |
+|           **Main interface**             |                **Groups**                 |
 |:----------------------------------------:|:-----------------------------------------:|
-| ![Main interface](images/main-view.png)  |      ![Groups](images/grouping.png)       |
+| ![Main interface](images/main-view.png)<img width="1000" />  |      ![Groups](images/grouping.png)<img width="1000" />       |
 |               **Sorting**                |       **Working in steam overlay**        |
 |      ![Sorting](images/sorting.png)      |   ![Steam overlay](images/overlay.png)    |
 |           **Reverse sorting**            |      **Great grouping for many dlc**      |
