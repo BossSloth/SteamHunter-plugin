@@ -13,7 +13,7 @@ This plugin ports the achievement groups and many other features of the [SteamHu
 |               **Sorting**                |       **Working in steam overlay**        |
 |      ![Sorting](images/sorting.png)      |   ![Steam overlay](images/overlay.png)    |
 |           **Reverse sorting**            |      **Great grouping for many dlc**      |
-| ![Inventory](images/reverse-sorting.png) | ![Many dlc](images/many-dlc-grouping.png) |
+| ![Reverse sorting](images/reverse-sorting.png) | ![Many dlc grouping](images/many-dlc-grouping.png) |
 
 
 ## Installation
