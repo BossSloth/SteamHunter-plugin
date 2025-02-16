@@ -36,6 +36,8 @@ export let mainDocument: () => Document = () => SteamUIStore?.WindowStore?.Steam
 export const cssId = 'steam-hunters-main-css';
 
 export async function CreateCssElement(document: Document) {
+    if (document.getElementById(cssId)) return;
+
     let cssContent = await fetch(getCdn('/achievements.css')).then(r => r.text());
     
     let steamClassNames = [...cssContent.matchAll(/\.__(\w+)__/g)];
@@ -88,6 +90,7 @@ const AchievementPageWrapper: React.FC<{isOverlay: boolean}> = ({isOverlay}) => 
                     }
                     setAppId(overlayInfo[0].appID.toString());
                 } else {
+                    await CreateCssElement(mainDocument());
                     const achievementsPageContainer = mainDocument().querySelector(`.${findClass('AchievementsPageContainer')}`) as HTMLDivElement|null;
                     if (!achievementsPageContainer) {
                         throw new Error(`Could not find element with class ${findClass('AchievementsPageContainer')} to get app ID`);
