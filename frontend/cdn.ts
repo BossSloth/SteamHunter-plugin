@@ -1,4 +1,4 @@
-import { callable } from "@steambrew/client";
+import { callable, findClass } from "@steambrew/client";
 
 export let CDN: string;
 
@@ -15,10 +15,32 @@ export async function initCdn() {
     CDN = 'https://pseudo.millennium.app' + extensionFolder;
 }
 
-export function getCdn(path: string) {
+function getCdn(path: string) {
     if (path.startsWith('/')) {
         return `${CDN}${path}`;
     }
 
     return `${CDN}/${path}`;
+}
+
+const cssId = 'steam-hunters-main-css';
+
+export async function CreateCssElement(document: Document) {
+    const loadingIndicator = 'steam-hunters-css-loading';
+    if (document.getElementById(cssId) || document.body.classList.contains(loadingIndicator)) return;
+    document.body.classList.add(loadingIndicator);
+
+    let cssContent = await fetch(getCdn('/achievements.css')).then(r => r.text());
+    
+    let steamClassNames = [...cssContent.matchAll(/\.__(\w+)__/g)];
+    steamClassNames.forEach(className => {
+        const realClassName = findClass(className[1]) as string;
+        cssContent = cssContent.replaceAll(className[0], `.${realClassName}`);
+    });
+
+    const cssElement = document.createElement('style');
+    cssElement.innerHTML = cssContent;
+    cssElement.id = cssId;
+    document.head.appendChild(cssElement);
+    document.body.classList.remove(loadingIndicator);
 }

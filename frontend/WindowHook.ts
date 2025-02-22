@@ -1,5 +1,5 @@
 import { SteamClient } from "@steambrew/client";
-import { CreateCssElement } from "./hooks";
+import { CreateCssElement } from "./cdn";
 
 declare const g_PopupManager: {
     m_mapPopups: {
@@ -21,9 +21,17 @@ declare global {
     }
 }
 
+const hookedWindows = [
+    'Achievements_',
+    'BPM_',
+    'Desktop_uid0',
+];
+
 export function WindowHook() {
     g_PopupManager?.m_mapPopups?.data_?.forEach(async (popup) => {
-        if (popup.value_.m_strName.includes('Achievements_')) {
+        let popupName = popup.value_.m_strName;
+        console.log(popupName, popup);
+        if (hookedWindows.some((windowName) => popupName.includes(windowName))) {
             const popupWindow = popup.value_.m_popup;
             const document = popupWindow.document;
             CreateCssElement(document);
