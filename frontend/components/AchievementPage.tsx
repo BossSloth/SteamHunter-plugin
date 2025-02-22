@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { Header } from './Header';
 import { AchievementGroup } from './AchievementGroup';
 import { Spinner } from '@steambrew/client';
@@ -6,6 +6,7 @@ import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, So
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { ErrorDisplay } from './ErrorDisplay';
 import { CreateCssElement } from '../cdn';
+import { getDefaultSettings } from '../utils/cache';
 
 interface AchievementPageProps {
   appId: string;
@@ -192,12 +193,19 @@ const AchievementContent: React.FC<{
 
 export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
   const data = useAchievementData(appId);
-  const [settings, setSettings] = React.useState<AchievementSettings>(defaultSettings);
+  const [settings, setSettings] = useState<AchievementSettings>(() => {
+    const savedSettings = getDefaultSettings();
+    return savedSettings || defaultSettings;
+  });
 
-  const domElement = React.createRef<HTMLDivElement>();
+  const domElement = createRef<HTMLDivElement>();
 
   const handleSettingsChange = (newSettings: Partial<AchievementSettings>) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
+    if (newSettings === null) {
+      setSettings(defaultSettings);
+    } else {
+      setSettings(prev => ({ ...prev, ...newSettings }));
+    }
   };
 
   const handleCacheCleared = () => {

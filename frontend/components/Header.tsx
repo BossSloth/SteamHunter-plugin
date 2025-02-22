@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GroupBy, SortBy, AchievementSettings } from './types';
 import { Toggle, TextField, Focusable, Dropdown, Button } from '@steambrew/client';
 import { SteamTooltip } from '../SteamComponents';
-import { clearAppCache, getCacheDate } from '../utils/cache';
+import { clearAppCache, getCacheDate, saveDefaultSettings, getDefaultSettings, clearDefaultSettings } from '../utils/cache';
 import { ErrorDisplay } from './ErrorDisplay';
 
 interface HeaderProps {
@@ -27,11 +27,27 @@ export const Header: React.FC<HeaderProps> = ({
   const toolTipDom = useRef<HTMLSpanElement>(null);
   const fakeMouseOver = new MouseEvent('mouseover', {bubbles: true});
   const fakeMouseOut = new MouseEvent('mouseout', {bubbles: true});
+  const [hasCustomDefaults, setHasCustomDefaults] = useState(false);
 
   useEffect(() => {
     toolTipDom.current.addEventListener('vgp_onfocus', () => {toolTipDom.current?.dispatchEvent(fakeMouseOver)});
     toolTipDom.current.addEventListener('vgp_onblur', () => {toolTipDom.current?.dispatchEvent(fakeMouseOut)});
   }, [toolTipDom]);
+
+  useEffect(() => {
+    setHasCustomDefaults(!!getDefaultSettings());
+  }, []);
+
+  const handleDefaultSettings = () => {
+    if (hasCustomDefaults) {
+      clearDefaultSettings();
+      setHasCustomDefaults(false);
+      onSettingsChange(null);
+    } else {
+      saveDefaultSettings(settings);
+      setHasCustomDefaults(true);
+    }
+  };
 
   return (
     <Focusable className="achievements-header">
@@ -39,14 +55,16 @@ export const Header: React.FC<HeaderProps> = ({
       <Focusable className="left-controls">
         <Focusable>
           <span>{achievementCount} achievements grouped by ({groupCount})</span>
-          <Dropdown 
-            rgOptions={Object.values(GroupBy).map(group => ({ label: group, data: group }))}
-            selectedOption={settings.groupBy}
-            onChange={(data: any) => onSettingsChange({ groupBy: data.data })}
-            contextMenuPositionOptions={{bMatchWidth: false}}
-          />
+          <div className='dropdown-container' style={{width: 120}}>
+            <Dropdown 
+              rgOptions={Object.values(GroupBy).map(group => ({ label: group, data: group }))}
+              selectedOption={settings.groupBy}
+              onChange={(data: any) => onSettingsChange({ groupBy: data.data })}
+              contextMenuPositionOptions={{bMatchWidth: false}}
+            />
+          </div>
           <span>sorted by</span>
-          <div style={{width: 90}}>
+          <div className='dropdown-container' style={{width: 90}}>
             <Dropdown 
               rgOptions={Object.values(SortBy).map(sortBy => ({ label: sortBy, data: sortBy }))}
               selectedOption={settings.sortBy}
@@ -61,26 +79,48 @@ export const Header: React.FC<HeaderProps> = ({
             <span>reverse</span>
           </div>
           <div onClick={() => onSettingsChange({ showPoints: !settings.showPoints })}>
-            <Toggle value={settings.showPoints} onChange={(value) => onSettingsChange({ showPoints: value })} />
+            <Toggle 
+              value={settings.showPoints} 
+              onChange={(value) => onSettingsChange({ showPoints: value })} 
+            />
             <span>show points</span>
           </div>
           <div onClick={() => onSettingsChange({ showUnlocked: !settings.showUnlocked })}>
             <Toggle value={settings.showUnlocked} onChange={(value) => onSettingsChange({ showUnlocked: value })} />
             <span>show unlocked</span>
           </div>
-          <div className='search-container'>
-            <TextField
-              value={settings.searchQuery || ''}
-              onChange={(e) => onSettingsChange({ searchQuery: e.target.value })}
-              placeholder="Search achievements..."
-            />
-          </div>
         </Focusable>
       </Focusable>
       <Focusable className="right-controls">
+        {/* Save defaults */}
+        <SteamTooltip toolTipContent={
+            <span>
+              {hasCustomDefaults ? 
+                'Reset saved default settings to standard default values' :
+                'Save current settings as default'
+              }
+            </span>
+          } nDelayShowMS={100} direction='top'>
+            <Button onClick={handleDefaultSettings} style={{width: '126px'}}>
+              {hasCustomDefaults ? 'Reset Defaults ' : 'Save as Default'}
+            </Button>
+        </SteamTooltip>
+
+        {/* Expand all */}
         <Button onClick={onExpandAllClick}>
           {settings.expandAll ? 'Collapse All' : 'Expand All'}
         </Button>
+
+        {/* Search */}
+        <div className='search-container'>
+          <TextField
+            value={settings.searchQuery || ''}
+            onChange={(e) => onSettingsChange({ searchQuery: e.target.value })}
+            placeholder="Search achievements..."
+          />
+        </div>
+
+        {/* Clear cache */}
         <SteamTooltip toolTipContent={
           <span>
             Cache was last updated on<br/>{getCacheDate(appId)?.toLocaleString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true}) ?? 'never'}
@@ -101,6 +141,7 @@ export const Header: React.FC<HeaderProps> = ({
             Clear cache
           </Button>
         </SteamTooltip>
+
       </Focusable>
     </Focusable>
   );

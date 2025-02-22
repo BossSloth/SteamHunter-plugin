@@ -1,5 +1,8 @@
-const CACHE_KEY = 'steamhunters-cache';
+import { AchievementSettings } from "../components/types";
+
+const CACHE_KEY = 'steamhunters_cache';
 const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+const DEFAULT_SETTINGS_KEY = 'steamhunter_default_settings';
 
 interface CacheEntry<T> {
     data: T;
@@ -101,4 +104,17 @@ export function getCacheDate(appId: string, type: keyof AppCache = 'achievements
         console.error('Error reading from cache:', error);
         return null;
     }
+}
+
+export function saveDefaultSettings(settings: AchievementSettings): void {
+    localStorage.setItem(DEFAULT_SETTINGS_KEY, JSON.stringify(settings));
+}
+
+export function getDefaultSettings(): AchievementSettings | null {
+    const settings = localStorage.getItem(DEFAULT_SETTINGS_KEY);
+    return settings ? JSON.parse(settings) : null;
+}
+
+export function clearDefaultSettings(): void {
+    localStorage.removeItem(DEFAULT_SETTINGS_KEY);
 }
