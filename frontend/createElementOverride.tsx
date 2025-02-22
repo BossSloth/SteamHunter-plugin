@@ -1,23 +1,33 @@
-import React from "react";
-import { AchievementPageWrapper } from "./components/AchievementPageWrapper";
+import React, { ReactElement } from "react";
+import { AchievementPage } from "./components/AchievementPage";
+
+interface Tab {
+    content: ReactElement
+    id: string
+    title: string
+}
 
 export function CreateElementOverride() {
     const originalCreateElement = React.createElement;
 
     // @ts-ignore
     React.createElement = function (type: any, props: any, ...children: any[]) {
+        let tabs = props?.tabs as Tab[];
         if (
-            props?.tabs
+            tabs
             && props?.onShowTab
             && props?.autoFocusContents !== undefined
-            && props.tabs.filter((t: any) => t.id === 'achievements').length > 0
-            && props.tabs.filter((t: any) => t.id === 'achievement-groups').length == 0
+            && tabs.filter((t) => t.id === 'achievements').length > 0
+            && tabs.filter((t) => t.id === 'achievement-groups').length == 0
         ) {
-            const isOverlay = props.tabs.filter((t: any) => t.id === 'inprogress').length > 0;
 
-            props.tabs = props.tabs.concat([
-                {content: <AchievementPageWrapper isOverlay={isOverlay} />, id: 'achievement-groups', title: 'Achievement Groups'}
+            const appid = tabs[0].content.props.appid.toString();
+
+            tabs = tabs.concat([
+                {content: <AchievementPage appId={appid} />, id: 'achievement-groups', title: 'Achievement Groups'}
             ]);
+
+            props.tabs = tabs;
         }
 
         return originalCreateElement(type, props, ...children);

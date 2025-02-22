@@ -44,55 +44,108 @@ $tooltip-background: #16202d;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
+  .css-error {
+    display: none;
+  }
+
   .achievements-header {
     @include flex-between;
     margin-bottom: 20px;
-  }
 
-  .left-controls {
-    @include flex-gap(10px);
-    flex-direction: column;
-    & > div {
-      @include flex-gap(5px);
-      align-items: center;
-      flex-wrap: wrap;
-    }
+    .left-controls {
+      @include flex-gap(10px);
+      flex-direction: column;
+      & > div {
+        @include flex-gap(5px);
+        align-items: center;
+        flex-wrap: wrap;
+      }
+  
+      .search-container {
+        margin-left: 19px;
+        width: 180px;
 
-    .search-container {
-      margin-left: 19px;
+        .Panel {
+          width: 100%;
+        }
+  
+        input {
+          width: 100%;
+          padding: 5px 10px;
+          border-radius: 5px;
+          background: hsla(0, 0%, 0%, 0.2);
+          border: 1px solid hsla(0, 0%, 50%, 0.1);
+          color: #fff;
+          margin-top: 5px;
+          padding-bottom: 7px;
+  
+          &::placeholder {
+            color: hsla(0, 0%, 100%, 0.5);
+          }
+  
+          &:focus {
+            outline: none;
+            border-color: hsla(0, 0%, 100%, 0.3);
+            background: hsla(0, 0%, 0%, 0.3);
+          }
+        }
+      }
 
-      input {
-        width: 100%;
-        padding: 5px 10px;
-        border-radius: 3px;
-        background: hsla(0, 0%, 0%, 0.2);
-        border: 1px solid hsla(0, 0%, 50%, 0.1);
-        color: #fff;
-        margin-top: 5px;
-        padding-bottom: 7px;
+      select, .__DropDownControlButton__, .DialogDropDown {
+        background-color: rgba(0, 0, 0, 0.4) !important;
+        border: 1px solid #4f94bc;
+        color: $accent-color !important; 
+        padding: 5px;
+        border-radius: 4px;
+        transition: border-color, transform 0.2s ease;
+        outline: none;
+        font-family: 'Arial';
+        width: 120px;
+        font-size: 0.82em !important;
 
-        &::placeholder {
-          color: hsla(0, 0%, 100%, 0.5);
+        // Big picture
+        &.__DropDownControlButton__ {
+          padding: 3px 8px;
         }
 
-        &:focus {
-          outline: none;
-          border-color: hsla(0, 0%, 100%, 0.3);
-          background: hsla(0, 0%, 0%, 0.3);
+        // Normal
+        &.DialogDropDown {
+          padding: 4px 8px;
+
+          .DialogDropDown_Arrow {
+            top: 8px;
+            right: 4px;
+            height: 15px;
+          }
+        }
+    
+        &:hover {
+          border-color: $accent-color;
+        }
+
+        &.gpfocuswithin {
+          background-color: hsla(0, 0%, 10%, 0.5) !important;
+          border-color: $accent-color;
+          transform: scale(1.05);
+        }
+    
+        option {
+          background-color: $background-color;
+          color: $accent-color;
         }
       }
     }
-  }
-
-  .cache-info {
-    margin-top: auto;
-    margin-bottom: 10px;
-  }
-
-  .right-controls {
-    @include flex-gap(10px);
-    flex-direction: column;
-    margin-bottom: auto;
+  
+    .cache-info {
+      margin-top: auto;
+      margin-bottom: 10px;
+    }
+  
+    .right-controls {
+      @include flex-gap(10px);
+      flex-direction: column;
+      margin-bottom: auto;
+    }
   }
 
   .achievement-group {
@@ -178,6 +231,11 @@ $tooltip-background: #16202d;
     &.expanded {
       transform: rotate(180deg);
     }
+  }
+
+  .gpfocuswithin .achievement-item .center {
+    background-color: $hover-background;
+    border-radius: 5px;
   }
 
   .achievement-item {
@@ -271,26 +329,7 @@ $tooltip-background: #16202d;
 
     &:hover {
       background-color: $button-hover-background;
-      transform: translateY(-1px);
-    }
-  }
-
-  select {
-    background-color: rgba(0, 0, 0, 0.4);
-    border: 1px solid #4f94bc;
-    color: $accent-color;
-    padding: 5px;
-    border-radius: 2px;
-    transition: border-color 0.2s ease;
-    outline: none;
-
-    &:hover {
-      border-color: $accent-color;
-    }
-
-    option {
-      background-color: $background-color;
-      color: $accent-color;
+      // transform: translateY(-1px);
     }
   }
 
@@ -370,6 +409,7 @@ $tooltip-background: #16202d;
   padding-top: 100px;
 }
 
-._1jNhbFODJy7sNdcnEeZkz4:has(+ div .steam-hunters-achievements-page)::before {
+// Hide the scrolledDown background when in normal ui but keep showing it in big picture mode where AchievementsPageContainer is not present
+.__AchievementsPageContainer__ .__ScrolledDown__:has(+ div .steam-hunters-achievements-page)::before {
   display: none;
 }

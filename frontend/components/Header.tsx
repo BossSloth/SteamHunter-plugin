@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { GroupBy, SortBy, AchievementSettings } from './types';
-import { Toggle, TextField } from '@steambrew/client';
+import { Toggle, TextField, Focusable, Dropdown, Button } from '@steambrew/client';
 import { SteamTooltip } from '../SteamComponents';
 import { clearAppCache, getCacheDate } from '../utils/cache';
+import { ErrorDisplay } from './ErrorDisplay';
 
 interface HeaderProps {
   settings: AchievementSettings;
@@ -23,30 +24,38 @@ export const Header: React.FC<HeaderProps> = ({
   onCacheCleared,
   appId,
 }) => {
+  const toolTipDom = useRef<HTMLSpanElement>(null);
+  const fakeMouseOver = new MouseEvent('mouseover', {bubbles: true});
+  const fakeMouseOut = new MouseEvent('mouseout', {bubbles: true});
+
+  useEffect(() => {
+    toolTipDom.current.addEventListener('vgp_onfocus', () => {toolTipDom.current?.dispatchEvent(fakeMouseOver)});
+    toolTipDom.current.addEventListener('vgp_onblur', () => {toolTipDom.current?.dispatchEvent(fakeMouseOut)});
+  }, [toolTipDom]);
+
   return (
-    <div className="achievements-header">
-      <div className="left-controls">
-        <div>
+    <Focusable className="achievements-header">
+      <div className='css-error'><ErrorDisplay errors={[new Error('CSS not injected page will look broken, please report!')]} /></div>
+      <Focusable className="left-controls">
+        <Focusable>
           <span>{achievementCount} achievements grouped by ({groupCount})</span>
-          <select 
-            value={settings.groupBy} 
-            onChange={(e) => onSettingsChange({ groupBy: e.target.value as GroupBy })}
-          >
-            {Object.values(GroupBy).map(group => (
-              <option key={group} value={group}>{group}</option>
-            ))}
-          </select>
+          <Dropdown 
+            rgOptions={Object.values(GroupBy).map(group => ({ label: group, data: group }))}
+            selectedOption={settings.groupBy}
+            onChange={(data: any) => onSettingsChange({ groupBy: data.data })}
+            contextMenuPositionOptions={{bMatchWidth: false}}
+          />
           <span>sorted by</span>
-          <select 
-            value={settings.sortBy}
-            onChange={(e) => onSettingsChange({ sortBy: e.target.value as SortBy })}
-          >
-            {Object.values(SortBy).map(sortBy => (
-              <option key={sortBy} value={sortBy}>{sortBy}</option>
-            ))}
-          </select>
-        </div>
-        <div className='toggle-container'>
+          <div style={{width: 90}}>
+            <Dropdown 
+              rgOptions={Object.values(SortBy).map(sortBy => ({ label: sortBy, data: sortBy }))}
+              selectedOption={settings.sortBy}
+              onChange={(data: any) => onSettingsChange({ sortBy: data.data })}
+              contextMenuPositionOptions={{bMatchWidth: false}}
+            />
+          </div>
+        </Focusable>
+        <Focusable className='toggle-container'>
           <div onClick={() => onSettingsChange({ reverse: !settings.reverse })}>
             <Toggle value={settings.reverse} onChange={(value) => onSettingsChange({ reverse: value })} />
             <span>reverse</span>
@@ -66,12 +75,12 @@ export const Header: React.FC<HeaderProps> = ({
               placeholder="Search achievements..."
             />
           </div>
-        </div>
-      </div>
-      <div className="right-controls">
-        <button onClick={onExpandAllClick}>
+        </Focusable>
+      </Focusable>
+      <Focusable className="right-controls">
+        <Button onClick={onExpandAllClick}>
           {settings.expandAll ? 'Collapse All' : 'Expand All'}
-        </button>
+        </Button>
         <SteamTooltip toolTipContent={
           <span>
             Cache was last updated on<br/>{getCacheDate(appId)?.toLocaleString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true}) ?? 'never'}
@@ -81,14 +90,18 @@ export const Header: React.FC<HeaderProps> = ({
             Use this if achievement data seems outdated or incorrect.
           </span>
         } nDelayShowMS={100} direction='top'>
-          <button onClick={() => {
-            clearAppCache(appId);
-            onCacheCleared?.();
-          }}>
+          <Button 
+            onClick={() => {
+              clearAppCache(appId);
+              onCacheCleared?.();
+            }} 
+            // @ts-ignore
+            ref={toolTipDom}
+          >
             Clear cache
-          </button>
+          </Button>
         </SteamTooltip>
-      </div>
-    </div>
+      </Focusable>
+    </Focusable>
   );
 };

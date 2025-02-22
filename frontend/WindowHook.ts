@@ -24,13 +24,12 @@ declare global {
 const hookedWindows = [
     'Achievements_',
     'BPM_',
-    'Desktop_uid0',
+    'Desktop_uid',
 ];
 
 export function WindowHook() {
     g_PopupManager?.m_mapPopups?.data_?.forEach(async (popup) => {
         let popupName = popup.value_.m_strName;
-        console.log(popupName, popup);
         if (hookedWindows.some((windowName) => popupName.includes(windowName))) {
             const popupWindow = popup.value_.m_popup;
             const document = popupWindow.document;

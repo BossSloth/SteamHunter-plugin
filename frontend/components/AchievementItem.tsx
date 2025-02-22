@@ -1,5 +1,5 @@
-import React from 'react';
-import { SteamTooltip } from '../SteamComponents';
+import React, { useRef } from 'react';
+import { ControllerFocusable, SteamTooltip } from '../SteamComponents';
 import { AchievementData, SortBy } from './types';
 import { PointsIcon } from './Icons';
 
@@ -32,10 +32,19 @@ const TooltipAchievementItem: React.FC<AchievementItemProps> = ({ achievement, s
 };
 
 export const AchievementItem: React.FC<AchievementItemProps> = ({ achievement, sortedBy, showPoints = true }) => {
+  const toolTipDom = useRef<HTMLSpanElement>(null);
+  const fakeMouseOver = new MouseEvent('mouseover', {bubbles: true});
+  const fakeMouseOut = new MouseEvent('mouseout', {bubbles: true});
+
   const rarityClass = getRarityClass(achievement.localPercentage);
 
   const usedPercentage = sortedBy === SortBy.Steam ? achievement.steamPercentage: achievement.localPercentage;
   return (
+    <ControllerFocusable 
+      onOKActionDescription={null} 
+      onGamepadFocus={() => {toolTipDom.current?.dispatchEvent(fakeMouseOver)}}
+      onGamepadBlur={() => {toolTipDom.current?.dispatchEvent(fakeMouseOut)}}
+    >
     <div className="achievement-item">
       <div className="left">
         <img className="achievement-image" alt={achievement.name} src={achievement.strImage}></img>
@@ -52,10 +61,11 @@ export const AchievementItem: React.FC<AchievementItemProps> = ({ achievement, s
           )}
 
           <SteamTooltip toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={sortedBy} />} direction='top' nDelayShowMS={0} strTooltipClassname={'steam-hunters-percentage-tooltip'}>
-            <span className={`steam-hunters-percentage ${rarityClass}`}>{usedPercentage.toFixed(1)}%</span>
+            <span className={`steam-hunters-percentage ${rarityClass}`} ref={toolTipDom}>{usedPercentage.toFixed(1)}%</span>
           </SteamTooltip>
         </div>
       </div>
     </div>
+    </ControllerFocusable>
   );
 };

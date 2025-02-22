@@ -20,3 +20,21 @@ export const SteamTooltip = findModuleExport((e) =>
     && createPropListRegex(['children']).test(e.toString()) 
     && /tooltipProps:\w/.test(e.toString())
 ) as FC<SteamTooltipProps>;
+
+interface ControllerFocusableProps {
+    noFocusRing?: boolean
+    onOKActionDescription?: string|undefined
+    onClick?: () => void
+    onActivate?: (e: any) => void
+    onGamepadFocus?: () => void
+    onGamepadBlur?: () => void
+    onFocusWithin?: () => void
+}
+
+const focusableModule: object = findModuleByExport((e) => e?.toString && e.toString().includes('strEnterKeyLabel') && e.toString().includes('refKeyboardHandle'));
+
+export const ControllerFocusable = (
+    Object.values(focusableModule)
+    .find((f: any) => f?.toString && f.toString().includes('forwardRef') && !f.toString().includes('virtualKeyboardProps'))
+    ("div") 
+    ?? ((props) => props.children)) as FC<ControllerFocusableProps>;

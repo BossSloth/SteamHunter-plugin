@@ -1,4 +1,4 @@
-import { Millennium, sleep } from '@steambrew/client';
+import { Millennium } from '@steambrew/client';
 import { initCdn } from './cdn';
 import { WindowHook } from './WindowHook';
 import { CreateElementOverride } from './createElementOverride';

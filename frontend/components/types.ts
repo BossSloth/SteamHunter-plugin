@@ -71,8 +71,8 @@ export enum SortBy {
 
 export enum GroupBy {
     DLCAndUpdate = "DLC & update",
-    Nothing = "nothing",
-    Unlocked = "unlocked"
+    Nothing = "Nothing",
+    Unlocked = "Unlocked"
   }
 
 export interface AchievementSettings {

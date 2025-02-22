@@ -7,7 +7,7 @@ interface ErrorDisplayProps {
 
 export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ errors }) => (
   <div className="steam-hunters-error-message">
-    <IconsModule.ExclamationPoint />
+    <IconsModule.ExclamationPoint style={{ color: 'crimson', maxWidth: '10%' }} />
     <p>
       An error occurred:
       <ul>

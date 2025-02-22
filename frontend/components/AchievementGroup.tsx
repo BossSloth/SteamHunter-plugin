@@ -2,6 +2,7 @@ import React from 'react';
 import { AchievementItem } from './AchievementItem';
 import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './types';
 import { PointsIcon } from './Icons';
+import { ControllerFocusable } from '../SteamComponents';
 
 interface AchievementGroupProps {
   groupInfo: AchievementGroupData;
@@ -59,29 +60,34 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
 
   return (
     <div className="achievement-group">
-      <div className="group-header" onClick={() => handleExpand(!expanded)}>
-        <div className="group-info">
-          {getImageUrl() && (
-            <img 
-              src={getImageUrl()} 
-              alt={getTitle()} 
-              className="group-image"
-              onClick={(e) => {SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`); e.stopPropagation();}}
-            />
-          )}
-          <div className="group-title">
-            <h2>{getTitle()}</h2>
-            {/* Date will be formatted like this: "1 Jan 2025" */}
-            {date && <span className="date">{date.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"})}</span>}
+      <ControllerFocusable
+        onClick={() => {handleExpand(!expanded)}} 
+        onOKActionDescription={expanded ? 'Collapse' : 'Expand'}
+      >
+        <div className="group-header">
+          <div className="group-info">
+            {getImageUrl() && (
+              <img 
+                src={getImageUrl()} 
+                alt={getTitle()} 
+                className="group-image"
+                onClick={(e) => {SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`); e.stopPropagation();}}
+              />
+            )}
+            <div className="group-title">
+              <h2>{getTitle()}</h2>
+              {/* Date will be formatted like this: "1 Jan 2025" */}
+              {date && <span className="date">{date.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"})}</span>}
+            </div>
+          </div>
+          <div className="group-stats">
+            <span>{achievements.length} achievements{showPoints && ` worth ${totalPoints}`}{showPoints && <PointsIcon />}</span>
+            <span className="expand-button">
+              {expanded ? '▼' : '▶'}
+            </span>
           </div>
         </div>
-        <div className="group-stats">
-          <span>{achievements.length} achievements{showPoints && ` worth ${totalPoints}`}{showPoints && <PointsIcon />}</span>
-          <span className="expand-button">
-            {expanded ? '▼' : '▶'}
-          </span>
-        </div>
-      </div>
+      </ControllerFocusable>
       {expanded && (
         <div className="group-content">
           {achievements.map((achievement) => (

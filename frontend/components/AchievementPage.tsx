@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Header } from './Header';
 import { AchievementGroup } from './AchievementGroup';
 import { Spinner } from '@steambrew/client';
 import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, SortBy } from './types';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { ErrorDisplay } from './ErrorDisplay';
+import { CreateCssElement } from '../cdn';
 
 interface AchievementPageProps {
   appId: string;
@@ -193,6 +194,8 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
   const data = useAchievementData(appId);
   const [settings, setSettings] = React.useState<AchievementSettings>(defaultSettings);
 
+  const domElement = React.createRef<HTMLDivElement>();
+
   const handleSettingsChange = (newSettings: Partial<AchievementSettings>) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
   };
@@ -205,8 +208,12 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
     return <ErrorDisplay errors={data.errors} />;
   }
 
+  useEffect(() => {
+    CreateCssElement(domElement.current.ownerDocument);
+  }, []);
+
   return (
-    <div className="steam-hunters-achievements-page">
+    <div className="steam-hunters-achievements-page" ref={domElement}>
       {data.loading ? (
         <Spinner className='steam-hunters-spinner' />
       ) : (
