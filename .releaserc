@@ -13,7 +13,6 @@
     {
       "path": "@semantic-release/github",
       "assets": ["build/*.zip"],
-      "draftRelease": true,
       "successComment": true
     }
   ]

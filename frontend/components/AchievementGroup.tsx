@@ -51,7 +51,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
     } else {
       return `${gameInfo.name}`;
     }
-  }
+  };
 
   const getImageUrl = () => {
     const appId = groupInfo.dlcAppId || gameInfo.appId;
@@ -61,30 +61,42 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   return (
     <div className="achievement-group">
       <ControllerFocusable
-        onClick={() => {handleExpand(!expanded)}} 
+        onClick={() => {
+          handleExpand(!expanded);
+        }}
         onOKActionDescription={expanded ? 'Collapse' : 'Expand'}
       >
         <div className="group-header">
           <div className="group-info">
             {getImageUrl() && (
-              <img 
-                src={getImageUrl()} 
-                alt={getTitle()} 
+              <img
+                src={getImageUrl()}
+                alt={getTitle()}
                 className="group-image"
-                onClick={(e) => {SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`); e.stopPropagation();}}
+                onClick={(e) => {
+                  SteamClient.System.OpenInSystemBrowser(
+                    `https://steamhunters.com/apps/${gameInfo.appId}/achievements`,
+                  );
+                  e.stopPropagation();
+                }}
               />
             )}
             <div className="group-title">
               <h2>{getTitle()}</h2>
               {/* Date will be formatted like this: "1 Jan 2025" */}
-              {date && <span className="date">{date.toLocaleDateString(undefined, {year:"numeric", month:"short", day:"numeric"})}</span>}
+              {date && (
+                <span className="date">
+                  {date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                </span>
+              )}
             </div>
           </div>
           <div className="group-stats">
-            <span>{achievements.length} achievements{showPoints && ` worth ${totalPoints}`}{showPoints && <PointsIcon />}</span>
-            <span className="expand-button">
-              {expanded ? '▼' : '▶'}
+            <span>
+              {achievements.length} achievements{showPoints && ` worth ${totalPoints}`}
+              {showPoints && <PointsIcon />}
             </span>
+            <span className="expand-button">{expanded ? '▼' : '▶'}</span>
           </div>
         </div>
       </ControllerFocusable>

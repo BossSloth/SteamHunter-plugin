@@ -33,7 +33,7 @@ export interface AchievementGroupData {
  *     "flMaxProgress": 0,
  *     "flAchieved": 11.300000190734863
  * }
-*/
+ */
 export interface SteamAchievementData {
   strID: string;
   strName: string;
@@ -48,7 +48,7 @@ export interface SteamAchievementData {
   flAchieved: number;
 }
 
-export interface SteamGameInfo {  
+export interface SteamGameInfo {
   appId: number;
   name: string;
   playersQualifiedCount: number;
@@ -66,14 +66,14 @@ export enum SortBy {
   SteamHunters = 'SH%',
   Steam = 'Steam%',
   Name = 'Name',
-  Default = 'Default'
+  Default = 'Default',
 }
 
 export enum GroupBy {
-    DLCAndUpdate = "DLC & update",
-    Nothing = "Nothing",
-    Unlocked = "Unlocked"
-  }
+  DLCAndUpdate = 'DLC & update',
+  Nothing = 'Nothing',
+  Unlocked = 'Unlocked',
+}
 
 export interface AchievementSettings {
   groupBy: GroupBy;

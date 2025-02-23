@@ -7,7 +7,7 @@ CreateElementOverride();
 
 // Entry point on the front end of your plugin
 export default async function PluginMain() {
-    await initCdn();
+  await initCdn();
 
-    Millennium.AddWindowCreateHook(WindowHook)
+  Millennium.AddWindowCreateHook(WindowHook);
 }

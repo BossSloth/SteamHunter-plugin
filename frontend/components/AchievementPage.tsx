@@ -19,25 +19,22 @@ const defaultSettings: AchievementSettings = {
   expandAll: true,
   showUnlocked: true,
   showPoints: true,
-  searchQuery: ''
+  searchQuery: '',
 };
 
 const filterAndSortAchievements = (achievements: AchievementData[], settings: AchievementSettings) => {
   const { sortBy, reverse, showUnlocked, searchQuery } = settings;
-  
+
   return achievements
-    .filter(achievement => {
+    .filter((achievement) => {
       // Filter by search query
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        return (
-          achievement.name.toLowerCase().includes(query) ||
-          achievement.description.toLowerCase().includes(query)
-        );
+        return achievement.name.toLowerCase().includes(query) || achievement.description.toLowerCase().includes(query);
       }
       return true;
     })
-    .filter(achievement => showUnlocked || !achievement.unlocked)
+    .filter((achievement) => showUnlocked || !achievement.unlocked)
     .sort((a, b) => {
       switch (sortBy) {
         case SortBy.SteamHunters:
@@ -55,7 +52,7 @@ const filterAndSortAchievements = (achievements: AchievementData[], settings: Ac
 const getGroupedAchievements = (
   achievements: AchievementData[],
   groups: AchievementGroupData[],
-  groupBy: GroupBy
+  groupBy: GroupBy,
 ): AchievementGroupData[] => {
   if (!groups || !achievements) return [];
 
@@ -63,20 +60,22 @@ const getGroupedAchievements = (
     case GroupBy.DLCAndUpdate:
       return groups;
     case GroupBy.Nothing:
-      return [{
-        name: null,
-        achievementApiNames: achievements.map(a => a.apiName)
-      }];
+      return [
+        {
+          name: null,
+          achievementApiNames: achievements.map((a) => a.apiName),
+        },
+      ];
     case GroupBy.Unlocked:
       return [
         {
-          name: "Achieved",
-          achievementApiNames: achievements.filter(a => a.unlocked).map(a => a.apiName)
+          name: 'Achieved',
+          achievementApiNames: achievements.filter((a) => a.unlocked).map((a) => a.apiName),
         },
         {
-          name: "Unachieved",
-          achievementApiNames: achievements.filter(a => !a.unlocked).map(a => a.apiName)
-        }
+          name: 'Unachieved',
+          achievementApiNames: achievements.filter((a) => !a.unlocked).map((a) => a.apiName),
+        },
       ];
     default:
       return [];
@@ -86,8 +85,8 @@ const getGroupedAchievements = (
 const AchievementContent: React.FC<{
   data: AchievementDataHook;
   settings: AchievementSettings;
-  onSettingsChange: (settings: Partial<AchievementSettings>) => void
-  onCacheCleared: () => void
+  onSettingsChange: (settings: Partial<AchievementSettings>) => void;
+  onCacheCleared: () => void;
   appId: string;
 }> = ({ data, settings, onSettingsChange, onCacheCleared, appId }) => {
   const { groupBy, sortBy, expandAll } = settings;
@@ -95,7 +94,7 @@ const AchievementContent: React.FC<{
 
   // Initialize expandedGroups with all group indices
   const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(
-    () => new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i))
+    () => new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)),
   );
 
   const allGroupsExpanded = React.useMemo(() => {
@@ -109,7 +108,7 @@ const AchievementContent: React.FC<{
   }, [allGroupsExpanded, expandAll, onSettingsChange]);
 
   const handleGroupExpand = (index: number, isExpanded: boolean) => {
-    setExpandedGroups(prev => {
+    setExpandedGroups((prev) => {
       const newSet = new Set(prev);
       if (isExpanded) {
         newSet.add(index);
@@ -128,27 +127,27 @@ const AchievementContent: React.FC<{
     }
   };
 
-  const getAchievementsForGroup = (apiNames: string[]) => 
-    data.achievements.filter(achievement => apiNames.includes(achievement.apiName));
+  const getAchievementsForGroup = (apiNames: string[]) =>
+    data.achievements.filter((achievement) => apiNames.includes(achievement.apiName));
 
   const calculateTotalPoints = (groupAchievements: AchievementData[]) =>
     groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
 
   const getGroupDate = (index: number, group: AchievementGroupData) => {
-    const dateString = data.achievementUpdates.find(update => {
+    const dateString = data.achievementUpdates.find((update) => {
       if (settings.groupBy === GroupBy.Unlocked) {
         index = 0;
       }
 
       if (group.dlcAppId) {
-        return update.dlcAppId === group.dlcAppId
+        return update.dlcAppId === group.dlcAppId;
       }
 
-      return update.updateNumber === index && update.dlcAppId === group.dlcAppId
+      return update.updateNumber === index && update.dlcAppId === group.dlcAppId;
     })?.displayReleaseDate;
 
     return dateString ? new Date(dateString) : null;
-  }
+  };
 
   return (
     <>
@@ -161,15 +160,15 @@ const AchievementContent: React.FC<{
         onCacheCleared={onCacheCleared}
         appId={appId}
       />
-      
+
       <div className="achievement-groups">
         {groupedAchievements.map((group, index) => {
           const groupAchievements = filterAndSortAchievements(
             getAchievementsForGroup(group.achievementApiNames),
-            settings
+            settings,
           );
           const totalPoints = calculateTotalPoints(groupAchievements);
-          
+
           return (
             <AchievementGroup
               key={index}
@@ -204,7 +203,7 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
     if (newSettings === null) {
       setSettings(defaultSettings);
     } else {
-      setSettings(prev => ({ ...prev, ...newSettings }));
+      setSettings((prev) => ({ ...prev, ...newSettings }));
     }
   };
 
@@ -223,7 +222,7 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
   return (
     <div className="steam-hunters-achievements-page" ref={domElement}>
       {data.loading ? (
-        <Spinner className='steam-hunters-spinner' />
+        <Spinner className="steam-hunters-spinner" />
       ) : (
         <AchievementContent
           data={data}
