@@ -12,8 +12,7 @@
     ],
     {
       "path": "@semantic-release/github",
-      "assets": ["build/*.zip"],
-      "successComment": true
+      "assets": ["build/*.zip"]
     }
   ]
 }
