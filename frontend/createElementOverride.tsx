@@ -20,7 +20,7 @@ export function CreateElementOverride() {
       tabs.filter((t) => t.id === 'achievements').length > 0 &&
       tabs.filter((t) => t.id === 'achievement-groups').length == 0
     ) {
-      const appid = tabs[0].content.props.appid.toString();
+      const appid = tabs[0]?.content.props.appid.toString() as string;
 
       tabs = tabs.concat([
         { content: <AchievementPage appId={appid} />, id: 'achievement-groups', title: 'Achievement Groups' },

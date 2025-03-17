@@ -1,19 +1,19 @@
+import { Button, Dropdown, Focusable, TextField, Toggle } from '@steambrew/client';
 import React, { useEffect, useRef, useState } from 'react';
-import { GroupBy, SortBy, AchievementSettings } from './types';
-import { Toggle, TextField, Focusable, Dropdown, Button } from '@steambrew/client';
 import { SteamTooltip } from '../SteamComponents';
 import {
   clearAppCache,
-  getCacheDate,
-  saveDefaultSettings,
-  getDefaultSettings,
   clearDefaultSettings,
+  getCacheDate,
+  getDefaultSettings,
+  saveDefaultSettings,
 } from '../utils/cache';
 import { ErrorDisplay } from './ErrorDisplay';
+import { AchievementSettings, GroupBy, SortBy } from './types';
 
 interface HeaderProps {
   settings: AchievementSettings;
-  onSettingsChange: (settings: Partial<AchievementSettings>) => void;
+  onSettingsChange: (settings: Partial<AchievementSettings> | null) => void;
   achievementCount: number;
   groupCount: number;
   onExpandAllClick: () => void;
@@ -36,6 +36,8 @@ export const Header: React.FC<HeaderProps> = ({
   const [hasCustomDefaults, setHasCustomDefaults] = useState(false);
 
   useEffect(() => {
+    if (!toolTipDom.current) return;
+
     toolTipDom.current.addEventListener('vgp_onfocus', () => {
       toolTipDom.current?.dispatchEvent(fakeMouseOver);
     });

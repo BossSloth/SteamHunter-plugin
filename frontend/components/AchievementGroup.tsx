@@ -1,12 +1,12 @@
 import React from 'react';
-import { AchievementItem } from './AchievementItem';
-import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './types';
-import { PointsIcon } from './Icons';
 import { ControllerFocusable } from '../SteamComponents';
+import { AchievementItem } from './AchievementItem';
+import { PointsIcon } from './Icons';
+import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './types';
 
 interface AchievementGroupProps {
   groupInfo: AchievementGroupData;
-  title: string;
+  title?: string;
   date?: Date;
   achievements: AchievementData[];
   totalPoints: number;
@@ -55,7 +55,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
 
   const getImageUrl = () => {
     const appId = groupInfo.dlcAppId || gameInfo.appId;
-    return appId ? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg` : null;
+    return appId ? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg` : undefined;
   };
 
   return (

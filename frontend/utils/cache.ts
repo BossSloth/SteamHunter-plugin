@@ -66,6 +66,7 @@ export function setCachedData<T>(appId: string, type: keyof AppCache, data: T): 
       store[appId] = {};
     }
 
+    // @ts-expect-error
     store[appId][type] = {
       data,
       timestamp: Date.now(),

@@ -1,7 +1,7 @@
 import { Millennium } from '@steambrew/client';
 import { initCdn } from './cdn';
-import { WindowHook } from './WindowHook';
 import { CreateElementOverride } from './createElementOverride';
+import { WindowHook } from './WindowHook';
 
 CreateElementOverride();
 
@@ -9,5 +9,7 @@ CreateElementOverride();
 export default async function PluginMain() {
   await initCdn();
 
-  Millennium.AddWindowCreateHook(WindowHook);
+  if (Millennium.AddWindowCreateHook) {
+    Millennium.AddWindowCreateHook(WindowHook);
+  }
 }

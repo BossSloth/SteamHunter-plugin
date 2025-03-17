@@ -1,12 +1,12 @@
-import React, { createRef, useEffect, useState } from 'react';
-import { Header } from './Header';
-import { AchievementGroup } from './AchievementGroup';
 import { Spinner } from '@steambrew/client';
-import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, SortBy } from './types';
-import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
-import { ErrorDisplay } from './ErrorDisplay';
+import React, { createRef, useEffect, useState } from 'react';
 import { CreateCssElement } from '../cdn';
+import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { getDefaultSettings } from '../utils/cache';
+import { AchievementGroup } from './AchievementGroup';
+import { ErrorDisplay } from './ErrorDisplay';
+import { Header } from './Header';
+import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, SortBy } from './types';
 
 interface AchievementPageProps {
   appId: string;
@@ -62,7 +62,7 @@ const getGroupedAchievements = (
     case GroupBy.Nothing:
       return [
         {
-          name: null,
+          name: undefined,
           achievementApiNames: achievements.map((a) => a.apiName),
         },
       ];
@@ -85,7 +85,7 @@ const getGroupedAchievements = (
 const AchievementContent: React.FC<{
   data: AchievementDataHook;
   settings: AchievementSettings;
-  onSettingsChange: (settings: Partial<AchievementSettings>) => void;
+  onSettingsChange: (settings: Partial<AchievementSettings> | null) => void;
   onCacheCleared: () => void;
   appId: string;
 }> = ({ data, settings, onSettingsChange, onCacheCleared, appId }) => {
@@ -146,7 +146,7 @@ const AchievementContent: React.FC<{
       return update.updateNumber === index && update.dlcAppId === group.dlcAppId;
     })?.displayReleaseDate;
 
-    return dateString ? new Date(dateString) : null;
+    return dateString ? new Date(dateString) : undefined;
   };
 
   return (
@@ -199,7 +199,7 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
 
   const domElement = createRef<HTMLDivElement>();
 
-  const handleSettingsChange = (newSettings: Partial<AchievementSettings>) => {
+  const handleSettingsChange = (newSettings: Partial<AchievementSettings> | null) => {
     if (newSettings === null) {
       setSettings(defaultSettings);
     } else {
@@ -216,6 +216,8 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
   }
 
   useEffect(() => {
+    if (!domElement.current) return;
+
     CreateCssElement(domElement.current.ownerDocument);
   }, []);
 

@@ -22,14 +22,14 @@ type SteamTooltipProps = {
 export const SteamTooltip = findModuleExport(
   (e) =>
     // prettier-ignore
-    e?.toString 
-    && createPropListRegex(['children']).test(e.toString()) 
+    e?.toString
+    && createPropListRegex(['children']).test(e.toString())
     && /tooltipProps:\w/.test(e.toString()),
 ) as FC<SteamTooltipProps>;
 
 interface ControllerFocusableProps {
   noFocusRing?: boolean;
-  onOKActionDescription?: string | undefined;
+  onOKActionDescription?: string | null;
   onClick?: () => void;
   onActivate?: (e: any) => void;
   onGamepadFocus?: () => void;
@@ -40,7 +40,7 @@ interface ControllerFocusableProps {
 // prettier-ignore
 const focusableModule: object = findModuleByExport(
   (e) =>
-    e?.toString && e.toString().includes('strEnterKeyLabel') 
+    e?.toString && e.toString().includes('strEnterKeyLabel')
     && e.toString().includes('refKeyboardHandle'),
 );
 

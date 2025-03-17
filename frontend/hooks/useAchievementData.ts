@@ -1,12 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   AchievementData,
   AchievementGroupData,
-  SteamGameInfo,
-  SteamAchievementData,
   AchievementUpdateData,
+  SteamAchievementData,
+  SteamGameInfo,
 } from '../components/types';
-import { getAchievements, getGroups, getSteamGameInfo, getAchievementUpdates } from '../GetData';
+import { getAchievements, getAchievementUpdates, getGroups, getSteamGameInfo } from '../GetData';
 
 export interface AchievementDataHook {
   achievements: AchievementData[];
@@ -71,7 +71,7 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
         .map((achievement) => achievement.apiName);
 
       const baseGameGroup: AchievementGroupData = {
-        name: null,
+        name: undefined,
         achievementApiNames: baseGameAchievements,
       };
 
@@ -96,6 +96,10 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
   const reload = useCallback(() => {
     setReloadTrigger((prev) => prev + 1);
   }, []);
+
+  if (!gameInfo) {
+    throw new Error('Failed to load game info');
+  }
 
   return { achievements, groups, gameInfo, errors, loading, achievementUpdates, reload };
 };
