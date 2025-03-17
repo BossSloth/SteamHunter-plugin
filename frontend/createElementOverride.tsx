@@ -10,8 +10,9 @@ interface Tab {
 export function CreateElementOverride() {
   const originalCreateElement = React.createElement;
 
-  // @ts-ignore
-  React.createElement = function (type: any, props: any, ...children: any[]) {
+  // @ts-expect-error type mismatch on function?
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  React.createElement = function (type: string, props: any, ...children: unknown[]) {
     let tabs = props?.tabs as Tab[];
     if (
       tabs &&

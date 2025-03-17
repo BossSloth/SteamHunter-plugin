@@ -41,6 +41,8 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
           getGroups(appId),
           getSteamGameInfo(appId),
           getAchievementUpdates(appId),
+          // TODO: use steam-types
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           SteamClient.Apps.GetMyAchievementsForApp(appId).then((res: any) => res?.data?.rgAchievements) as Promise<SteamAchievementData[]>,
       ]);
 

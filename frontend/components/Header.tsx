@@ -1,4 +1,4 @@
-import { Button, Dropdown, Focusable, TextField, Toggle } from '@steambrew/client';
+import { Button, Dropdown, Focusable, SingleDropdownOption, TextField, Toggle } from '@steambrew/client';
 import React, { useEffect, useRef, useState } from 'react';
 import { SteamTooltip } from '../SteamComponents';
 import {
@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
   onCacheCleared,
   appId,
 }) => {
-  const toolTipDom = useRef<HTMLSpanElement>(null);
+  const toolTipDom = useRef<HTMLDivElement>(null);
   const fakeMouseOver = new MouseEvent('mouseover', { bubbles: true });
   const fakeMouseOut = new MouseEvent('mouseout', { bubbles: true });
   const [hasCustomDefaults, setHasCustomDefaults] = useState(false);
@@ -75,7 +75,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Dropdown
               rgOptions={Object.values(GroupBy).map((group) => ({ label: group, data: group }))}
               selectedOption={settings.groupBy}
-              onChange={(data: any) => onSettingsChange({ groupBy: data.data })}
+              onChange={(data: SingleDropdownOption) => onSettingsChange({ groupBy: data.data })}
               contextMenuPositionOptions={{ bMatchWidth: false }}
             />
           </div>
@@ -84,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({
             <Dropdown
               rgOptions={Object.values(SortBy).map((sortBy) => ({ label: sortBy, data: sortBy }))}
               selectedOption={settings.sortBy}
-              onChange={(data: any) => onSettingsChange({ sortBy: data.data })}
+              onChange={(data: SingleDropdownOption) => onSettingsChange({ sortBy: data.data })}
               contextMenuPositionOptions={{ bMatchWidth: false }}
             />
           </div>
@@ -141,7 +141,6 @@ export const Header: React.FC<HeaderProps> = ({
               clearAppCache(appId);
               onCacheCleared?.();
             }}
-            // @ts-ignore
             ref={toolTipDom}
           >
             Clear cache

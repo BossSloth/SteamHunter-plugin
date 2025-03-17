@@ -30,7 +30,7 @@ const hookedWindows = [
 
 export function WindowHook() {
   g_PopupManager?.m_mapPopups?.data_?.forEach(async (popup) => {
-    let popupName = popup.value_.m_strName;
+    const popupName = popup.value_.m_strName;
     if (hookedWindows.some((windowName) => popupName.includes(windowName))) {
       const popupWindow = popup.value_.m_popup;
       const document = popupWindow.document;

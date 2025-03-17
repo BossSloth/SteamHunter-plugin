@@ -8,7 +8,7 @@ import { FC, ReactNode } from 'react';
  * @example
  * <TabComponent tabs={props.tabs} onShowTab={(...e: any[]) => console.log('Clicked tab', e)}></TabComponent>
  */
-export const TabComponent = findModuleByExport((e) => e?.toString?.().includes('bleedGlyphs')).JZ as FC<any>;
+export const TabComponent = findModuleByExport((e) => e?.toString?.().includes('bleedGlyphs')).JZ as FC<unknown>;
 
 type SteamTooltipProps = {
   toolTipContent: ReactNode;
@@ -31,7 +31,7 @@ interface ControllerFocusableProps {
   noFocusRing?: boolean;
   onOKActionDescription?: string | null;
   onClick?: () => void;
-  onActivate?: (e: any) => void;
+  onActivate?: (e: unknown) => void;
   onGamepadFocus?: () => void;
   onGamepadBlur?: () => void;
   onFocusWithin?: () => void;
@@ -47,7 +47,7 @@ const focusableModule: object = findModuleByExport(
 // prettier-ignore
 export const ControllerFocusable = (
   Object.values(focusableModule).find(
-    (f: any) =>
+    (f) =>
       f?.toString &&
       f.toString().includes('forwardRef') &&
       !f.toString().includes('virtualKeyboardProps'),

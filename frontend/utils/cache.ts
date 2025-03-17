@@ -10,10 +10,10 @@ interface CacheEntry<T> {
 }
 
 export interface AppCache {
-  groups?: CacheEntry<any>;
-  achievements?: CacheEntry<any>;
-  gameInfo?: CacheEntry<any>;
-  updates?: CacheEntry<any>;
+  groups?: CacheEntry<unknown>;
+  achievements?: CacheEntry<unknown>;
+  gameInfo?: CacheEntry<unknown>;
+  updates?: CacheEntry<unknown>;
 }
 
 interface CacheStore {
@@ -66,7 +66,6 @@ export function setCachedData<T>(appId: string, type: keyof AppCache, data: T): 
       store[appId] = {};
     }
 
-    // @ts-expect-error
     store[appId][type] = {
       data,
       timestamp: Date.now(),
@@ -95,7 +94,7 @@ export function getCacheDate(appId: string, type: keyof AppCache = 'achievements
       return null;
     }
 
-    const entry = appCache[type] as CacheEntry<any> | undefined;
+    const entry = appCache[type] as CacheEntry<unknown> | undefined;
     if (!entry) {
       return null;
     }

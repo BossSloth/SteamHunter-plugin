@@ -32,7 +32,7 @@ export async function CreateCssElement(document: Document) {
 
   let cssContent = await fetch(getCdn('/achievements.css')).then((r) => r.text());
 
-  let steamClassNames = [...cssContent.matchAll(/\.__(\w+)__/g)];
+  const steamClassNames = [...cssContent.matchAll(/\.__(\w+)__/g)];
   steamClassNames.forEach((className) => {
     if (!className[1]) return;
     const realClassName = findClass(className[1]) as string;
