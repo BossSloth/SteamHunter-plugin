@@ -20,7 +20,7 @@ export function CreateElementOverride(): void {
   React.createElement = (type: string, props: Partial<Props> | null, ...children: unknown[]): ReactElement => {
     if (!props) return originalCreateElement(type, props, ...children);
 
-    let tabs = props.tabs;
+    const tabs = props.tabs;
     if (
       tabs
       && props.onShowTab
@@ -32,9 +32,7 @@ export function CreateElementOverride(): void {
 
       const appid = tabs[0].content.props.appid.toString();
 
-      tabs = tabs.concat([
-        { content: <AchievementPage appId={appid} />, id: 'achievement-groups', title: 'Achievement Groups' },
-      ]);
+      tabs.push({ content: <AchievementPage appId={appid} />, id: 'achievement-groups', title: 'Achievement Groups' });
 
       props.tabs = tabs;
     }

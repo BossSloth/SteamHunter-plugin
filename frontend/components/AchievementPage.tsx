@@ -103,9 +103,7 @@ function AchievementContent({
   const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
 
   // Initialize expandedGroups with all group indices
-  const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(
-    () => new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)),
-  );
+  const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(() => new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)));
 
   const allGroupsExpanded = React.useMemo(() => {
     return expandedGroups.size === groupedAchievements.length;

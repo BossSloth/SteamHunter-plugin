@@ -28,8 +28,7 @@ interface SteamTooltipProps {
 export const SteamTooltip = findModuleExport((e?: Function) =>
   e?.toString !== undefined
   && createPropListRegex(['children']).test(e.toString())
-  && (/tooltipProps:\w/).test(e.toString())
-) as FC<SteamTooltipProps>;
+  && (/tooltipProps:\w/).test(e.toString())) as FC<SteamTooltipProps>;
 
 interface ControllerFocusableProps {
   onClick?(): void;
@@ -50,6 +49,5 @@ export const ControllerFocusable = (
   Object.values(focusableModule).find(f =>
     f?.toString?.().includes('forwardRef')
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    && !f.toString().includes('virtualKeyboardProps'))
-  ('div') ?? (props => props.children)
+    && !f.toString().includes('virtualKeyboardProps'))('div') ?? (props => props.children)
 ) as FC<ControllerFocusableProps>;

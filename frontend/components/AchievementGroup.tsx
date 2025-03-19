@@ -105,7 +105,7 @@ export function AchievementGroup({
       </ControllerFocusable>
       {expanded && (
         <div className="group-content">
-          {achievements.map((achievement) => (
+          {achievements.map(achievement => (
             <AchievementItem
               key={achievement.apiName}
               achievement={achievement}
