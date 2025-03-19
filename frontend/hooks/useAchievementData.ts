@@ -9,19 +9,19 @@ import {
 import { getAchievements, getAchievementUpdates, getGroups, getSteamGameInfo } from '../GetData';
 
 export interface AchievementDataHook {
+  reload(): void;
   achievements: AchievementData[];
   groups: AchievementGroupData[];
   gameInfo: SteamGameInfo;
   achievementUpdates: AchievementUpdateData[];
   errors: Error[];
   loading: boolean;
-  reload: () => void;
 }
 
-export const useAchievementData = (appId: string): AchievementDataHook => {
+export function useAchievementData(appId: string): AchievementDataHook {
   const [achievements, setAchievements] = useState<AchievementData[]>([]);
   const [groups, setGroups] = useState<AchievementGroupData[]>([]);
-  const [gameInfo, setGameInfo] = useState<SteamGameInfo>();
+  const [gameInfo, setGameInfo] = useState<SteamGameInfo>({} as SteamGameInfo);
   const [errors, setErrors] = useState<Error[]>([]);
   const [loading, setLoading] = useState(true);
   const [achievementUpdates, setAchievementUpdates] = useState<AchievementUpdateData[]>([]);
@@ -34,43 +34,44 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
         achievementsData,
         groupsData,
         gameInfoData,
-        achievementUpdates,
+        achievementUpdatesData,
         steamAchievements,
       ] = await Promise.all([
-          getAchievements(appId),
-          getGroups(appId),
-          getSteamGameInfo(appId),
-          getAchievementUpdates(appId),
-          // TODO: use steam-types
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          SteamClient.Apps.GetMyAchievementsForApp(appId).then((res: any) => res?.data?.rgAchievements) as Promise<SteamAchievementData[]>,
+        getAchievements(appId),
+        getGroups(appId),
+        getSteamGameInfo(appId),
+        getAchievementUpdates(appId),
+        // TODO: use steam-types
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+        (SteamClient.Apps.GetMyAchievementsForApp(appId) as Promise<any>).then((res: any) => res?.data?.rgAchievements) as Promise<SteamAchievementData[] | undefined>,
       ]);
 
       // Validate data
       if (!groupsData) throw new Error('Failed to load groups');
       if (!achievementsData) throw new Error('Failed to load achievements');
       if (!gameInfoData) throw new Error('Failed to load game info');
-      if (!achievementUpdates) throw new Error('Failed to load achievement updates');
+      if (!achievementUpdatesData) throw new Error('Failed to load achievement updates');
       if (!steamAchievements) throw new Error('Failed to load Steam achievements');
 
       // Update achievements with Steam data
       const updatedAchievements = achievementsData.map((achievement) => {
-        const steamAchievement = steamAchievements.find((sa) => sa.strID === achievement.apiName);
+        const steamAchievement = steamAchievements.find(sa => sa.strID === achievement.apiName);
+
         return {
           ...achievement,
-          strImage: steamAchievement?.strImage || '',
-          unlocked: steamAchievement?.bAchieved || false,
-          name: steamAchievement?.strName || achievement.name,
-          description: steamAchievement?.strDescription || achievement.description,
+          strImage: steamAchievement?.strImage ?? '',
+          unlocked: steamAchievement?.bAchieved ?? false,
+          name: steamAchievement?.strName ?? achievement.name,
+          description: steamAchievement?.strDescription ?? achievement.description,
         };
       });
 
       // Create base game group
-      const allGroupAchievements = new Set(groupsData.flatMap((group) => group.achievementApiNames));
+      const allGroupAchievements = new Set(groupsData.flatMap(group => group.achievementApiNames));
 
       const baseGameAchievements = achievementsData
-        .filter((achievement) => !allGroupAchievements.has(achievement.apiName))
-        .map((achievement) => achievement.apiName);
+        .filter(achievement => !allGroupAchievements.has(achievement.apiName))
+        .map(achievement => achievement.apiName);
 
       const baseGameGroup: AchievementGroupData = {
         name: undefined,
@@ -81,10 +82,10 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
       setAchievements(updatedAchievements);
       setGroups([baseGameGroup, ...groupsData]);
       setGameInfo(gameInfoData);
-      setAchievementUpdates(achievementUpdates);
+      setAchievementUpdates(achievementUpdatesData);
     } catch (error) {
       console.error('Error loading achievement data:', error);
-      setErrors((prev) => [...prev, error as Error]);
+      setErrors(prev => [...prev, error as Error]);
     } finally {
       setLoading(false);
     }
@@ -96,12 +97,8 @@ export const useAchievementData = (appId: string): AchievementDataHook => {
   }, [loadData, reloadTrigger]);
 
   const reload = useCallback(() => {
-    setReloadTrigger((prev) => prev + 1);
+    setReloadTrigger(prev => prev + 1);
   }, []);
 
-  if (!gameInfo) {
-    throw new Error('Failed to load game info');
-  }
-
   return { achievements, groups, gameInfo, errors, loading, achievementUpdates, reload };
-};
+}

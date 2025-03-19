@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { createPropListRegex, findModuleByExport, findModuleExport } from '@steambrew/client';
 import { FC, ReactNode } from 'react';
 
@@ -8,48 +14,42 @@ import { FC, ReactNode } from 'react';
  * @example
  * <TabComponent tabs={props.tabs} onShowTab={(...e: any[]) => console.log('Clicked tab', e)}></TabComponent>
  */
-export const TabComponent = findModuleByExport((e) => e?.toString?.().includes('bleedGlyphs')).JZ as FC<unknown>;
+export const TabComponent = findModuleByExport(e => e?.toString?.().includes('bleedGlyphs')).JZ as FC<unknown>;
 
-type SteamTooltipProps = {
+interface SteamTooltipProps {
   toolTipContent: ReactNode;
   direction?: 'top' | 'bottom' | 'left' | 'right'; // Default: 'right'
   nDelayShowMS?: number;
   bDisabled?: boolean;
   strTooltipClassname?: string;
-};
+}
 
 // Can be found in library.js
-export const SteamTooltip = findModuleExport(
-  (e) =>
-    // prettier-ignore
-    e?.toString
-    && createPropListRegex(['children']).test(e.toString())
-    && /tooltipProps:\w/.test(e.toString()),
+export const SteamTooltip = findModuleExport((e?: Function) =>
+  e?.toString !== undefined
+  && createPropListRegex(['children']).test(e.toString())
+  && (/tooltipProps:\w/).test(e.toString())
 ) as FC<SteamTooltipProps>;
 
 interface ControllerFocusableProps {
+  onClick?(): void;
+  onActivate?(e: unknown): void;
+  onGamepadFocus?(): void;
+  onGamepadBlur?(): void;
+  onFocusWithin?(): void;
+
   noFocusRing?: boolean;
   onOKActionDescription?: string | null;
-  onClick?: () => void;
-  onActivate?: (e: unknown) => void;
-  onGamepadFocus?: () => void;
-  onGamepadBlur?: () => void;
-  onFocusWithin?: () => void;
 }
 
-// prettier-ignore
-const focusableModule: object = findModuleByExport(
-  (e) =>
-    e?.toString && e.toString().includes('strEnterKeyLabel')
-    && e.toString().includes('refKeyboardHandle'),
-);
+const focusableModule: object = findModuleByExport(e =>
+  e?.toString?.().includes('strEnterKeyLabel')
+  && e.toString().includes('refKeyboardHandle'));
 
-// prettier-ignore
 export const ControllerFocusable = (
-  Object.values(focusableModule).find(
-    (f) =>
-      f?.toString &&
-      f.toString().includes('forwardRef') &&
-      !f.toString().includes('virtualKeyboardProps'),
-  )('div') ?? ((props) => props.children)
+  Object.values(focusableModule).find(f =>
+    f?.toString?.().includes('forwardRef')
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    && !f.toString().includes('virtualKeyboardProps'))
+  ('div') ?? (props => props.children)
 ) as FC<ControllerFocusableProps>;

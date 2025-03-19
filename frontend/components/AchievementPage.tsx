@@ -9,7 +9,7 @@ import { Header } from './Header';
 import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, SortBy } from './types';
 
 interface AchievementPageProps {
-  appId: string;
+  readonly appId: string;
 }
 
 const defaultSettings: AchievementSettings = {
@@ -22,21 +22,25 @@ const defaultSettings: AchievementSettings = {
   searchQuery: '',
 };
 
-const filterAndSortAchievements = (achievements: AchievementData[], settings: AchievementSettings) => {
+function filterAndSortAchievements(achievements: AchievementData[], settings: AchievementSettings): AchievementData[] {
   const { sortBy, reverse, showUnlocked, searchQuery } = settings;
 
   return achievements
     .filter((achievement) => {
       // Filter by search query
-      if (searchQuery) {
+      if (searchQuery !== undefined) {
         const query = searchQuery.toLowerCase();
+
         return achievement.name.toLowerCase().includes(query) || achievement.description.toLowerCase().includes(query);
       }
+
       return true;
     })
-    .filter((achievement) => showUnlocked || !achievement.unlocked)
+    .filter(achievement => showUnlocked || !achievement.unlocked)
     .sort((a, b) => {
       switch (sortBy) {
+        case SortBy.Default:
+          return 0;
         case SortBy.SteamHunters:
           return reverse ? a.localPercentage - b.localPercentage : b.localPercentage - a.localPercentage;
         case SortBy.Steam:
@@ -47,14 +51,14 @@ const filterAndSortAchievements = (achievements: AchievementData[], settings: Ac
           return 0;
       }
     });
-};
+}
 
-const getGroupedAchievements = (
+function getGroupedAchievements(
   achievements: AchievementData[],
   groups: AchievementGroupData[],
   groupBy: GroupBy,
-): AchievementGroupData[] => {
-  if (!groups || !achievements) return [];
+): AchievementGroupData[] {
+  // if (!groups || !achievements) return [];
 
   switch (groupBy) {
     case GroupBy.DLCAndUpdate:
@@ -63,32 +67,38 @@ const getGroupedAchievements = (
       return [
         {
           name: undefined,
-          achievementApiNames: achievements.map((a) => a.apiName),
+          achievementApiNames: achievements.map(a => a.apiName),
         },
       ];
     case GroupBy.Unlocked:
       return [
         {
           name: 'Achieved',
-          achievementApiNames: achievements.filter((a) => a.unlocked).map((a) => a.apiName),
+          achievementApiNames: achievements.filter(a => a.unlocked).map(a => a.apiName),
         },
         {
           name: 'Unachieved',
-          achievementApiNames: achievements.filter((a) => !a.unlocked).map((a) => a.apiName),
+          achievementApiNames: achievements.filter(a => !a.unlocked).map(a => a.apiName),
         },
       ];
     default:
       return [];
   }
-};
+}
 
-const AchievementContent: React.FC<{
-  data: AchievementDataHook;
-  settings: AchievementSettings;
-  onSettingsChange: (settings: Partial<AchievementSettings> | null) => void;
-  onCacheCleared: () => void;
-  appId: string;
-}> = ({ data, settings, onSettingsChange, onCacheCleared, appId }) => {
+function AchievementContent({
+  onSettingsChange,
+  onCacheCleared,
+  data,
+  settings,
+  appId,
+}: {
+  onSettingsChange(settings: Partial<AchievementSettings> | null): void;
+  onCacheCleared(): void;
+  readonly data: AchievementDataHook;
+  readonly settings: AchievementSettings;
+  readonly appId: string;
+}): JSX.Element {
   const { groupBy, sortBy, expandAll } = settings;
   const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
 
@@ -107,7 +117,7 @@ const AchievementContent: React.FC<{
     }
   }, [allGroupsExpanded, expandAll, onSettingsChange]);
 
-  const handleGroupExpand = (index: number, isExpanded: boolean) => {
+  function handleGroupExpand(index: number, isExpanded: boolean): void {
     setExpandedGroups((prev) => {
       const newSet = new Set(prev);
       if (isExpanded) {
@@ -115,39 +125,42 @@ const AchievementContent: React.FC<{
       } else {
         newSet.delete(index);
       }
+
       return newSet;
     });
-  };
+  }
 
-  const handleExpandAllClick = () => {
+  function handleExpandAllClick(): void {
     if (allGroupsExpanded) {
       setExpandedGroups(new Set());
     } else {
       setExpandedGroups(new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)));
     }
-  };
+  }
 
-  const getAchievementsForGroup = (apiNames: string[]) =>
-    data.achievements.filter((achievement) => apiNames.includes(achievement.apiName));
+  function getAchievementsForGroup(apiNames: string[]): AchievementData[] {
+    return data.achievements.filter(achievement => apiNames.includes(achievement.apiName));
+  }
 
-  const calculateTotalPoints = (groupAchievements: AchievementData[]) =>
-    groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
+  function calculateTotalPoints(groupAchievements: AchievementData[]): number {
+    return groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
+  }
 
-  const getGroupDate = (index: number, group: AchievementGroupData) => {
+  function getGroupDate(index: number, group: AchievementGroupData): Date | undefined {
     const dateString = data.achievementUpdates.find((update) => {
       if (settings.groupBy === GroupBy.Unlocked) {
         index = 0;
       }
 
-      if (group.dlcAppId) {
+      if (group.dlcAppId !== undefined) {
         return update.dlcAppId === group.dlcAppId;
       }
 
       return update.updateNumber === index && update.dlcAppId === group.dlcAppId;
     })?.displayReleaseDate;
 
-    return dateString ? new Date(dateString) : undefined;
-  };
+    return dateString !== undefined ? new Date(dateString) : undefined;
+  }
 
   return (
     <>
@@ -171,7 +184,7 @@ const AchievementContent: React.FC<{
 
           return (
             <AchievementGroup
-              key={index}
+              key={group.name}
               groupInfo={group}
               title={group.name}
               achievements={groupAchievements}
@@ -181,35 +194,37 @@ const AchievementContent: React.FC<{
               showPoints={settings.showPoints}
               gameInfo={data.gameInfo}
               date={getGroupDate(index, group)}
-              onExpandChange={(isExpanded) => handleGroupExpand(index, isExpanded)}
+              onExpandChange={(isExpanded) => { handleGroupExpand(index, isExpanded); }}
             />
           );
         })}
       </div>
     </>
   );
-};
+}
 
-export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
+// eslint-disable-next-line react/no-multi-comp
+export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
   const data = useAchievementData(appId);
   const [settings, setSettings] = useState<AchievementSettings>(() => {
     const savedSettings = getDefaultSettings();
-    return savedSettings || defaultSettings;
+
+    return savedSettings ?? defaultSettings;
   });
 
   const domElement = createRef<HTMLDivElement>();
 
-  const handleSettingsChange = (newSettings: Partial<AchievementSettings> | null) => {
+  function handleSettingsChange(newSettings: Partial<AchievementSettings> | null): void {
     if (newSettings === null) {
       setSettings(defaultSettings);
     } else {
-      setSettings((prev) => ({ ...prev, ...newSettings }));
+      setSettings(prev => ({ ...prev, ...newSettings }));
     }
-  };
+  }
 
-  const handleCacheCleared = () => {
+  function handleCacheCleared(): void {
     data.reload();
-  };
+  }
 
   if (data.errors.length > 0) {
     return <ErrorDisplay errors={data.errors} />;
@@ -223,17 +238,19 @@ export const AchievementPage: React.FC<AchievementPageProps> = ({ appId }) => {
 
   return (
     <div className="steam-hunters-achievements-page" ref={domElement}>
-      {data.loading ? (
-        <Spinner className="steam-hunters-spinner" />
-      ) : (
-        <AchievementContent
-          data={data}
-          settings={settings}
-          onSettingsChange={handleSettingsChange}
-          onCacheCleared={handleCacheCleared}
-          appId={appId}
-        />
-      )}
+      {data.loading
+        ? (
+            <Spinner className="steam-hunters-spinner" />
+          )
+        : (
+            <AchievementContent
+              data={data}
+              settings={settings}
+              onSettingsChange={handleSettingsChange}
+              onCacheCleared={handleCacheCleared}
+              appId={appId}
+            />
+          )}
     </div>
   );
-};
+}

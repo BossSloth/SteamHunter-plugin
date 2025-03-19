@@ -12,16 +12,18 @@ import { ErrorDisplay } from './ErrorDisplay';
 import { AchievementSettings, GroupBy, SortBy } from './types';
 
 interface HeaderProps {
-  settings: AchievementSettings;
-  onSettingsChange: (settings: Partial<AchievementSettings> | null) => void;
-  achievementCount: number;
-  groupCount: number;
-  onExpandAllClick: () => void;
-  onCacheCleared?: () => void;
-  appId: string;
+  onSettingsChange(settings: Partial<AchievementSettings> | null): void;
+  onExpandAllClick(): void;
+  onCacheCleared(): void;
+
+  readonly settings: AchievementSettings;
+  readonly achievementCount: number;
+  readonly groupCount: number;
+  readonly appId: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({
+// eslint-disable-next-line max-lines-per-function
+export function Header({
   settings,
   onSettingsChange,
   achievementCount,
@@ -29,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   onExpandAllClick,
   onCacheCleared,
   appId,
-}) => {
+}: HeaderProps): JSX.Element {
   const toolTipDom = useRef<HTMLDivElement>(null);
   const fakeMouseOver = new MouseEvent('mouseover', { bubbles: true });
   const fakeMouseOut = new MouseEvent('mouseout', { bubbles: true });
@@ -47,10 +49,10 @@ export const Header: React.FC<HeaderProps> = ({
   }, [toolTipDom]);
 
   useEffect(() => {
-    setHasCustomDefaults(!!getDefaultSettings());
+    setHasCustomDefaults(getDefaultSettings() !== null);
   }, []);
 
-  const handleDefaultSettings = () => {
+  function handleDefaultSettings(): void {
     if (hasCustomDefaults) {
       clearDefaultSettings();
       setHasCustomDefaults(false);
@@ -59,7 +61,7 @@ export const Header: React.FC<HeaderProps> = ({
       saveDefaultSettings(settings);
       setHasCustomDefaults(true);
     }
-  };
+  }
 
   return (
     <Focusable className="achievements-header">
@@ -69,37 +71,41 @@ export const Header: React.FC<HeaderProps> = ({
       <Focusable className="left-controls">
         <Focusable>
           <span>
-            {achievementCount} achievements grouped by ({groupCount})
+            {`${achievementCount} achievements grouped by (${groupCount})`}
           </span>
           <div className="dropdown-container" style={{ width: 120 }}>
             <Dropdown
-              rgOptions={Object.values(GroupBy).map((group) => ({ label: group, data: group }))}
+              rgOptions={Object.values(GroupBy).map(group => ({ label: group, data: group }))}
               selectedOption={settings.groupBy}
-              onChange={(data: SingleDropdownOption) => onSettingsChange({ groupBy: data.data })}
+              onChange={(value: SingleDropdownOption) => {
+                onSettingsChange({ groupBy: value.data as GroupBy });
+              }}
               contextMenuPositionOptions={{ bMatchWidth: false }}
             />
           </div>
           <span>sorted by</span>
           <div className="dropdown-container" style={{ width: 90 }}>
             <Dropdown
-              rgOptions={Object.values(SortBy).map((sortBy) => ({ label: sortBy, data: sortBy }))}
+              rgOptions={Object.values(SortBy).map(sortBy => ({ label: sortBy, data: sortBy }))}
               selectedOption={settings.sortBy}
-              onChange={(data: SingleDropdownOption) => onSettingsChange({ sortBy: data.data })}
+              onChange={(value: SingleDropdownOption) => {
+                onSettingsChange({ sortBy: value.data as SortBy });
+              }}
               contextMenuPositionOptions={{ bMatchWidth: false }}
             />
           </div>
         </Focusable>
         <Focusable className="toggle-container">
-          <div onClick={() => onSettingsChange({ reverse: !settings.reverse })}>
-            <Toggle value={settings.reverse} onChange={(value) => onSettingsChange({ reverse: value })} />
+          <div onClick={() => { onSettingsChange({ reverse: !settings.reverse }); }}>
+            <Toggle value={settings.reverse} onChange={(value) => { onSettingsChange({ reverse: value }); }} />
             <span>reverse</span>
           </div>
-          <div onClick={() => onSettingsChange({ showPoints: !settings.showPoints })}>
-            <Toggle value={settings.showPoints} onChange={(value) => onSettingsChange({ showPoints: value })} />
+          <div onClick={() => { onSettingsChange({ showPoints: !settings.showPoints }); }}>
+            <Toggle value={settings.showPoints} onChange={(value) => { onSettingsChange({ showPoints: value }); }} />
             <span>show points</span>
           </div>
-          <div onClick={() => onSettingsChange({ showUnlocked: !settings.showUnlocked })}>
-            <Toggle value={settings.showUnlocked} onChange={(value) => onSettingsChange({ showUnlocked: value })} />
+          <div onClick={() => { onSettingsChange({ showUnlocked: !settings.showUnlocked }); }}>
+            <Toggle value={settings.showUnlocked} onChange={(value) => { onSettingsChange({ showUnlocked: value }); }} />
             <span>show unlocked</span>
           </div>
         </Focusable>
@@ -107,13 +113,13 @@ export const Header: React.FC<HeaderProps> = ({
       <Focusable className="right-controls">
         {/* Save defaults */}
         <SteamTooltip
-          toolTipContent={
+          toolTipContent={(
             <span>
               {hasCustomDefaults
                 ? 'Reset saved default settings to standard default values'
                 : 'Save current settings as default'}
             </span>
-          }
+          )}
           nDelayShowMS={100}
           direction="top"
         >
@@ -128,8 +134,8 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Search */}
         <div className="search-container">
           <TextField
-            value={settings.searchQuery || ''}
-            onChange={(e) => onSettingsChange({ searchQuery: e.target.value })}
+            value={settings.searchQuery ?? ''}
+            onChange={(e) => { onSettingsChange({ searchQuery: e.target.value }); }}
             placeholder="Search achievements..."
           />
         </div>
@@ -139,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Button
             onClick={() => {
               clearAppCache(appId);
-              onCacheCleared?.();
+              onCacheCleared();
             }}
             ref={toolTipDom}
           >
@@ -149,24 +155,27 @@ export const Header: React.FC<HeaderProps> = ({
       </Focusable>
     </Focusable>
   );
-};
+}
 
-const CacheTooltipContent: React.FC<{ appId: string }> = ({ appId }) => (
-  <span>
-    Cache was last updated on
-    <br />
-    {getCacheDate(appId)?.toLocaleString(undefined, {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    }) ?? 'never'}
-    <br />
-    <br />
-    Clears the SteamHunters cache for this game.
-    <br />
-    Use this if achievement data seems outdated or incorrect.
-  </span>
-);
+// eslint-disable-next-line react/no-multi-comp
+function CacheTooltipContent({ appId }: { readonly appId: string; }): JSX.Element {
+  return (
+    <span>
+      Cache was last updated on
+      <br />
+      {getCacheDate(appId)?.toLocaleString(undefined, {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      }) ?? 'never'}
+      <br />
+      <br />
+      Clears the SteamHunters cache for this game.
+      <br />
+      Use this if achievement data seems outdated or incorrect.
+    </span>
+  );
+}

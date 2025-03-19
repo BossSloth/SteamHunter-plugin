@@ -1,23 +1,25 @@
 import React, { useRef } from 'react';
 import { ControllerFocusable, SteamTooltip } from '../SteamComponents';
-import { AchievementData, SortBy } from './types';
 import { PointsIcon } from './Icons';
+import { AchievementData, SortBy } from './types';
 
 interface AchievementItemProps {
-  achievement: AchievementData;
-  sortedBy: SortBy;
-  showPoints?: boolean;
+  readonly achievement: AchievementData;
+  readonly sortedBy: SortBy;
+  // eslint-disable-next-line react/no-unused-prop-types
+  readonly showPoints?: boolean;
 }
 
-const getRarityClass = (percentage: number): string => {
+function getRarityClass(percentage: number): string {
   if (percentage < 5) return 'Legendary';
   if (percentage < 10) return 'Epic';
   if (percentage < 20) return 'Rare';
   if (percentage < 50) return 'Uncommon';
-  return 'Common';
-};
 
-const TooltipAchievementItem: React.FC<AchievementItemProps> = ({ achievement, sortedBy }) => {
+  return 'Common';
+}
+
+function TooltipAchievementItem({ achievement, sortedBy }: AchievementItemProps): JSX.Element {
   const rarityClass = getRarityClass(achievement.localPercentage);
   const usedPercentage = sortedBy === SortBy.Steam ? achievement.localPercentage : achievement.steamPercentage;
 
@@ -28,12 +30,13 @@ const TooltipAchievementItem: React.FC<AchievementItemProps> = ({ achievement, s
       <span>
         {usedPercentage.toFixed(1)}% on {sortedBy === SortBy.Steam ? 'Steam Hunters' : 'Steam'}
       </span>
-      <div className="steam-hunters-tooltip-arrow"></div>
+      <div className="steam-hunters-tooltip-arrow" />
     </>
   );
-};
+}
 
-export const AchievementItem: React.FC<AchievementItemProps> = ({ achievement, sortedBy, showPoints = true }) => {
+// eslint-disable-next-line react/no-multi-comp
+export function AchievementItem({ achievement, sortedBy, showPoints = true }: AchievementItemProps): JSX.Element {
   const toolTipDom = useRef<HTMLSpanElement>(null);
   const fakeMouseOver = new MouseEvent('mouseover', { bubbles: true });
   const fakeMouseOut = new MouseEvent('mouseout', { bubbles: true });
@@ -41,6 +44,7 @@ export const AchievementItem: React.FC<AchievementItemProps> = ({ achievement, s
   const rarityClass = getRarityClass(achievement.localPercentage);
 
   const usedPercentage = sortedBy === SortBy.Steam ? achievement.steamPercentage : achievement.localPercentage;
+
   return (
     <ControllerFocusable
       onOKActionDescription={null}
@@ -53,7 +57,7 @@ export const AchievementItem: React.FC<AchievementItemProps> = ({ achievement, s
     >
       <div className="achievement-item">
         <div className="left">
-          <img className="achievement-image" alt={achievement.name} src={achievement.strImage}></img>
+          <img className="achievement-image" alt={achievement.name} src={achievement.strImage} />
         </div>
         <div className="center">
           <div className="achievement-progress" style={{ width: `${usedPercentage}%` }} />
@@ -73,10 +77,10 @@ export const AchievementItem: React.FC<AchievementItemProps> = ({ achievement, s
               toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={sortedBy} />}
               direction="top"
               nDelayShowMS={0}
-              strTooltipClassname={'steam-hunters-percentage-tooltip'}
+              strTooltipClassname="steam-hunters-percentage-tooltip"
             >
               <span className={`steam-hunters-percentage ${rarityClass}`} ref={toolTipDom}>
-                {usedPercentage.toFixed(1)}%
+                {`${usedPercentage.toFixed(1)}%`}
               </span>
             </SteamTooltip>
           </div>
@@ -84,4 +88,4 @@ export const AchievementItem: React.FC<AchievementItemProps> = ({ achievement, s
       </div>
     </ControllerFocusable>
   );
-};
+}

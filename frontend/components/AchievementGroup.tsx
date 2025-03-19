@@ -5,19 +5,20 @@ import { PointsIcon } from './Icons';
 import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './types';
 
 interface AchievementGroupProps {
-  groupInfo: AchievementGroupData;
-  title?: string;
-  date?: Date;
-  achievements: AchievementData[];
-  totalPoints: number;
-  isExpanded?: boolean;
-  sortedBy: SortBy;
-  gameInfo: SteamGameInfo;
-  showPoints?: boolean;
-  onExpandChange: (isExpanded: boolean) => void;
+  onExpandChange(isExpanded: boolean): void;
+
+  readonly groupInfo: AchievementGroupData;
+  readonly title?: string;
+  readonly date?: Date;
+  readonly achievements: AchievementData[];
+  readonly totalPoints: number;
+  readonly isExpanded?: boolean;
+  readonly sortedBy: SortBy;
+  readonly gameInfo: SteamGameInfo;
+  readonly showPoints?: boolean;
 }
 
-export const AchievementGroup: React.FC<AchievementGroupProps> = ({
+export function AchievementGroup({
   groupInfo,
   title,
   date,
@@ -28,35 +29,37 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
   gameInfo,
   showPoints = true,
   onExpandChange,
-}) => {
+}: AchievementGroupProps): JSX.Element {
   const [expanded, setExpanded] = React.useState(isExpanded);
 
   React.useEffect(() => {
     setExpanded(isExpanded);
   }, [isExpanded]);
 
-  const handleExpand = (newExpanded: boolean) => {
+  function handleExpand(newExpanded: boolean): void {
     setExpanded(newExpanded);
     onExpandChange(newExpanded);
-  };
+  }
 
-  const getTitle = () => {
-    if (groupInfo.dlcAppId) {
-      if (groupInfo.name) {
+  function getTitle(): string {
+    if (groupInfo.dlcAppId !== undefined) {
+      if (groupInfo.name !== undefined) {
         return `${groupInfo.dlcAppName} — ${groupInfo.name}`;
       }
-      return `${groupInfo.dlcAppName}`;
-    } else if (title) {
-      return `${gameInfo.name} — ${title}`;
-    } else {
-      return `${gameInfo.name}`;
-    }
-  };
 
-  const getImageUrl = () => {
-    const appId = groupInfo.dlcAppId || gameInfo.appId;
+      return `${groupInfo.dlcAppName}`;
+    } else if (title !== undefined) {
+      return `${gameInfo.name} — ${title}`;
+    }
+
+    return gameInfo.name;
+  }
+
+  function getImageUrl(): string | undefined {
+    const appId = groupInfo.dlcAppId ?? gameInfo.appId;
+
     return appId ? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg` : undefined;
-  };
+  }
 
   return (
     <div className="achievement-group">
@@ -68,15 +71,15 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
       >
         <div className="group-header">
           <div className="group-info">
-            {getImageUrl() && (
+            {getImageUrl() !== undefined && (
               <img
                 src={getImageUrl()}
                 alt={getTitle()}
                 className="group-image"
                 onClick={(e) => {
-                  SteamClient.System.OpenInSystemBrowser(
-                    `https://steamhunters.com/apps/${gameInfo.appId}/achievements`,
-                  );
+                  // TODO: use steam-types
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+                  SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`);
                   e.stopPropagation();
                 }}
               />
@@ -93,7 +96,7 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
           </div>
           <div className="group-stats">
             <span>
-              {achievements.length} achievements{showPoints && ` worth ${totalPoints}`}
+              {`${achievements.length} achievements${showPoints ? ` worth ${totalPoints}` : null}`}
               {showPoints && <PointsIcon />}
             </span>
             <span className="expand-button">{expanded ? '▼' : '▶'}</span>
@@ -114,4 +117,4 @@ export const AchievementGroup: React.FC<AchievementGroupProps> = ({
       )}
     </div>
   );
-};
+}

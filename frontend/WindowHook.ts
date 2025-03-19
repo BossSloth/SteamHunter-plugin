@@ -1,3 +1,6 @@
+/* eslint-disable camelcase */
+/* eslint-disable no-underscore-dangle */
+// TODO: use steam-types
 import { SteamClient } from '@steambrew/client';
 import { CreateCssElement } from './cdn';
 
@@ -23,15 +26,15 @@ declare global {
 
 // prettier-ignore
 const hookedWindows = [
-    'Achievements_',
-    'BPM_',
-    'Desktop_uid',
+  'Achievements_',
+  'BPM_',
+  'Desktop_uid',
 ];
 
-export function WindowHook() {
-  g_PopupManager?.m_mapPopups?.data_?.forEach(async (popup) => {
+export function WindowHook(): void {
+  g_PopupManager.m_mapPopups.data_.forEach((popup) => {
     const popupName = popup.value_.m_strName;
-    if (hookedWindows.some((windowName) => popupName.includes(windowName))) {
+    if (hookedWindows.some(windowName => popupName.includes(windowName))) {
       const popupWindow = popup.value_.m_popup;
       const document = popupWindow.document;
       CreateCssElement(document);

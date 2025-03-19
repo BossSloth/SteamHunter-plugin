@@ -6,7 +6,7 @@ import { WindowHook } from './WindowHook';
 CreateElementOverride();
 
 // Entry point on the front end of your plugin
-export default async function PluginMain() {
+export default async function PluginMain(): Promise<void> {
   await initCdn();
 
   if (Millennium.AddWindowCreateHook) {

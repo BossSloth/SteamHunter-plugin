@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
+/* eslint-disable @typescript-eslint/no-dynamic-delete */
+
 import { AchievementSettings } from '../components/types';
 
 const CACHE_KEY = 'steamhunters_cache';
@@ -16,13 +19,12 @@ export interface AppCache {
   updates?: CacheEntry<unknown>;
 }
 
-interface CacheStore {
-  [appId: string]: AppCache;
-}
+type CacheStore = Record<string, AppCache>;
 
 function getStore(): CacheStore {
   const storeData = localStorage.getItem(CACHE_KEY);
-  return storeData ? JSON.parse(storeData) : {};
+
+  return storeData !== null ? JSON.parse(storeData) as CacheStore : {};
 }
 
 function setStore(store: CacheStore): void {
@@ -49,17 +51,19 @@ export function getCachedData<T>(appId: string, type: keyof AppCache): T | null 
         delete store[appId];
       }
       setStore(store);
+
       return null;
     }
 
     return entry.data;
   } catch (error) {
     console.error('Error reading from cache:', error);
+
     return null;
   }
 }
 
-export function setCachedData<T>(appId: string, type: keyof AppCache, data: T): void {
+export function setCachedData(appId: string, type: keyof AppCache, data: unknown): void {
   try {
     const store = getStore();
     if (!store[appId]) {
@@ -94,7 +98,7 @@ export function getCacheDate(appId: string, type: keyof AppCache = 'achievements
       return null;
     }
 
-    const entry = appCache[type] as CacheEntry<unknown> | undefined;
+    const entry = appCache[type];
     if (!entry) {
       return null;
     }
@@ -102,6 +106,7 @@ export function getCacheDate(appId: string, type: keyof AppCache = 'achievements
     return new Date(entry.timestamp);
   } catch (error) {
     console.error('Error reading from cache:', error);
+
     return null;
   }
 }
@@ -112,7 +117,8 @@ export function saveDefaultSettings(settings: AchievementSettings): void {
 
 export function getDefaultSettings(): AchievementSettings | null {
   const settings = localStorage.getItem(DEFAULT_SETTINGS_KEY);
-  return settings ? JSON.parse(settings) : null;
+
+  return settings !== null ? JSON.parse(settings) as AchievementSettings : null;
 }
 
 export function clearDefaultSettings(): void {
