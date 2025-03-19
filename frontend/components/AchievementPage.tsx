@@ -224,15 +224,15 @@ export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
     data.reload();
   }
 
-  if (data.errors.length > 0) {
-    return <ErrorDisplay errors={data.errors} />;
-  }
-
   useEffect(() => {
     if (!domElement.current) return;
 
     CreateCssElement(domElement.current.ownerDocument);
   }, []);
+
+  if (data.errors.length > 0) {
+    return <ErrorDisplay errors={data.errors} />;
+  }
 
   return (
     <div className="steam-hunters-achievements-page" ref={domElement}>
