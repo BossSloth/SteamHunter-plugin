@@ -54,7 +54,7 @@ export function useAchievementData(appId: string): AchievementDataHook {
       if (!steamAchievements) throw new Error('Failed to load Steam achievements');
 
       // Update achievements with Steam data
-      const updatedAchievements = achievementsData.map((achievement) => {
+      const updatedAchievements = achievementsData.map((achievement): AchievementData => {
         const steamAchievement = steamAchievements.find(sa => sa.strID === achievement.apiName);
 
         return {
@@ -63,6 +63,7 @@ export function useAchievementData(appId: string): AchievementDataHook {
           unlocked: steamAchievement?.bAchieved ?? false,
           name: steamAchievement?.strName ?? achievement.name,
           description: steamAchievement?.strDescription ?? achievement.description,
+          unlockedDate: steamAchievement?.rtUnlocked !== 0 ? new Date((steamAchievement?.rtUnlocked ?? 0) * 1000) : undefined,
         };
       });
 

@@ -60,29 +60,38 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
           <img className="achievement-image" alt={achievement.name} src={achievement.strImage} />
         </div>
         <div className="center">
-          <div className="achievement-progress" style={{ width: `${usedPercentage}%` }} />
+          <div className={`achievement-progress ${achievement.unlocked ? 'unlocked' : 'locked'}`} style={{ width: `${usedPercentage}%` }} />
           <div className="achievement-content">
             <h3>{achievement.name}</h3>
             <p>{achievement.description}</p>
           </div>
-          <div className="achievement-stats">
-            {showPoints && (
-              <span className="points">
-                {achievement.points}
-                <PointsIcon />
-              </span>
-            )}
+          <div className="right">
+            <div className="achievement-stats">
+              {showPoints && (
+                <span className="points">
+                  {achievement.points}
+                  <PointsIcon />
+                </span>
+              )}
 
-            <SteamTooltip
-              toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={sortedBy} />}
-              direction="top"
-              nDelayShowMS={0}
-              strTooltipClassname="steam-hunters-percentage-tooltip"
-            >
-              <span className={`steam-hunters-percentage ${rarityClass}`} ref={toolTipDom}>
-                {`${usedPercentage.toFixed(1)}%`}
-              </span>
-            </SteamTooltip>
+              <SteamTooltip
+                toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={sortedBy} />}
+                direction="top"
+                nDelayShowMS={0}
+                strTooltipClassname="steam-hunters-percentage-tooltip"
+              >
+                <span className={`steam-hunters-percentage ${rarityClass}`} ref={toolTipDom}>
+                  {`${usedPercentage.toFixed(1)}%`}
+                </span>
+              </SteamTooltip>
+            </div>
+            <div>
+              {achievement.unlockedDate && (
+                <span className="unlocked-date">
+                  {achievement.unlockedDate.toLocaleDateString()}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>

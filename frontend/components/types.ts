@@ -9,6 +9,7 @@ export interface AchievementData {
   apiName: ApiName;
   strImage: string;
   unlocked: boolean;
+  unlockedDate?: Date;
 }
 
 export interface AchievementGroupData {

@@ -96,7 +96,7 @@ export function AchievementGroup({
           </div>
           <div className="group-stats">
             <span>
-              {`${achievements.length} achievements${showPoints ? ` worth ${totalPoints}` : null}`}
+              {`${achievements.length} achievements${showPoints ? ` worth ${totalPoints}` : ''}`}
               {showPoints && <PointsIcon />}
             </span>
             <span className="expand-button">{expanded ? '▼' : '▶'}</span>
