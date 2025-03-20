@@ -74,6 +74,7 @@ export enum GroupBy {
   DLCAndUpdate = 'DLC & update',
   Nothing = 'Nothing',
   Unlocked = 'Unlocked',
+  DLC = 'DLC',
 }
 
 export interface AchievementSettings {

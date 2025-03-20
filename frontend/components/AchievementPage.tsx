@@ -81,6 +81,18 @@ function getGroupedAchievements(
           achievementApiNames: achievements.filter(a => !a.unlocked).map(a => a.apiName),
         },
       ];
+    case GroupBy.DLC: {
+      const baseAchievements = groups.filter(g => g.dlcAppId === undefined);
+      const dlcAchievements = groups.filter(g => g.dlcAppId !== undefined);
+
+      return [
+        {
+          name: baseAchievements[0]?.name,
+          achievementApiNames: baseAchievements.flatMap(a => a.achievementApiNames),
+        },
+        ...dlcAchievements,
+      ];
+    }
     default:
       return [];
   }
@@ -182,7 +194,8 @@ function AchievementContent({
 
           return (
             <AchievementGroup
-              key={group.name}
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
               groupInfo={group}
               title={group.name}
               achievements={groupAchievements}
