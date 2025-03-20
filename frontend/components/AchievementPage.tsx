@@ -47,6 +47,8 @@ function filterAndSortAchievements(achievements: AchievementData[], settings: Ac
           return reverse ? a.steamPercentage - b.steamPercentage : b.steamPercentage - a.steamPercentage;
         case SortBy.Name:
           return reverse ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
+        case SortBy.Unlocked:
+          return reverse ? (a.unlockedDate?.getTime() ?? Infinity) - (b.unlockedDate?.getTime() ?? Infinity) : (b.unlockedDate?.getTime() ?? 0) - (a.unlockedDate?.getTime() ?? 0);
         default:
           return 0;
       }
