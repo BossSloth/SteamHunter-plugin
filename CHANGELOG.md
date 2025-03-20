@@ -1,3 +1,18 @@
+# [1.2.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.1.0...v1.2.0) (2025-03-20)
+
+
+### Bug Fixes
+
+* **#6:** show proper error page when api server is unreachable ([900d35b](https://github.com/BossSloth/SteamHunter-plugin/commit/900d35b79049ee6653fb9f239ef375f162241ff9)), closes [#6](https://github.com/BossSloth/SteamHunter-plugin/issues/6)
+
+
+### Features
+
+* **#3:** show progress bar on achievement groups ([382ea3a](https://github.com/BossSloth/SteamHunter-plugin/commit/382ea3a3615350a8569501c1ba2f1d2a86f20c97)), closes [#3](https://github.com/BossSloth/SteamHunter-plugin/issues/3)
+* **#4:** group by only dlc ([d201891](https://github.com/BossSloth/SteamHunter-plugin/commit/d201891b54626c37d7789aa4aec8ae92e9ff2f8f)), closes [#4](https://github.com/BossSloth/SteamHunter-plugin/issues/4)
+* **#4:** sort by unlocked date ([1fd16a2](https://github.com/BossSloth/SteamHunter-plugin/commit/1fd16a264213156fa9ac26effbe28d7c623133d6)), closes [#4](https://github.com/BossSloth/SteamHunter-plugin/issues/4)
+* **#5:** highlight unlocked achievements with green and added unlocked date ([bf631c0](https://github.com/BossSloth/SteamHunter-plugin/commit/bf631c0a353d283d1077e66057549978eec00217)), closes [#5](https://github.com/BossSloth/SteamHunter-plugin/issues/5)
+
 # [1.1.0](https://github.com/tddebart/SteamHunter-plugin/compare/v1.0.0...v1.1.0) (2025-02-23)
 
 
