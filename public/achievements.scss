@@ -208,13 +208,35 @@ $tooltip-background: #16202d;
     }
   }
 
+  .group-right {
+    @include flex-between;
+    align-items: end;
+    margin-left: 15px;
+    margin-bottom: auto;
+    flex-direction: column;
+    gap: 4px;
+
+    .progress-container {
+      @include flex-between;
+      gap: 10px;
+
+      & >:last-child {
+        width: 125px;
+        margin-top: 4px;
+      }
+
+      &.progress-complete {
+        & >:last-child {
+          filter: drop-shadow(0 0 3px rgba(102, 192, 244, 0.8));
+        }
+      }
+    }
+  }
+
   .group-stats {
     @include flex-gap(10px);
     align-items: center;
     color: $text-color;
-    flex-shrink: 0;
-    margin-left: 15px;
-    margin-bottom: auto;
 
     span {
       display: flex;

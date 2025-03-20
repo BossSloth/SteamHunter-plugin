@@ -1,7 +1,8 @@
+import { ProgressBar } from '@steambrew/client';
 import React from 'react';
 import { ControllerFocusable } from '../SteamComponents';
 import { AchievementItem } from './AchievementItem';
-import { PointsIcon } from './Icons';
+import { AchievementIcon, PointsIcon } from './Icons';
 import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './types';
 
 interface AchievementGroupProps {
@@ -16,8 +17,10 @@ interface AchievementGroupProps {
   readonly sortedBy: SortBy;
   readonly gameInfo: SteamGameInfo;
   readonly showPoints?: boolean;
+  readonly showUnlocked?: boolean;
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function AchievementGroup({
   groupInfo,
   title,
@@ -28,6 +31,7 @@ export function AchievementGroup({
   sortedBy,
   gameInfo,
   showPoints = true,
+  showUnlocked = true,
   onExpandChange,
 }: AchievementGroupProps): JSX.Element {
   const [expanded, setExpanded] = React.useState(isExpanded);
@@ -60,6 +64,10 @@ export function AchievementGroup({
 
     return appId ? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg` : undefined;
   }
+
+  const unlockedAchievements = achievements.filter(achievement => achievement.unlocked);
+  const progressPercentage = unlockedAchievements.length / achievements.length * 100;
+  const fullCompleted = unlockedAchievements.length === achievements.length;
 
   return (
     <div className="achievement-group">
@@ -94,12 +102,24 @@ export function AchievementGroup({
               )}
             </div>
           </div>
-          <div className="group-stats">
-            <span>
-              {`${achievements.length} achievements${showPoints ? ` worth ${totalPoints}` : ''}`}
-              {showPoints && <PointsIcon />}
-            </span>
-            <span className="expand-button">{expanded ? '▼' : '▶'}</span>
+          <div className="group-right">
+            <div className="group-stats">
+              <span>
+                {`${achievements.length} achievements${showPoints ? ` worth ${totalPoints}` : ''}`}
+                {showPoints && <PointsIcon />}
+              </span>
+              <span className="expand-button">{expanded ? '▼' : '▶'}</span>
+            </div>
+            <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
+              {fullCompleted && <AchievementIcon />}
+              <div className="progress-text">
+                <span>{unlockedAchievements.length}</span>
+                <span>/</span>
+                <span>{achievements.length}</span>
+                <span>{` (${progressPercentage.toFixed(1)}%)`}</span>
+              </div>
+              <ProgressBar nProgress={progressPercentage} />
+            </div>
           </div>
         </div>
       </ControllerFocusable>

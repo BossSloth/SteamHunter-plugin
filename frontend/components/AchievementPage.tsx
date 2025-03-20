@@ -208,6 +208,7 @@ function AchievementContent({
               gameInfo={data.gameInfo}
               date={getGroupDate(index, group)}
               onExpandChange={(isExpanded) => { handleGroupExpand(index, isExpanded); }}
+              showUnlocked={settings.showUnlocked}
             />
           );
         })}
