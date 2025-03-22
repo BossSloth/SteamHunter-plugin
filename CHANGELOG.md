@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.0...v1.2.1) (2025-03-22)
+
+
+### Bug Fixes
+
+* Unauthorized error by updating api data and removing date released from groups ([4a74469](https://github.com/BossSloth/SteamHunter-plugin/commit/4a74469cf781f46382d93d496b237eb9d47fb720)), closes [#7](https://github.com/BossSloth/SteamHunter-plugin/issues/7)
+
 # [1.2.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.1.0...v1.2.0) (2025-03-20)
 
 
