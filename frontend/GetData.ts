@@ -2,7 +2,6 @@ import { callable } from '@steambrew/client';
 import {
   AchievementData,
   AchievementGroupData,
-  AchievementUpdateData,
   RequestAchievementGroupsResponse,
   SteamGameInfo,
 } from './components/types';
@@ -69,8 +68,4 @@ export async function getAchievements(appId: string): Promise<AchievementData[] 
 
 export async function getSteamGameInfo(appId: string): Promise<SteamGameInfo | null> {
   return fetchAndCache<SteamGameInfo>(appId, API.gameInfo, 'gameInfo');
-}
-
-export async function getAchievementUpdates(appId: string): Promise<AchievementUpdateData[] | null> {
-  return fetchAndCache<AchievementUpdateData[]>(appId, API.updates, 'updates');
 }

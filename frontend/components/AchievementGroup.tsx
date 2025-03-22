@@ -8,23 +8,21 @@ import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './
 interface AchievementGroupProps {
   onExpandChange(isExpanded: boolean): void;
 
-  readonly groupInfo: AchievementGroupData;
-  readonly title?: string;
-  readonly date?: Date;
   readonly achievements: AchievementData[];
-  readonly totalPoints: number;
-  readonly isExpanded?: boolean;
-  readonly sortedBy: SortBy;
   readonly gameInfo: SteamGameInfo;
+  readonly groupInfo: AchievementGroupData;
+  readonly isExpanded?: boolean;
   readonly showPoints?: boolean;
   readonly showUnlocked?: boolean;
+  readonly sortedBy: SortBy;
+  readonly title?: string;
+  readonly totalPoints: number;
 }
 
 // eslint-disable-next-line max-lines-per-function
 export function AchievementGroup({
   groupInfo,
   title,
-  date,
   achievements,
   totalPoints,
   isExpanded = false,
@@ -95,11 +93,19 @@ export function AchievementGroup({
             <div className="group-title">
               <h2>{getTitle()}</h2>
               {/* Date will be formatted like this: "1 Jan 2025" */}
-              {date && (
-                <span className="date">
-                  {date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                </span>
-              )}
+              {/* <span className="date">
+                {new Date(gameInfo.releaseDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+              </span> */}
+              <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
+                {fullCompleted && <AchievementIcon />}
+                <div className="progress-text">
+                  <span>{unlockedAchievements.length}</span>
+                  <span>/</span>
+                  <span>{achievements.length}</span>
+                  <span>{` (${progressPercentage.toFixed(1)}%)`}</span>
+                </div>
+                <ProgressBar nProgress={progressPercentage} />
+              </div>
             </div>
           </div>
           <div className="group-right">
@@ -109,16 +115,6 @@ export function AchievementGroup({
                 {showPoints && <PointsIcon />}
               </span>
               <span className="expand-button">{expanded ? '▼' : '▶'}</span>
-            </div>
-            <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
-              {fullCompleted && <AchievementIcon />}
-              <div className="progress-text">
-                <span>{unlockedAchievements.length}</span>
-                <span>/</span>
-                <span>{achievements.length}</span>
-                <span>{` (${progressPercentage.toFixed(1)}%)`}</span>
-              </div>
-              <ProgressBar nProgress={progressPercentage} />
             </div>
           </div>
         </div>

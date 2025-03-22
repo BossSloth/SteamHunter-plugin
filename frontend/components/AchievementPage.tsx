@@ -158,22 +158,6 @@ function AchievementContent({
     return groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
   }
 
-  function getGroupDate(index: number, group: AchievementGroupData): Date | undefined {
-    const dateString = data.achievementUpdates.find((update) => {
-      if (settings.groupBy === GroupBy.Unlocked) {
-        index = 0;
-      }
-
-      if (group.dlcAppId !== undefined) {
-        return update.dlcAppId === group.dlcAppId;
-      }
-
-      return update.updateNumber === index && update.dlcAppId === group.dlcAppId;
-    })?.displayReleaseDate;
-
-    return dateString !== undefined ? new Date(dateString) : undefined;
-  }
-
   return (
     <>
       <Header
@@ -206,7 +190,6 @@ function AchievementContent({
               sortedBy={sortBy}
               showPoints={settings.showPoints}
               gameInfo={data.gameInfo}
-              date={getGroupDate(index, group)}
               onExpandChange={(isExpanded) => { handleGroupExpand(index, isExpanded); }}
               showUnlocked={settings.showUnlocked}
             />

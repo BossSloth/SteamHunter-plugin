@@ -6,6 +6,7 @@ logger = PluginUtils.Logger("steam-hunters")
 import json
 import os
 import shutil
+
 import requests
 
 DEFAULT_HEADERS = {
@@ -37,9 +38,6 @@ def RequestAchievements(appId: int) -> str:
 
 def RequestSteamGameInfo(appId: int) -> str:
     return Request(f'https://steamhunters.com/api/apps/{appId}', {})
-
-def RequestAchievementUpdates(appId: int) -> str:
-    return Request(f'https://steamhunters.com/api/apps/{appId}/updates', {})
 
 class Plugin:
     def _front_end_loaded(self):

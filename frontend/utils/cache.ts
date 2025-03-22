@@ -13,10 +13,9 @@ interface CacheEntry<T> {
 }
 
 export interface AppCache {
-  groups?: CacheEntry<unknown>;
   achievements?: CacheEntry<unknown>;
   gameInfo?: CacheEntry<unknown>;
-  updates?: CacheEntry<unknown>;
+  groups?: CacheEntry<unknown>;
 }
 
 type CacheStore = Record<string, AppCache>;

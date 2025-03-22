@@ -1,22 +1,37 @@
 export type ApiName = string;
 
+// https://steamhunters.com/api/Help/Api/GET-apps-appId-achievements
 export interface AchievementData {
-  name: string;
+  achievementId: number;
+  apiName: string;
   description: string;
-  steamPercentage: number;
-  points: number;
   localPercentage: number;
-  apiName: ApiName;
+  name: string;
+  obtainability: Obtainability;
+  points: number;
+  steamPercentage: number;
+  steamPoints: number;
+
+  // Extra properties from steam
   strImage: string;
   unlocked: boolean;
   unlockedDate?: Date;
 }
 
+// https://steamhunters.com/api/Help/ResourceModel?modelName=Obtainability
+export enum Obtainability {
+  Obtainable,
+  BrokenButObtainable,
+  ConditionallyObtainable,
+  Unobtainable,
+}
+
+// https://steamhunters.com/api/Help/Api/GET-GetAchievementGroups-v1_appId_groupBy[0]_groupBy[1]_includeMultiplayerGroup
 export interface AchievementGroupData {
-  name?: string;
-  dlcAppName?: string;
-  dlcAppId?: number;
   achievementApiNames: ApiName[];
+  dlcAppId?: number;
+  dlcAppName?: string;
+  name?: string;
 }
 
 /**
@@ -36,31 +51,25 @@ export interface AchievementGroupData {
  * }
  */
 export interface SteamAchievementData {
-  strID: string;
-  strName: string;
-  strDescription: string;
   bAchieved: boolean;
-  rtUnlocked: number;
-  strImage: string; // Image URL
   bHidden: boolean;
-  flMinProgress: number;
+  flAchieved: number;
   flCurrentProgress: number;
   flMaxProgress: number;
-  flAchieved: number;
+  flMinProgress: number;
+  rtUnlocked: number;
+  strDescription: string;
+  strID: string;
+  strImage: string; // Image URL
+  strName: string;
 }
 
+// https://steamhunters.com/api/Help/Api/GET-apps-appId
 export interface SteamGameInfo {
   appId: number;
   name: string;
   playersQualifiedCount: number;
-}
-
-export interface AchievementUpdateData {
-  appId: number;
-  updateId: number; // Incremental id pretty much equal to array key but 1 indexed
-  displayReleaseDate: string;
-  updateNumber?: number; // Index of group excluding DLC
-  dlcAppId?: number;
+  releaseDate: string;
 }
 
 export enum SortBy {
@@ -79,13 +88,13 @@ export enum GroupBy {
 }
 
 export interface AchievementSettings {
-  groupBy: GroupBy;
-  sortBy: SortBy;
-  reverse: boolean;
   expandAll: boolean;
-  showUnlocked: boolean;
-  showPoints: boolean;
+  groupBy: GroupBy;
+  reverse: boolean;
   searchQuery?: string;
+  showPoints: boolean;
+  showUnlocked: boolean;
+  sortBy: SortBy;
 }
 
 export interface RequestAchievementGroupsResponse {

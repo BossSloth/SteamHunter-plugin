@@ -208,6 +208,22 @@ $tooltip-background: #16202d;
     }
   }
 
+  .progress-container {
+    @include flex-between;
+    gap: 10px;
+
+    & >:last-child {
+      width: 125px;
+      margin-top: 4px;
+    }
+
+    &.progress-complete {
+      & >:last-child {
+        filter: drop-shadow(0 0 3px rgba(102, 192, 244, 0.8));
+      }
+    }
+  }
+
   .group-right {
     @include flex-between;
     align-items: end;
@@ -215,22 +231,6 @@ $tooltip-background: #16202d;
     margin-bottom: auto;
     flex-direction: column;
     gap: 4px;
-
-    .progress-container {
-      @include flex-between;
-      gap: 10px;
-
-      & >:last-child {
-        width: 125px;
-        margin-top: 4px;
-      }
-
-      &.progress-complete {
-        & >:last-child {
-          filter: drop-shadow(0 0 3px rgba(102, 192, 244, 0.8));
-        }
-      }
-    }
   }
 
   .group-stats {
