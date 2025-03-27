@@ -31,7 +31,7 @@ This plugin ports the achievement groups and many other features of the [SteamHu
 Once installed it should just work out of the box.
 <br>
 To see if the plugin is working click the View my achievements button on a game page and see that there is a new tab called `ACHIEVEMENT GROUPS`.
-![Main interface](Images/main-view.png)
+![Main interface](images/main-view.png)
 
 ## Contributing
 
