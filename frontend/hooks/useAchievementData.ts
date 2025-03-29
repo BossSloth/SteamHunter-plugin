@@ -44,7 +44,7 @@ export function useAchievementData(appId: string): AchievementDataHook {
       if (!gameInfoData) throw new Error('Failed to load game info');
 
       // Update achievements with Steam data
-      const updatedAchievements = achievementsData.map(achievement => {
+      const updatedAchievements = achievementsData.map((achievement) => {
         const steamAchievement = steamAchievements.find(sa => sa.strID === achievement.apiName);
 
         return {

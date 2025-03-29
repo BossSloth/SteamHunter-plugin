@@ -17,11 +17,11 @@ import { FC, ReactNode } from 'react';
 export const TabComponent = findModuleByExport(e => e?.toString?.().includes('bleedGlyphs')).JZ as FC<unknown>;
 
 interface SteamTooltipProps {
-  toolTipContent: ReactNode;
+  bDisabled?: boolean;
   direction?: 'top' | 'bottom' | 'left' | 'right'; // Default: 'right'
   nDelayShowMS?: number;
-  bDisabled?: boolean;
   strTooltipClassname?: string;
+  toolTipContent: ReactNode;
 }
 
 // Can be found in library.js
@@ -31,11 +31,11 @@ export const SteamTooltip = findModuleExport((e?: Function) =>
   && (/tooltipProps:\w/).test(e.toString())) as FC<SteamTooltipProps>;
 
 interface ControllerFocusableProps {
-  onClick?(): void;
   onActivate?(e: unknown): void;
-  onGamepadFocus?(): void;
-  onGamepadBlur?(): void;
+  onClick?(): void;
   onFocusWithin?(): void;
+  onGamepadBlur?(): void;
+  onGamepadFocus?(): void;
 
   noFocusRing?: boolean;
   onOKActionDescription?: string | null;

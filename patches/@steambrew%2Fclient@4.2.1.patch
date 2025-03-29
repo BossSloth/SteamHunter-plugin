@@ -1,8 +1,5 @@
-diff --git a/node_modules/@steambrew/client/.bun-tag-4a0ff89f2b61699e b/.bun-tag-4a0ff89f2b61699e
-new file mode 100644
-index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/build/globals/SteamClient.d.ts b/build/globals/SteamClient.d.ts
-index 7181be389b9b247755829aa02ee29b30624d9cab..4e60c001eb794a53b8d84ac658797a476af32ab5 100644
+index 2357077560c52548b36c727d0fb759faf5be2d44..9a1fb61cb25d8fe7c1ca7ecba23b9f114962c501 100644
 --- a/build/globals/SteamClient.d.ts
 +++ b/build/globals/SteamClient.d.ts
 @@ -1,6 +1,3 @@
@@ -13,7 +10,7 @@ index 7181be389b9b247755829aa02ee29b30624d9cab..4e60c001eb794a53b8d84ac658797a47
      RegisterForAppOverviewChanges: any;
      RegisterForAppDetails: any;
 diff --git a/src/globals/SteamClient.ts b/src/globals/SteamClient.ts
-index 3463b7d55995e66251c3acfd50eea023a4cb5592..b449294038c0950501f21e87f3397785ba84fb7d 100644
+index 0c65707782a81f5975b25f52eec5655f8abebe28..24ed6075372188c745c505523e1e5b938e216aef 100644
 --- a/src/globals/SteamClient.ts
 +++ b/src/globals/SteamClient.ts
 @@ -1,7 +1,3 @@

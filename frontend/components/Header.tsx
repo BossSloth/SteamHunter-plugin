@@ -12,14 +12,14 @@ import { ErrorDisplay } from './ErrorDisplay';
 import { AchievementSettings, GroupBy, SortBy } from './types';
 
 interface HeaderProps {
-  onSettingsChange(settings: Partial<AchievementSettings> | null): void;
-  onExpandAllClick(): void;
   onCacheCleared(): void;
+  onExpandAllClick(): void;
+  onSettingsChange(settings: Partial<AchievementSettings> | null): void;
 
-  readonly settings: AchievementSettings;
   readonly achievementCount: number;
-  readonly groupCount: number;
   readonly appId: string;
+  readonly groupCount: number;
+  readonly settings: AchievementSettings;
 }
 
 // eslint-disable-next-line max-lines-per-function

@@ -5,9 +5,9 @@ import { AchievementData, SortBy } from './types';
 
 interface AchievementItemProps {
   readonly achievement: AchievementData;
-  readonly sortedBy: SortBy;
   // eslint-disable-next-line react/no-unused-prop-types
   readonly showPoints?: boolean;
+  readonly sortedBy: SortBy;
 }
 
 function getRarityClass(percentage: number): string {

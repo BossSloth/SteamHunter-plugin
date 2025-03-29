@@ -9,8 +9,8 @@ interface Tab {
 
 interface Props {
   onShowTab(tabId: string): void;
-  tabs: Tab[];
   autoFocusContents: boolean;
+  tabs: Tab[];
 }
 
 export function CreateElementOverride(): void {
