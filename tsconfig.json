@@ -17,6 +17,7 @@
       "resolveJsonModule": true,
       "strictNullChecks": true,
       "noUncheckedIndexedAccess": true,
+      "types": ["steam-types"]
     },
     "exclude": ["node_modules"]
 }

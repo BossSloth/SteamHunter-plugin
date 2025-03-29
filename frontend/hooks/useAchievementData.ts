@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   AchievementData,
   AchievementGroupData,
-  SteamAchievementData,
   SteamGameInfo,
 } from '../components/types';
 import { getAchievements, getGroups, getSteamGameInfo } from '../GetData';
@@ -36,19 +35,16 @@ export function useAchievementData(appId: string): AchievementDataHook {
         getAchievements(appId),
         getGroups(appId),
         getSteamGameInfo(appId),
-        // TODO: use steam-types
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-        (SteamClient.Apps.GetMyAchievementsForApp(appId) as Promise<any>).then((res: any) => res?.data?.rgAchievements) as Promise<SteamAchievementData[] | undefined>,
+        SteamClient.Apps.GetMyAchievementsForApp(appId).then(res => res.data.rgAchievements),
       ]);
 
       // Validate data
       if (!groupsData) throw new Error('Failed to load groups');
       if (!achievementsData) throw new Error('Failed to load achievements');
       if (!gameInfoData) throw new Error('Failed to load game info');
-      if (!steamAchievements) throw new Error('Failed to load Steam achievements');
 
       // Update achievements with Steam data
-      const updatedAchievements = achievementsData.map((achievement): AchievementData => {
+      const updatedAchievements = achievementsData.map(achievement => {
         const steamAchievement = steamAchievements.find(sa => sa.strID === achievement.apiName);
 
         return {

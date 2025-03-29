@@ -83,8 +83,6 @@ export function AchievementGroup({
                 alt={getTitle()}
                 className="group-image"
                 onClick={(e) => {
-                  // TODO: use steam-types
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                   SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`);
                   e.stopPropagation();
                 }}

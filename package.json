@@ -21,6 +21,7 @@
     "globals": "^16.0.0",
     "nodemon": "^3.1.9",
     "semantic-release": "^24.2.3",
+    "steam-types": "^0.1.1",
     "typescript-eslint": "^8.26.1"
   },
   "type": "module",
@@ -36,5 +37,8 @@
     "@steambrew/ttc": "^1.1.1",
     "@steambrew/webkit": "^4.2.1",
     "sass-embedded": "^1.85.1"
+  },
+  "patchedDependencies": {
+    "@steambrew/client@4.2.1": "patches/@steambrew%2Fclient@4.2.1.patch"
   }
 }

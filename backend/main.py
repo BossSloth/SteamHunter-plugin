@@ -1,7 +1,7 @@
 import Millennium
 import PluginUtils  # type: ignore
 
-logger = PluginUtils.Logger("steam-hunters")
+logger = PluginUtils.Logger()
 
 import json
 import os

@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
-// TODO: use steam-types
-import { SteamClient } from '@steambrew/client';
 import { CreateCssElement } from './cdn';
 
 declare const g_PopupManager: {
@@ -19,7 +17,6 @@ interface Popup {
 
 declare global {
   interface Window {
-    SteamClient: SteamClient;
     steamHuntersAppId?: string;
   }
 }
