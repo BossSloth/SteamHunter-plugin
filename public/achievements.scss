@@ -209,7 +209,7 @@ $tooltip-background: #16202d;
   }
 
   .progress-container {
-    @include flex-between;
+    align-items: center;
     gap: 10px;
 
     & >:last-child {
