@@ -60,7 +60,9 @@ export function AchievementGroup({
   function getImageUrl(): string | undefined {
     const appId = groupInfo.dlcAppId ?? gameInfo.appId;
 
-    return appId ? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg` : undefined;
+    // TODO: Add StoreItemCache in SteamTypes
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+    return (StoreItemCache as any).GetApp(appId).m_Assets.m_strSmallCapsuleURL;
   }
 
   const unlockedAchievements = achievements.filter(achievement => achievement.unlocked);
