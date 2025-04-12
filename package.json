@@ -6,23 +6,23 @@
     "build": "npm run sass && millennium-ttc --build prod"
   },
   "devDependencies": {
-    "@eslint/js": "^9.22.0",
+    "@eslint/js": "^9.24.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.1",
     "@stylistic/eslint-plugin": "^4.2.0",
     "@types/react": "16.14.0",
-    "@types/react-dom": "^18.3.5",
+    "@types/react-dom": "^18.3.6",
     "@types/webpack": "^5.28.5",
     "clipboardy": "^4.0.0",
-    "eslint": "^9.22.0",
-    "eslint-plugin-perfectionist": "^4.10.1",
-    "eslint-plugin-react": "^7.37.4",
+    "eslint": "^9.24.0",
+    "eslint-plugin-perfectionist": "^4.11.0",
+    "eslint-plugin-react": "^7.37.5",
     "globals": "^16.0.0",
     "nodemon": "^3.1.9",
     "semantic-release": "^24.2.3",
-    "steam-types": "^0.1.1",
-    "typescript-eslint": "^8.26.1"
+    "steam-types": "^0.1.2",
+    "typescript-eslint": "^8.29.1"
   },
   "type": "module",
   "name": "steamhunters-plugin",
@@ -34,9 +34,9 @@
   "dependencies": {
     "@steambrew/api": "^4.2.2",
     "@steambrew/client": "^4.2.1",
-    "@steambrew/ttc": "^1.1.1",
+    "@steambrew/ttc": "^1.2.2",
     "@steambrew/webkit": "^4.2.1",
-    "sass-embedded": "^1.85.1"
+    "sass-embedded": "^1.86.3"
   },
   "patchedDependencies": {
     "@steambrew/client@4.2.1": "patches/@steambrew%2Fclient@4.2.1.patch"
