@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.1...v1.2.2) (2025-03-29)
+
+
+### Bug Fixes
+
+* don't provide name to logger ([c066e44](https://github.com/BossSloth/SteamHunter-plugin/commit/c066e449a47fe63e7c88dcb341f864b322bdb0b2))
+
 ## [1.2.1](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.0...v1.2.1) (2025-03-22)
 
 
