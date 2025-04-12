@@ -1,3 +1,11 @@
+## [1.2.3](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.2...v1.2.3) (2025-04-12)
+
+
+### Bug Fixes
+
+* Group header image not working on newer games (was broken on newer games released starting circa march) ([497b794](https://github.com/BossSloth/SteamHunter-plugin/commit/497b794c37a971dd48e1269576091cd5522691dc))
+* progress bar spacing not being consistent between groups, closes [#10](https://github.com/BossSloth/SteamHunter-plugin/issues/10) ([ae6b45e](https://github.com/BossSloth/SteamHunter-plugin/commit/ae6b45ef918b4806c56a2c7fdd4e5cd0f4d19765))
+
 ## [1.2.2](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.1...v1.2.2) (2025-03-29)
 
 
