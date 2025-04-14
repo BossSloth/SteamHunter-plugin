@@ -1,3 +1,10 @@
+## [1.2.4](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.3...v1.2.4) (2025-04-14)
+
+
+### Bug Fixes
+
+* add metadata.json to release zip ([bcb107d](https://github.com/BossSloth/SteamHunter-plugin/commit/bcb107d3f86dfc90a8a9dd62776b6ca7944b5c0d))
+
 ## [1.2.3](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.2...v1.2.3) (2025-04-12)
 
 
