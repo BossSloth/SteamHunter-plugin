@@ -6,7 +6,7 @@ from pathlib import Path, PurePosixPath
 # Global configuration
 INCLUDED = {
     '.millennium/Dist', 'backend', 'LICENSE',
-    'README.md', 'plugin.json', 'requirements.txt', 'public'
+    'README.md', 'plugin.json', 'requirements.txt', 'public', 'metadata.json', 'CHANGELOG.md'
 }
 
 def run_build():
