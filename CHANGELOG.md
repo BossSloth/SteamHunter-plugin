@@ -1,3 +1,10 @@
+## [1.2.5](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.4...v1.2.5) (2025-05-10)
+
+
+### Bug Fixes
+
+* Fixed achievement tab crashing if image cache wasn't fully loaded yet on some games, closes [#11](https://github.com/BossSloth/SteamHunter-plugin/issues/11) ([24a3967](https://github.com/BossSloth/SteamHunter-plugin/commit/24a3967504e00da3a927d877c09797fb41f2703f))
+
 ## [1.2.4](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.3...v1.2.4) (2025-04-14)
 
 

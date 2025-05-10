@@ -3,7 +3,7 @@
   "name": "achievement-groups",
   "common_name": "Achievement Groups",
   "description": "SteamHunters achievement groups and other info right in your Steam client",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "include": [
     "public/achievements.css"
   ]
