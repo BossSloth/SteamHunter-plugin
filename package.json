@@ -6,24 +6,24 @@
     "build": "npm run sass && millennium-ttc --build prod"
   },
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
+    "@eslint/js": "^9.28.0",
     "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/exec": "^7.0.3",
+    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^11.0.1",
-    "@stylistic/eslint-plugin": "^4.2.0",
+    "@semantic-release/github": "^11.0.3",
+    "@stylistic/eslint-plugin": "^4.4.1",
     "@types/react": "16.14.0",
-    "@types/react-dom": "^18.3.6",
+    "@types/react-dom": "^18.3.7",
     "@types/webpack": "^5.28.5",
     "clipboardy": "^4.0.0",
-    "eslint": "^9.24.0",
-    "eslint-plugin-perfectionist": "^4.11.0",
+    "eslint": "^9.28.0",
+    "eslint-plugin-perfectionist": "^4.14.0",
     "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.0.0",
-    "nodemon": "^3.1.9",
-    "semantic-release": "^24.2.3",
-    "steam-types": "^0.1.2",
-    "typescript-eslint": "^8.29.1"
+    "globals": "^16.2.0",
+    "nodemon": "^3.1.10",
+    "semantic-release": "^24.2.5",
+    "steam-types": "^0.1.4",
+    "typescript-eslint": "^8.33.1"
   },
   "type": "module",
   "name": "steamhunters-plugin",
@@ -33,11 +33,11 @@
   "author": "BossSloth",
   "license": "MIT",
   "dependencies": {
-    "@steambrew/api": "^4.2.2",
-    "@steambrew/client": "^4.2.1",
-    "@steambrew/ttc": "^1.2.2",
-    "@steambrew/webkit": "^4.2.1",
-    "sass-embedded": "^1.86.3"
+    "@steambrew/api": "^5.2.24",
+    "@steambrew/client": "^5.2.24",
+    "@steambrew/ttc": "^2.5.3",
+    "@steambrew/webkit": "^5.2.24",
+    "sass-embedded": "^1.89.1"
   },
   "patchedDependencies": {
     "@steambrew/client@4.2.1": "patches/@steambrew%2Fclient@4.2.1.patch"
