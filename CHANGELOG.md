@@ -1,3 +1,10 @@
+## [1.2.6](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.5...v1.2.6) (2025-09-14)
+
+
+### Bug Fixes
+
+* Fixed achievements group tab sometimes not appearing, it now appear 100% of the time ([f1a6135](https://github.com/BossSloth/SteamHunter-plugin/commit/f1a61351223d8d74487ae55184bbaf9c9924d4e4))
+
 ## [1.2.5](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.4...v1.2.5) (2025-05-10)
 
 
