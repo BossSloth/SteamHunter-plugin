@@ -19,5 +19,6 @@
       "noUncheckedIndexedAccess": true,
       "types": ["steam-types"]
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules"],
+    "include": ["frontend/**/*"]
 }

@@ -65,9 +65,7 @@ export function getCachedData<T>(appId: string, type: keyof AppCache): T | null 
 export function setCachedData(appId: string, type: keyof AppCache, data: unknown): void {
   try {
     const store = getStore();
-    if (!store[appId]) {
-      store[appId] = {};
-    }
+    store[appId] ??= {};
 
     store[appId][type] = {
       data,
