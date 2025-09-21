@@ -10,7 +10,9 @@ interface Tab {
 
 interface Props {
   onShowTab(tabId: string): void;
+  activeTab: string;
   autoFocusContents: boolean;
+  firstOpen?: boolean;
   tabs: Tab[];
 }
 
@@ -61,6 +63,9 @@ export function patchCreateElement(options: {
   }, 1000);
 }
 
+// Set of appids that have opened the achievement groups tab
+const hasOpened = new Set<string>();
+
 function addAchievementGroupsTab(props: Partial<Props> | null): void {
   if (!props) return;
 
@@ -79,6 +84,10 @@ function addAchievementGroupsTab(props: Partial<Props> | null): void {
     tabs.push({ content: <AchievementPage appId={appid} />, id: 'achievement-groups', title: 'Achievement Groups' });
 
     props.tabs = tabs;
+    if (!hasOpened.has(appid)) {
+      props.onShowTab('achievement-groups');
+      hasOpened.add(appid);
+    }
   }
 }
 
