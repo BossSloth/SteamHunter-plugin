@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.6...v1.3.0) (2025-09-21)
+
+
+### Features
+
+* open achievement groups tab by default ([497209e](https://github.com/BossSloth/SteamHunter-plugin/commit/497209eb0bcc05a0039bda70037389c8f53d7453))
+* temporarily add augmented steam HLTB times to game details section ([55181ff](https://github.com/BossSloth/SteamHunter-plugin/commit/55181ffbfe1d10f5a89b6c50564547065b2a781e))
+
 ## [1.2.6](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.5...v1.2.6) (2025-09-14)
 
 
