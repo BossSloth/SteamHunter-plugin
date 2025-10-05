@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.3.0...v1.3.1) (2025-10-05)
+
+
+### Bug Fixes
+
+* Fixed some games failing on parsing json because of weird characters ([366b78a](https://github.com/BossSloth/SteamHunter-plugin/commit/366b78a42d1ba3fbaecb3bb1cf6aebdf5eb8f351))
+
 # [1.3.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.2.6...v1.3.0) (2025-09-21)
 
 
