@@ -43,7 +43,13 @@ async function fetchAndCache<T>(
     return cachedData;
   }
 
-  const response = JSON.parse(decodeUtf8(await backendCallable({ appId }))) as ApiResponse<T> | null;
+  const responseStr = await backendCallable({ appId });
+  let response: ApiResponse<T> | null;
+  try {
+    response = JSON.parse(responseStr) as ApiResponse<T> | null;
+  } catch (error) {
+    throw new Error(`Failed to parse ${cacheKey} response: ${error}\n${responseStr}`);
+  }
 
   if (!response) {
     throw new Error(`Invalid ${cacheKey} response: ${JSON.stringify(response)}`);
