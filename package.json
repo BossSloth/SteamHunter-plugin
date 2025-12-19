@@ -22,7 +22,7 @@
     "globals": "^16.2.0",
     "nodemon": "^3.1.10",
     "semantic-release": "^24.2.5",
-    "steam-types": "^0.1.4",
+    "steam-types": "^2.0.0",
     "typescript-eslint": "^8.33.1"
   },
   "type": "module",
@@ -33,11 +33,11 @@
   "author": "BossSloth",
   "license": "MIT",
   "dependencies": {
-    "@steambrew/api": "^5.2.24",
-    "@steambrew/client": "^5.2.24",
-    "@steambrew/ttc": "^2.5.3",
-    "@steambrew/webkit": "^5.2.24",
-    "sass-embedded": "^1.89.1"
+    "@steambrew/api": "^5.8.3",
+    "@steambrew/client": "^5.8.3",
+    "@steambrew/ttc": "^2.8.6",
+    "@steambrew/webkit": "^5.8.3",
+    "sass-embedded": "^1.97.0"
   },
   "patchedDependencies": {
     "@steambrew/client@4.2.1": "patches/@steambrew%2Fclient@4.2.1.patch"
