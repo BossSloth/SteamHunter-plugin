@@ -1,5 +1,5 @@
 import { ProgressBar } from '@steambrew/client';
-import React from 'react';
+import React, { JSX } from 'react';
 import { ControllerFocusable } from '../SteamComponents';
 import { AchievementItem } from './AchievementItem';
 import { AchievementIcon, PointsIcon } from './Icons';

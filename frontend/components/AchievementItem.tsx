@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { JSX, useRef } from 'react';
 import { ControllerFocusable, SteamTooltip } from '../SteamComponents';
 import { PointsIcon } from './Icons';
 import { AchievementData, SortBy } from './types';

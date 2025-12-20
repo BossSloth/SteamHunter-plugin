@@ -1,5 +1,5 @@
 import { Button, Dropdown, Focusable, SingleDropdownOption, TextField, Toggle } from '@steambrew/client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { JSX, useEffect, useRef, useState } from 'react';
 import { SteamTooltip } from '../SteamComponents';
 import {
   clearAppCache,
@@ -136,6 +136,7 @@ export function Header({
           <TextField
             value={settings.searchQuery ?? ''}
             onChange={(e) => { onSettingsChange({ searchQuery: e.target.value }); }}
+            // @ts-expect-error placeholder does exist
             placeholder="Search achievements..."
           />
         </div>
@@ -147,6 +148,7 @@ export function Header({
               clearAppCache(appId);
               onCacheCleared();
             }}
+            // @ts-expect-error ref does exist
             ref={toolTipDom}
           >
             Clear cache

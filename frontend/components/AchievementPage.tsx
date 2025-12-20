@@ -1,5 +1,5 @@
 import { Spinner } from '@steambrew/client';
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, JSX, useEffect, useState } from 'react';
 import { CreateCssElement } from '../cdn';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { getDefaultSettings } from '../utils/cache';

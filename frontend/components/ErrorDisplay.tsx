@@ -1,5 +1,5 @@
 import { IconsModule } from '@steambrew/client';
-import React from 'react';
+import React, { JSX } from 'react';
 
 export function ErrorDisplay({ errors }: { readonly errors: Error[]; }): JSX.Element {
   return (
