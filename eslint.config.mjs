@@ -2,19 +2,19 @@ import pluginJs from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import perfectionist from 'eslint-plugin-perfectionist';
 import pluginReact from 'eslint-plugin-react';
-import { globalIgnores } from 'eslint/config';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
   { files: ['**/*.{js,mjs,cjs,ts}'] },
-  globalIgnores(['.millennium/', '.venv/']),
+  globalIgnores(['.millennium/', '.venv/', './helpers']),
   {
     languageOptions: {
       globals: globals.browser,
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['*config.mjs', 'helpers/clean-maps.mjs'],
+          allowDefaultProject: ['*config.mjs'],
         },
         tsconfigRootDir: import.meta.dirname,
       },
@@ -42,7 +42,7 @@ export default tseslint.config(
   }),
   {
     plugins: {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       perfectionist,
     },
     rules: {

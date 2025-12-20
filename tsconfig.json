@@ -2,10 +2,10 @@
     "compilerOptions": {
       "outDir": ".millennium/Dist",
       "module": "ESNext",
-      "target": "ES2021",
+      "target": "ES2022",
       "jsx": "react",
       "declaration": false,
-      "moduleResolution": "node",
+      "moduleResolution": "bundler",
       "noUnusedLocals": true,
       "noUnusedParameters": true,
       "esModuleInterop": true,
@@ -17,7 +17,7 @@
       "resolveJsonModule": true,
       "strictNullChecks": true,
       "noUncheckedIndexedAccess": true,
-      "types": ["steam-types"]
+      "types": ["steam-types", "node"]
     },
     "exclude": ["node_modules"],
     "include": ["frontend/**/*"]

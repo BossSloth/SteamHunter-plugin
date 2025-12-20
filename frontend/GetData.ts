@@ -20,12 +20,6 @@ const API = {
   updates: callable<[{ appId: string; }], string>('RequestAchievementUpdates'),
 };
 
-function decodeUtf8(binaryString: string): string {
-  const bytes = Uint8Array.from(binaryString, char => char.charCodeAt(0));
-
-  return new TextDecoder('utf-8').decode(bytes);
-}
-
 function handleTimeoutError(error: string, context: string): never {
   if (error.includes('timed out')) {
     throw new Error(`Timed out getting ${context}. Check if website is up. ${error}`);
@@ -48,7 +42,7 @@ async function fetchAndCache<T>(
   try {
     response = JSON.parse(responseStr) as ApiResponse<T> | null;
   } catch (error) {
-    throw new Error(`Failed to parse ${cacheKey} response: ${error}\n${responseStr}`);
+    throw new Error(`Failed to parse ${cacheKey} response: ${error}\n${responseStr}`, { cause: error });
   }
 
   if (!response) {
