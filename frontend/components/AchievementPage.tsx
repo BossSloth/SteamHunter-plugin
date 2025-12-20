@@ -1,11 +1,11 @@
 import { Spinner } from '@steambrew/client';
-import React, { createRef, JSX, useEffect, useState } from 'react';
-import { CreateCssElement } from '../cdn';
+import React, { createRef, JSX, useState } from 'react';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { getDefaultSettings } from '../utils/cache';
 import { AchievementGroup } from './AchievementGroup';
 import { ErrorDisplay } from './ErrorDisplay';
 import { Header } from './Header';
+import { Styles } from './Styles';
 import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, SortBy } from './types';
 
 interface AchievementPageProps {
@@ -223,12 +223,6 @@ export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
     data.reload();
   }
 
-  useEffect(() => {
-    if (!domElement.current) return;
-
-    CreateCssElement(domElement.current.ownerDocument);
-  }, []);
-
   if (data.errors.length > 0) {
     return <ErrorDisplay errors={data.errors} />;
   }
@@ -240,13 +234,16 @@ export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
             <Spinner className="steam-hunters-spinner" />
           )
         : (
-            <AchievementContent
-              data={data}
-              settings={settings}
-              onSettingsChange={handleSettingsChange}
-              onCacheCleared={handleCacheCleared}
-              appId={appId}
-            />
+            <>
+              <Styles />
+              <AchievementContent
+                data={data}
+                settings={settings}
+                onSettingsChange={handleSettingsChange}
+                onCacheCleared={handleCacheCleared}
+                appId={appId}
+              />
+            </>
           )}
     </div>
   );

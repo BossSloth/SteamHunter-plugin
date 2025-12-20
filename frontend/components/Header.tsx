@@ -66,7 +66,7 @@ export function Header({
   return (
     <Focusable className="achievements-header">
       <div className="css-error">
-        <ErrorDisplay errors={[new Error('CSS not injected page will look broken, please report!')]} />
+        <ErrorDisplay errors={[new Error('CSS not injected, page will look broken, please report!')]} />
       </div>
       <Focusable className="left-controls">
         <Focusable>

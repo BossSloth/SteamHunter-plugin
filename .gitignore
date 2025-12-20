@@ -3,6 +3,6 @@ node_modules/
 .millennium/
 build/
 !bun.lockb
-public/achievements.css.map
 public/achievements.css
 metadata.json
+!.vscode
