@@ -11,7 +11,6 @@ const INCLUDED = [
   'README.md',
   'plugin.json',
   'requirements.txt',
-  'public',
   'metadata.json',
   'CHANGELOG.md',
 ];
