@@ -1,5 +1,5 @@
 import { Spinner } from '@steambrew/client';
-import React, { createRef, JSX, useState } from 'react';
+import React, { createRef, JSX, useEffect, useState } from 'react';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { getDefaultSettings } from '../utils/cache';
 import { AchievementGroup } from './AchievementGroup';
@@ -226,6 +226,16 @@ export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
   if (data.errors.length > 0) {
     return <ErrorDisplay errors={data.errors} />;
   }
+
+  useEffect(() => {
+    const achievementSubscriber = SteamClient.GameSessions.RegisterForAchievementNotification(() => {
+      data.silentReload();
+    });
+
+    return (): void => {
+      achievementSubscriber.unregister();
+    };
+  }, []);
 
   return (
     <div className="steam-hunters-achievements-page" ref={domElement}>

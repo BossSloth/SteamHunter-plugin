@@ -8,6 +8,7 @@ import { getAchievements, getGroups, getSteamGameInfo } from '../GetData';
 
 export interface AchievementDataHook {
   reload(): void;
+  silentReload(): void;
   achievements: AchievementData[];
   errors: Error[];
   gameInfo: SteamGameInfo;
@@ -22,8 +23,12 @@ export function useAchievementData(appId: string): AchievementDataHook {
   const [errors, setErrors] = useState<Error[]>([]);
   const [loading, setLoading] = useState(true);
   const [reloadTrigger, setReloadTrigger] = useState(0);
+  const [silentReloadTrigger, setSilentReloadTrigger] = useState(0);
 
-  const loadData = useCallback(async () => {
+  const loadData = useCallback(async (silent: boolean) => {
+    if (!silent) {
+      setLoading(true);
+    }
     try {
       // prettier-ignore
       const [
@@ -77,18 +82,27 @@ export function useAchievementData(appId: string): AchievementDataHook {
       console.error('Error loading achievement data:', error);
       setErrors(prev => [...prev, error as Error]);
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   }, [appId]);
 
   useEffect(() => {
-    setLoading(true);
-    loadData();
+    loadData(false);
   }, [loadData, reloadTrigger]);
+
+  useEffect(() => {
+    loadData(true);
+  }, [loadData, silentReloadTrigger]);
 
   const reload = useCallback(() => {
     setReloadTrigger(prev => prev + 1);
   }, []);
 
-  return { achievements, groups, gameInfo, errors, loading, reload };
+  const silentReload = useCallback(() => {
+    setSilentReloadTrigger(prev => prev + 1);
+  }, []);
+
+  return { achievements, groups, gameInfo, errors, loading, reload, silentReload };
 }
