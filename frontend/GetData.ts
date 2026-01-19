@@ -3,9 +3,11 @@ import {
   AchievementData,
   AchievementGroupData,
   RequestAchievementGroupsResponse,
+  ScrapedAchievementsResponse,
   SteamGameInfo,
 } from './components/types';
 import { AppCache, getCachedData, setCachedData } from './utils/cache';
+import { BackendScrapedResponse, processScrapedModel } from './utils/scraper';
 
 interface ResponseError {
   error?: string;
@@ -18,6 +20,7 @@ const API = {
   achievements: callable<[{ appId: string; }], string>('RequestAchievements'),
   gameInfo: callable<[{ appId: string; }], string>('RequestSteamGameInfo'),
   updates: callable<[{ appId: string; }], string>('RequestAchievementUpdates'),
+  scrapedDetails: callable<[{ appId: string; }], string>('ScrapeAchievementDetails'),
 };
 
 function handleTimeoutError(error: string, context: string): never {
@@ -68,4 +71,28 @@ export async function getAchievements(appId: string): Promise<AchievementData[] 
 
 export async function getSteamGameInfo(appId: string): Promise<SteamGameInfo | null> {
   return fetchAndCache<SteamGameInfo>(appId, API.gameInfo, 'gameInfo');
+}
+
+export async function getScrapedDetails(appId: string): Promise<ScrapedAchievementsResponse | null> {
+  const cachedData = getCachedData<ScrapedAchievementsResponse>(appId, 'scrapedDetails');
+  if (cachedData !== null) {
+    return cachedData;
+  }
+
+  const backendResponse = await fetchAndCache<BackendScrapedResponse>(appId, API.scrapedDetails, 'scrapedDetails' as keyof AppCache);
+  if (!backendResponse.success || backendResponse.modelText === undefined) {
+    return { success: false, achievements: {}, updates: [] };
+  }
+
+  const { achievements, updates } = processScrapedModel(backendResponse.modelText);
+
+  const finalResponse: ScrapedAchievementsResponse = {
+    success: true,
+    achievements,
+    updates,
+  };
+
+  setCachedData(appId, 'scrapedDetails', finalResponse);
+
+  return finalResponse;
 }

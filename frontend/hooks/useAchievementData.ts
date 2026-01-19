@@ -4,7 +4,7 @@ import {
   AchievementGroupData,
   SteamGameInfo,
 } from '../components/types';
-import { getAchievements, getGroups, getSteamGameInfo } from '../GetData';
+import { getAchievements, getGroups, getScrapedDetails, getSteamGameInfo } from '../GetData';
 
 export interface AchievementDataHook {
   reload(): void;
@@ -35,11 +35,17 @@ export function useAchievementData(appId: string): AchievementDataHook {
         achievementsData,
         groupsData,
         gameInfoData,
+        scrapedData,
         steamAchievements,
       ] = await Promise.all([
         getAchievements(appId),
         getGroups(appId),
         getSteamGameInfo(appId),
+        getScrapedDetails(appId).catch((error: unknown) => {
+          console.error('Failed to load scraped details:', error);
+
+          return null;
+        }),
         SteamClient.Apps.GetMyAchievementsForApp(appId).then(res => res.data.rgAchievements),
       ]);
 
@@ -48,18 +54,23 @@ export function useAchievementData(appId: string): AchievementDataHook {
       if (!achievementsData) throw new Error('Failed to load achievements');
       if (!gameInfoData) throw new Error('Failed to load game info');
 
-      // Update achievements with Steam data
+      // Update achievements with Steam and Scraped data
       const updatedAchievements = achievementsData.map((achievement) => {
         const steamAchievement = steamAchievements.find(sa => sa.strID === achievement.apiName);
+        const scrapedAchievement = scrapedData?.achievements ? scrapedData.achievements[achievement.apiName] : null;
 
         return {
           ...achievement,
           strImage: steamAchievement?.strImage ?? '',
           unlocked: steamAchievement?.bAchieved ?? false,
           name: steamAchievement?.strName ?? achievement.name,
-          description: steamAchievement?.strDescription ?? achievement.description,
+          description: steamAchievement?.strDescription.trim() ?? achievement.description.trim(),
           unlockedDate: steamAchievement?.rtUnlocked !== 0 ? new Date((steamAchievement?.rtUnlocked ?? 0) * 1000) : undefined,
-        };
+          guideUrl: scrapedAchievement?.guideUrl,
+          tags: scrapedAchievement?.tags,
+          completedCount: scrapedAchievement?.completedCount,
+          totalPlayers: scrapedAchievement?.totalPlayers,
+        } as AchievementData;
       });
 
       // Create base game group
@@ -69,14 +80,26 @@ export function useAchievementData(appId: string): AchievementDataHook {
         .filter(achievement => !allGroupAchievements.has(achievement.apiName))
         .map(achievement => achievement.apiName);
 
+      const baseGameReleaseDate = scrapedData?.updates ? scrapedData.updates[0]?.displayReleaseDate : undefined;
+
       const baseGameGroup: AchievementGroupData = {
         name: undefined,
         achievementApiNames: baseGameAchievements,
+        releaseDate: baseGameReleaseDate !== undefined ? new Date(baseGameReleaseDate) : undefined,
       };
+
+      const updatedGroupsData = groupsData.map((group, index) => {
+        const releaseDate = scrapedData?.updates ? scrapedData.updates[index + 1]?.displayReleaseDate : undefined;
+
+        return {
+          ...group,
+          releaseDate: releaseDate !== undefined ? new Date(releaseDate) : undefined,
+        };
+      });
 
       setErrors([]);
       setAchievements(updatedAchievements);
-      setGroups([baseGameGroup, ...groupsData]);
+      setGroups([baseGameGroup, ...updatedGroupsData]);
       setGameInfo(gameInfoData);
     } catch (error) {
       console.error('Error loading achievement data:', error);

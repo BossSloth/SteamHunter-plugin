@@ -18,3 +18,23 @@ export function AchievementIcon(): JSX.Element {
     </i>
   );
 }
+
+export function GuideIcon(): JSX.Element {
+  return (
+    <i className="guide-icon" style={{ height: '1em', display: 'flex' }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style={{ height: '100%', fill: 'currentColor' }}>
+        <path d="M14,10H19.5L14,4.5V10M5,3H15L21,9V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3M5,5V19H19V12H12V5H5M7,14H17V15.5H7V14M7,17H14V18.5H7V17Z" />
+      </svg>
+    </i>
+  );
+}
+
+export function UsersIcon(): JSX.Element {
+  return (
+    <i className="users-icon" style={{ height: '1em', display: 'flex' }}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style={{ height: '100%', fill: 'currentColor' }}>
+        <path d="M16,13C15.71,13 15.38,13 15.03,13.05C16.19,13.89 17,15.11 17,16.5V19H22V16.5C22,14.64 19.33,13 16,13M8,13C4.67,13 2,14.64 2,16.5V19H14V16.5C14,14.64 11.33,13 8,13M8,11A3,3 0 0,0 11,8A3,3 0 0,0 8,5A3,3 0 0,0 5,8A3,3 0 0,0 8,11M16,11A3,3 0 0,0 19,8A3,3 0 0,0 16,5A3,3 0 0,0 13,8A3,3 0 0,0 16,11Z" />
+      </svg>
+    </i>
+  );
+}

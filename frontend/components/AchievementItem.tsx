@@ -1,6 +1,7 @@
+/* eslint-disable max-lines-per-function */
 import React, { JSX, useRef } from 'react';
 import { ControllerFocusable, SteamTooltip } from '../SteamComponents';
-import { PointsIcon } from './Icons';
+import { GuideIcon, PointsIcon, UsersIcon } from './Icons';
 import { AchievementData, SortBy } from './types';
 
 interface AchievementItemProps {
@@ -63,13 +64,49 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
           <div className={`achievement-progress ${achievement.unlocked ? 'unlocked' : 'locked'}`} style={{ width: `${usedPercentage}%` }} />
           <div className="achievement-content">
             <h3>{achievement.name}</h3>
-            <p>{achievement.description}</p>
+            <p>{achievement.description !== '' ? achievement.description : 'This achievement has no description.'}</p>
+            <div className="achievement-extra-info">
+              {achievement.guideUrl !== undefined && (
+                <a
+                  className="guide-link"
+                  href={achievement.guideUrl}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (achievement.guideUrl !== undefined && achievement.guideUrl !== '') {
+                      SteamClient.System.OpenInSystemBrowser(achievement.guideUrl);
+                    }
+                  }}
+                >
+                  <GuideIcon />
+                  Guide
+                </a>
+              )}
+              {achievement.completedCount !== undefined && achievement.totalPlayers !== undefined && (
+                <span className="completed-count">
+                  <UsersIcon />
+                  {achievement.completedCount.toLocaleString()} / {achievement.totalPlayers.toLocaleString()}
+                </span>
+              )}
+              {achievement.tags && Object.entries(achievement.tags).map(([tag, count]) => (
+                <SteamTooltip
+                  toolTipContent={`${tag} (${count} vote${count === 1 ? '' : 's'})`}
+                  direction="top"
+                  nDelayShowMS={5}
+                  strTooltipClassname="steam-hunters-percentage-tooltip"
+                  key={tag}
+                >
+                  <span className="achievement-tag">
+                    {tag}
+                  </span>
+                </SteamTooltip>
+              ))}
+            </div>
           </div>
           <div className="right">
             <div className="achievement-stats">
               {showPoints && (
                 <span className="points">
-                  {achievement.points}
+                  {achievement.points.toLocaleString()}
                   <PointsIcon />
                 </span>
               )}
@@ -77,7 +114,7 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
               <SteamTooltip
                 toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={sortedBy} />}
                 direction="top"
-                nDelayShowMS={0}
+                nDelayShowMS={5}
                 strTooltipClassname="steam-hunters-percentage-tooltip"
               >
                 <span className={`steam-hunters-percentage ${rarityClass}`} ref={toolTipDom}>
@@ -87,9 +124,16 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
             </div>
             <div>
               {achievement.unlockedDate && (
-                <span className="unlocked-date">
-                  {achievement.unlockedDate.toLocaleDateString()}
-                </span>
+                <SteamTooltip
+                  toolTipContent={`Unlocked on ${achievement.unlockedDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
+                  direction="top"
+                  nDelayShowMS={5}
+                  strTooltipClassname="steam-hunters-percentage-tooltip"
+                >
+                  <span className="unlocked-date">
+                    {achievement.unlockedDate.toLocaleDateString()}
+                  </span>
+                </SteamTooltip>
               )}
             </div>
           </div>

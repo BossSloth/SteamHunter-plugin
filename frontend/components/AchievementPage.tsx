@@ -31,7 +31,9 @@ function filterAndSortAchievements(achievements: AchievementData[], settings: Ac
       if (searchQuery !== undefined) {
         const query = searchQuery.toLowerCase();
 
-        return achievement.name.toLowerCase().includes(query) || achievement.description.toLowerCase().includes(query);
+        return achievement.name.toLowerCase().includes(query)
+          || achievement.description.toLowerCase().includes(query)
+          || (achievement.tags !== undefined && Object.keys(achievement.tags).some(tag => tag.toLowerCase().includes(query)));
       }
 
       return true;

@@ -198,13 +198,23 @@ $tooltip-background: #16202d;
 
   .group-title {
     min-width: 0;
-    h2 {
-      margin: 0 0 5px 0;
+
+    .group-title-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .group-title-text {
+      margin: 0;
       font-size: 18px;
       color: $text-color;
       line-height: 1.2;
       overflow-wrap: break-word;
       word-wrap: break-word;
+      font-weight: bold;
     }
   }
 
@@ -253,6 +263,9 @@ $tooltip-background: #16202d;
 
   .date {
     color: $accent-color;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 2px;
   }
 
   .expand-button {
@@ -317,19 +330,54 @@ $tooltip-background: #16202d;
       border-radius: 5px;
     }
 
-    .achievement-content {
-      h3 {
-        margin: 0 0 5px 0;
-        font-size: 16px;
-        color: $text-color;
+  .achievement-content {
+    margin: 3px 0;
+
+    h3 {
+      margin: 0 0 5px 0;
+      font-size: 16px;
+      color: $text-color;
+    }
+
+    p {
+      margin: 0;
+      color: $secondary-text;
+      font-size: 14px;
+    }
+
+    .achievement-extra-info {
+      @include flex-gap(8px);
+      margin-top: 4px;
+      flex-wrap: wrap;
+      font-size: 0.85em;
+
+      .guide-link {
+        color: $accent-color;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
-      p {
-        margin: 0;
+      .completed-count {
         color: $secondary-text;
-        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .achievement-tag {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: $text-color;
       }
     }
+  }
 
     .right {
       @include flex-between;
@@ -354,7 +402,6 @@ $tooltip-background: #16202d;
     display: flex;
     align-items: center;
     height: 0.8em;
-    margin-top: 3px;
 
     svg {
       height: 100%;

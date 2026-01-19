@@ -4,16 +4,31 @@ export type ApiName = string;
 export interface AchievementData {
   achievementId: number;
   apiName: string;
+  /**
+   * Number of players who have completed this achievement
+   */
+  completedCount?: number;
   description: string;
+  /**
+   * URL to the guide for this achievement
+   */
+  guideUrl?: string;
   localPercentage: number;
   name: string;
   obtainability: Obtainability;
   points: number;
   steamPercentage: number;
   steamPoints: number;
-
-  // Extra properties from steam
   strImage: string;
+  /*
+   * Key is tag name, value is tag count
+   */
+  tags?: Record<string, number>;
+
+  /**
+   * Total players qualified for this game
+   */
+  totalPlayers?: number;
   unlocked: boolean;
   unlockedDate?: Date;
 }
@@ -32,6 +47,7 @@ export interface AchievementGroupData {
   dlcAppId?: number;
   dlcAppName?: string;
   name?: string;
+  releaseDate?: Date;
 }
 
 // https://steamhunters.com/api/Help/Api/GET-apps-appId
@@ -69,4 +85,33 @@ export interface AchievementSettings {
 
 export interface RequestAchievementGroupsResponse {
   groups: AchievementGroupData[];
+}
+
+export interface ScrapedAchievement {
+  apiName: string;
+  /*
+   * Number of players who have completed this achievement
+   */
+  completedCount?: number;
+  guideUrl?: string;
+  /*
+   * Key is tag name, value is tag count
+   */
+  tags: Record<string, number>;
+  /*
+   * Total players qualified for this game
+   */
+  totalPlayers?: number;
+}
+
+export interface ScrapedUpdate {
+  displayReleaseDate: number;
+  updateId: number;
+  updateNumber: number;
+}
+
+export interface ScrapedAchievementsResponse {
+  achievements: Record<string, ScrapedAchievement>;
+  success: boolean;
+  updates: ScrapedUpdate[];
 }

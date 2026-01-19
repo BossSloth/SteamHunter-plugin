@@ -91,11 +91,15 @@ export function AchievementGroup({
               />
             )}
             <div className="group-title">
-              <h2>{getTitle()}</h2>
-              {/* Date will be formatted like this: "1 Jan 2025" */}
-              {/* <span className="date">
-                {new Date(gameInfo.releaseDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-              </span> */}
+              <div className="group-title-row">
+                <span className="group-title-text">{getTitle()}</span>
+                {/* Date will be formatted like this: "1 Jan 2025" */}
+                {groupInfo.releaseDate && (
+                  <span className="date">
+                    {groupInfo.releaseDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </span>
+                )}
+              </div>
               <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
                 {fullCompleted && <AchievementIcon />}
                 <div className="progress-text">

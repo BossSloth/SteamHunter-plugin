@@ -16,6 +16,7 @@ export interface AppCache {
   achievements?: CacheEntry<unknown>;
   gameInfo?: CacheEntry<unknown>;
   groups?: CacheEntry<unknown>;
+  scrapedDetails?: CacheEntry<unknown>;
 }
 
 type CacheStore = Record<string, AppCache>;
