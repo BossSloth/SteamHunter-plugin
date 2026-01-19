@@ -69,7 +69,7 @@ export enum SortBy {
   SteamHunters = 'SH%',
   Steam = 'Steam%',
   Name = 'Name',
-  Unlocked = 'Unlocked',
+  Date = 'Date',
   Default = 'Default',
 }
 

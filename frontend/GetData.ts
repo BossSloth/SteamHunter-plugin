@@ -30,6 +30,8 @@ function handleTimeoutError(error: string, context: string): never {
   throw new Error(error);
 }
 
+const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
 async function fetchAndCache<T>(
   appId: string,
   backendCallable: (typeof API)[keyof typeof API],
@@ -40,6 +42,7 @@ async function fetchAndCache<T>(
     return cachedData;
   }
 
+  const startTime = performance.now();
   const responseStr = await backendCallable({ appId });
   let response: ApiResponse<T> | null;
   try {
@@ -56,7 +59,9 @@ async function fetchAndCache<T>(
     handleTimeoutError(response.error, cacheKey);
   }
 
-  setCachedData(appId, cacheKey, response);
+  const tookSeconds = Math.floor((performance.now() - startTime) / 1000);
+
+  setCachedData(appId, cacheKey, response, tookSeconds * WEEK_IN_MS);
 
   return response;
 }

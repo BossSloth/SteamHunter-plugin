@@ -49,7 +49,7 @@ function filterAndSortAchievements(achievements: AchievementData[], settings: Ac
           return reverse ? a.steamPercentage - b.steamPercentage : b.steamPercentage - a.steamPercentage;
         case SortBy.Name:
           return reverse ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
-        case SortBy.Unlocked:
+        case SortBy.Date:
           return reverse ? (a.unlockedDate?.getTime() ?? Infinity) - (b.unlockedDate?.getTime() ?? Infinity) : (b.unlockedDate?.getTime() ?? 0) - (a.unlockedDate?.getTime() ?? 0);
         default:
           return 0;
@@ -166,7 +166,6 @@ function AchievementContent({
         settings={settings}
         onSettingsChange={onSettingsChange}
         achievementCount={data.achievements.length}
-        groupCount={groupedAchievements.length}
         onExpandAllClick={handleExpandAllClick}
         onCacheCleared={onCacheCleared}
         appId={appId}

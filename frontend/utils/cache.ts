@@ -45,7 +45,7 @@ export function getCachedData<T>(appId: string, type: keyof AppCache): T | null 
     }
 
     // Check if cache is expired
-    if (Date.now() - entry.timestamp > CACHE_DURATION) {
+    if (Date.now() - entry.timestamp < 0) {
       delete appCache[type];
       if (Object.keys(appCache).length === 0) {
         delete store[appId];
@@ -63,14 +63,14 @@ export function getCachedData<T>(appId: string, type: keyof AppCache): T | null 
   }
 }
 
-export function setCachedData(appId: string, type: keyof AppCache, data: unknown): void {
+export function setCachedData(appId: string, type: keyof AppCache, data: unknown, extraCacheDuration = 0): void {
   try {
     const store = getStore();
     store[appId] ??= {};
 
     store[appId][type] = {
       data,
-      timestamp: Date.now(),
+      timestamp: Date.now() + CACHE_DURATION + extraCacheDuration,
     };
     setStore(store);
   } catch (error) {

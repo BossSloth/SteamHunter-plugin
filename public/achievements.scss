@@ -17,6 +17,12 @@ $danger-color: #e63946;
   align-items: center;
 }
 
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @mixin flex-gap($gap) {
   display: flex;
   gap: $gap;
@@ -40,6 +46,10 @@ $danger-color: #e63946;
   }
 }
 
+*:has(> .steam-hunters-achievements-page) {
+  scrollbar-gutter: stable;
+}
+
 .steam-hunters-achievements-page {
   // background-color: $background-color;
   color: $text-color;
@@ -55,111 +65,148 @@ $danger-color: #e63946;
   }
 
   .achievements-header {
-    @include flex-between;
-    margin-bottom: 40px;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
 
-    .left-controls {
-      @include flex-gap(10px);
-      flex-direction: column;
-      margin-right: 240px;
-      & > div {
-        @include flex-gap(5px);
-        align-items: center;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-
-      select, .__DropDownControlButton__, .DialogDropDown {
-        background-color: rgba(0, 0, 0, 0.4) !important;
-        border: 1px solid #4f94bc;
-        color: $accent-color !important;
-        padding: 5px;
-        border-radius: 4px;
-        transition: border-color, transform 0.2s ease;
-        outline: none;
-        font-family: 'Arial';
-        width: 100%;
-        font-size: 0.82em !important;
-
-        // Big picture
-        &.__DropDownControlButton__ {
-          padding: 3px 8px;
-        }
-
-        // Normal
-        &.DialogDropDown {
-          padding: 4px 8px;
-
-          .DialogDropDown_Arrow {
-            top: 8px;
-            right: 4px;
-            height: 15px;
-          }
-        }
-
-        &:hover {
-          border-color: $accent-color;
-        }
-
-        &.gpfocuswithin {
-          background-color: hsla(0, 0%, 10%, 0.5) !important;
-          border-color: $accent-color;
-          transform: scale(1.05);
-        }
-
-        option {
-          background-color: $background-color;
-          color: $accent-color;
-        }
-      }
-    }
-
-    .cache-info {
-      margin-top: auto;
-      margin-bottom: 10px;
-    }
-
-    .right-controls {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: auto auto;
-      margin-bottom: auto;
-      position: absolute;
-      right: 0;
-      top: 0;
+    .header-top-row {
+      @include flex-between;
+      gap: 12px;
 
       .search-container {
-        width: 100px;
-        height: 100%;
-        position: relative;
-        left: -54px;
+        flex: 1;
+        max-width: 300px;
 
         .Panel {
           width: 100%;
-          height: 100%;
         }
 
         input {
-          width: 180px;
-          height: 100%;
-          padding: 4px 10px;
+          width: 100%;
+          padding: 4px 12px;
           border-radius: 4px;
-          background: hsla(0, 0%, 0%, 0.2) !important;
-          border: 1px solid hsla(0, 0%, 50%, 0.1);
+          background: rgba(0, 0, 0, 0.3) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1);
           color: #fff;
-          flex: none;
+          font-size: 14px;
 
           &::placeholder {
-            color: hsla(0, 0%, 100%, 0.5);
+            color: rgba(255, 255, 255, 0.5);
           }
 
           &:focus {
             outline: none;
-            border-color: hsla(0, 0%, 100%, 0.3);
-            background: hsla(0, 0%, 0%, 0.3);
+            border-color: $accent-color;
+            background: rgba(0, 0, 0, 0.4) !important;
           }
         }
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        .preferences-btn {
+          padding: 8px 12px;
+          min-width: 40px;
+          @include flex-center;
+        }
+      }
+    }
+
+    .header-bottom-row {
+      @include flex-between;
+      flex-wrap: wrap;
+
+      .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        font-size: 14px;
+        color: #8f98a0;
+
+        .filter-control {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          .dropdown-container {
+            min-width: 110px;
+          }
+        }
+      }
+
+      .toggle-group {
+        display: flex;
+        align-items: center;
+
+        .toggle-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          cursor: pointer;
+          padding: 4px;
+          border-radius: 4px;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.05);
+          }
+
+          span {
+            font-size: 13px;
+            color: $text-color;
+          }
+        }
+      }
+    }
+
+    select, .__DropDownControlButton__, .DialogDropDown {
+      background-color: rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(79, 148, 188, 0.5);
+      color: $accent-color !important;
+      padding: 6px 10px;
+      border-radius: 4px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      outline: none;
+      font-family: 'Arial';
+      width: 100%;
+      font-size: 13px !important;
+      gap: 4px;
+
+      &.__DropDownControlButton__ {
+        padding: 4px 10px;
+      }
+
+      &.DialogDropDown {
+        padding: 5px 10px;
+
+        .DialogDropDown_Arrow {
+          top: 8px;
+          right: 6px;
+          height: 15px;
+        }
+      }
+
+      &:hover {
+        border-color: $accent-color;
+      }
+
+      &.gpfocuswithin {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        border-color: $accent-color;
+        transform: scale(1.02);
+      }
+
+      option {
+        background-color: $background-color;
+        color: $accent-color;
       }
     }
   }
@@ -454,17 +501,6 @@ $danger-color: #e63946;
     }
   }
 
-  .toggle-container > div {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    padding: 4px 0;
-  }
-
-  .toggle-container {
-    margin-right: 55px;
-  }
 }
 
 // Achievement rarity colors

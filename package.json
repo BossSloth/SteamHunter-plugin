@@ -38,6 +38,7 @@
     "@steambrew/client": "^5.8.3",
     "@steambrew/ttc": "^2.8.6",
     "@steambrew/webkit": "^5.8.3",
+    "react-icons": "^5.5.0",
     "sass-embedded": "^1.97.0"
   },
   "patchedDependencies": {
