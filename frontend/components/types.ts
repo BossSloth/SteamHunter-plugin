@@ -41,6 +41,13 @@ export enum Obtainability {
   Unobtainable,
 }
 
+export const ObtainabilityNames = {
+  [Obtainability.Obtainable]: 'Obtainable',
+  [Obtainability.BrokenButObtainable]: 'Broken but obtainable',
+  [Obtainability.ConditionallyObtainable]: 'Conditionally obtainable',
+  [Obtainability.Unobtainable]: 'Unobtainable',
+} as const;
+
 // https://steamhunters.com/api/Help/Api/GET-GetAchievementGroups-v1_appId_groupBy[0]_groupBy[1]_includeMultiplayerGroup
 export interface AchievementGroupData {
   achievementApiNames: ApiName[];

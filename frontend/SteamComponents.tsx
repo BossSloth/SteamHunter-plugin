@@ -16,7 +16,7 @@ import { FC, PropsWithChildren, ReactNode } from 'react';
  */
 export const TabComponent = findModuleByExport(e => e?.toString?.().includes('bleedGlyphs')).JZ as FC<unknown>;
 
-interface SteamTooltipProps extends PropsWithChildren {
+export interface SteamTooltipProps extends PropsWithChildren {
   bDisabled?: boolean;
   direction?: 'top' | 'bottom' | 'left' | 'right'; // Default: 'right'
   nDelayShowMS?: number;

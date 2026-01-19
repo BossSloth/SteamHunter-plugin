@@ -1,8 +1,9 @@
-/* eslint-disable max-lines-per-function */
-import React, { JSX, useRef } from 'react';
+/* eslint-disable react/no-multi-comp */
+
+import React, { JSX, PropsWithChildren, useRef } from 'react';
 import { ControllerFocusable, SteamTooltip } from '../SteamComponents';
 import { GuideIcon, PointsIcon, UsersIcon } from './Icons';
-import { AchievementData, SortBy } from './types';
+import { AchievementData, Obtainability, ObtainabilityNames, SortBy } from './types';
 
 interface AchievementItemProps {
   readonly achievement: AchievementData;
@@ -31,12 +32,10 @@ function TooltipAchievementItem({ achievement, sortedBy }: AchievementItemProps)
       <span>
         {usedPercentage.toFixed(1)}% on {sortedBy === SortBy.Steam ? 'Steam Hunters' : 'Steam'}
       </span>
-      <div className="steam-hunters-tooltip-arrow" />
     </>
   );
 }
 
-// eslint-disable-next-line react/no-multi-comp
 export function AchievementItem({ achievement, sortedBy, showPoints = true }: AchievementItemProps): JSX.Element {
   const toolTipDom = useRef<HTMLSpanElement>(null);
   const fakeMouseOver = new MouseEvent('mouseover', { bubbles: true });
@@ -87,18 +86,20 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
                   {achievement.completedCount.toLocaleString()} / {achievement.totalPlayers.toLocaleString()}
                 </span>
               )}
+              {achievement.obtainability !== Obtainability.Obtainable && (
+                <span className={`obtainability ${Obtainability[achievement.obtainability]}`}>
+                  {ObtainabilityNames[achievement.obtainability]}
+                </span>
+              )}
               {achievement.tags && Object.entries(achievement.tags).map(([tag, count]) => (
-                <SteamTooltip
+                <Tooltip
                   toolTipContent={`${tag} (${count} vote${count === 1 ? '' : 's'})`}
-                  direction="top"
-                  nDelayShowMS={5}
-                  strTooltipClassname="steam-hunters-percentage-tooltip"
                   key={tag}
                 >
                   <span className="achievement-tag">
                     {tag}
                   </span>
-                </SteamTooltip>
+                </Tooltip>
               ))}
             </div>
           </div>
@@ -111,34 +112,48 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
                 </span>
               )}
 
-              <SteamTooltip
+              <Tooltip
                 toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={sortedBy} />}
-                direction="top"
-                nDelayShowMS={5}
-                strTooltipClassname="steam-hunters-percentage-tooltip"
               >
                 <span className={`steam-hunters-percentage ${rarityClass}`} ref={toolTipDom}>
                   {`${usedPercentage.toFixed(1)}%`}
                 </span>
-              </SteamTooltip>
+              </Tooltip>
             </div>
             <div>
               {achievement.unlockedDate && (
-                <SteamTooltip
+                <Tooltip
                   toolTipContent={`Unlocked on ${achievement.unlockedDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
-                  direction="top"
-                  nDelayShowMS={5}
-                  strTooltipClassname="steam-hunters-percentage-tooltip"
                 >
                   <span className="unlocked-date">
                     {achievement.unlockedDate.toLocaleDateString()}
                   </span>
-                </SteamTooltip>
+                </Tooltip>
               )}
             </div>
           </div>
         </div>
       </div>
     </ControllerFocusable>
+  );
+}
+
+export function Tooltip({ toolTipContent, children }: { readonly toolTipContent: React.ReactNode; } & PropsWithChildren): JSX.Element {
+  const content = (
+    <>
+      {toolTipContent}
+      <div className="steam-hunters-tooltip-arrow" />
+    </>
+  );
+
+  return (
+    <SteamTooltip
+      toolTipContent={content}
+      direction="top"
+      nDelayShowMS={10}
+      strTooltipClassname="steam-hunters-tooltip"
+    >
+      {children}
+    </SteamTooltip>
   );
 }

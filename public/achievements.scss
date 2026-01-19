@@ -7,6 +7,8 @@ $button-background: rgba(103, 193, 245, 0.2);
 $button-hover-background: rgba(103, 193, 245, 0.4);
 $secondary-text: #8f98a0;
 $tooltip-background: #16202d;
+$warning-color: #f4a261;
+$danger-color: #e63946;
 
 // Mixins
 @mixin flex-between {
@@ -376,6 +378,28 @@ $tooltip-background: #16202d;
         border-radius: 4px;
         color: $text-color;
       }
+
+      .obtainability {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+
+        &.Obtainable {
+          color: $accent-color;
+        }
+
+        &.BrokenButObtainable {
+          color: $warning-color;
+        }
+
+        &.ConditionallyObtainable {
+          color: $warning-color;
+        }
+
+        &.Unobtainable {
+          color: $danger-color;
+        }
+      }
     }
   }
 
@@ -466,7 +490,7 @@ $tooltip-background: #16202d;
   }
 }
 
-.steam-hunters-percentage-tooltip .__TextToolTip__ {
+.steam-hunters-tooltip .__TextToolTip__ {
   text-align: center;
   background: none;
   background-color: $tooltip-background;
