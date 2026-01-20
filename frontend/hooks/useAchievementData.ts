@@ -54,10 +54,13 @@ export function useAchievementData(appId: string): AchievementDataHook {
       if (!achievementsData) throw new Error('Failed to load achievements');
       if (!gameInfoData) throw new Error('Failed to load game info');
 
+      const steamAchievementMap = new Map(steamAchievements.map(sa => [sa.strID, sa]));
+      const scrapedAchievementMap = scrapedData?.achievements ?? {};
+
       // Update achievements with Steam and Scraped data
       const updatedAchievements = achievementsData.map((achievement) => {
-        const steamAchievement = steamAchievements.find(sa => sa.strID === achievement.apiName);
-        const scrapedAchievement = scrapedData?.achievements ? scrapedData.achievements[achievement.apiName] : null;
+        const steamAchievement = steamAchievementMap.get(achievement.apiName);
+        const scrapedAchievement = scrapedAchievementMap[achievement.apiName] ?? null;
 
         return {
           ...achievement,

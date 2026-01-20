@@ -119,6 +119,7 @@ export default defineConfig(
       '@typescript-eslint/no-floating-promises': 'off',
       'no-console': 'off',
       'no-alert': 'off',
+      'react/display-name': 'off',
       // #endregion
 
       // #region React

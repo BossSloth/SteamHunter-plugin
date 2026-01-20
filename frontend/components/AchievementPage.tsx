@@ -1,5 +1,5 @@
 import { Spinner } from '@steambrew/client';
-import React, { createRef, JSX, useEffect, useState } from 'react';
+import React, { createRef, JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { getDefaultSettings } from '../utils/cache';
 import { AchievementGroup } from './AchievementGroup';
@@ -102,7 +102,7 @@ function getGroupedAchievements(
   }
 }
 
-function AchievementContent({
+const AchievementContent = React.memo(({
   onSettingsChange,
   onCacheCleared,
   data,
@@ -114,14 +114,23 @@ function AchievementContent({
   readonly data: AchievementDataHook;
   readonly settings: AchievementSettings;
   readonly appId: string;
-}): JSX.Element {
+}): JSX.Element => {
   const { groupBy, sortBy, expandAll } = settings;
-  const groupedAchievements = getGroupedAchievements(data.achievements, data.groups, groupBy);
+
+  // Build achievement lookup map
+  const achievementMap = useMemo(() => {
+    return new Map(data.achievements.map(a => [a.apiName, a]));
+  }, [data.achievements]);
+
+  const groupedAchievements = useMemo(
+    () => getGroupedAchievements(data.achievements, data.groups, groupBy),
+    [data.achievements, data.groups, groupBy],
+  );
 
   // Initialize expandedGroups with all group indices
   const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(() => new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)));
 
-  const allGroupsExpanded = React.useMemo(() => {
+  const allGroupsExpanded = useMemo(() => {
     return expandedGroups.size === groupedAchievements.length;
   }, [expandedGroups, groupedAchievements.length]);
 
@@ -131,7 +140,7 @@ function AchievementContent({
     }
   }, [allGroupsExpanded, expandAll, onSettingsChange]);
 
-  function handleGroupExpand(index: number, isExpanded: boolean): void {
+  const handleGroupExpand = useCallback((index: number, isExpanded: boolean): void => {
     setExpandedGroups((prev) => {
       const newSet = new Set(prev);
       if (isExpanded) {
@@ -142,23 +151,39 @@ function AchievementContent({
 
       return newSet;
     });
-  }
+  }, []);
 
-  function handleExpandAllClick(): void {
+  const handleExpandAllClick = useCallback((): void => {
     if (allGroupsExpanded) {
       setExpandedGroups(new Set());
     } else {
       setExpandedGroups(new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)));
     }
-  }
+  }, [allGroupsExpanded, groupedAchievements.length]);
 
-  function getAchievementsForGroup(apiNames: string[]): AchievementData[] {
-    return data.achievements.filter(achievement => apiNames.includes(achievement.apiName));
-  }
+  const getAchievementsForGroup = useCallback((apiNames: string[]): AchievementData[] => {
+    const result: AchievementData[] = [];
+    for (const apiName of apiNames) {
+      const achievement = achievementMap.get(apiName);
+      if (achievement) {
+        result.push(achievement);
+      }
+    }
 
-  function calculateTotalPoints(groupAchievements: AchievementData[]): number {
-    return groupAchievements.reduce((sum, achievement) => sum + achievement.points, 0);
-  }
+    return result;
+  }, [achievementMap]);
+
+  const processedGroups = useMemo(() => {
+    return groupedAchievements.map((group) => {
+      const groupAchievements = filterAndSortAchievements(
+        getAchievementsForGroup(group.achievementApiNames),
+        settings,
+      );
+      const totalPoints = groupAchievements.reduce((sum, a) => sum + a.points, 0);
+
+      return { group, groupAchievements, totalPoints };
+    });
+  }, [groupedAchievements, getAchievementsForGroup, settings]);
 
   return (
     <>
@@ -172,34 +197,26 @@ function AchievementContent({
       />
 
       <div className="achievement-groups">
-        {groupedAchievements.map((group, index) => {
-          const groupAchievements = filterAndSortAchievements(
-            getAchievementsForGroup(group.achievementApiNames),
-            settings,
-          );
-          const totalPoints = calculateTotalPoints(groupAchievements);
-
-          return (
-            <AchievementGroup
-              // eslint-disable-next-line react/no-array-index-key
-              key={index}
-              groupInfo={group}
-              title={group.name}
-              achievements={groupAchievements}
-              totalPoints={totalPoints}
-              isExpanded={expandedGroups.has(index)}
-              sortedBy={sortBy}
-              showPoints={settings.showPoints}
-              gameInfo={data.gameInfo}
-              onExpandChange={(isExpanded) => { handleGroupExpand(index, isExpanded); }}
-              showUnlocked={settings.showUnlocked}
-            />
-          );
-        })}
+        {processedGroups.map(({ group, groupAchievements, totalPoints }, index) => (
+          <AchievementGroup
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+            groupInfo={group}
+            title={group.name}
+            achievements={groupAchievements}
+            totalPoints={totalPoints}
+            isExpanded={expandedGroups.has(index)}
+            sortedBy={sortBy}
+            showPoints={settings.showPoints}
+            gameInfo={data.gameInfo}
+            onExpandChange={(isExpanded) => { handleGroupExpand(index, isExpanded); }}
+            showUnlocked={settings.showUnlocked}
+          />
+        ))}
       </div>
     </>
   );
-}
+});
 
 // eslint-disable-next-line react/no-multi-comp
 export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {

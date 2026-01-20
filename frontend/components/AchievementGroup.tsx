@@ -1,5 +1,5 @@
 import { ProgressBar } from '@steambrew/client';
-import React, { JSX } from 'react';
+import React, { JSX, useMemo } from 'react';
 import { ControllerFocusable } from '../SteamComponents';
 import { AchievementItem } from './AchievementItem';
 import { AchievementIcon, PointsIcon } from './Icons';
@@ -20,7 +20,7 @@ interface AchievementGroupProps {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function AchievementGroup({
+export const AchievementGroup = React.memo(({
   groupInfo,
   title,
   achievements,
@@ -31,7 +31,7 @@ export function AchievementGroup({
   showPoints = true,
   showUnlocked = true,
   onExpandChange,
-}: AchievementGroupProps): JSX.Element {
+}: AchievementGroupProps): JSX.Element => {
   const [expanded, setExpanded] = React.useState(isExpanded);
 
   React.useEffect(() => {
@@ -43,7 +43,7 @@ export function AchievementGroup({
     onExpandChange(newExpanded);
   }
 
-  function getTitle(): string {
+  const groupTitle = useMemo(() => {
     if (groupInfo.dlcAppId !== undefined) {
       if (groupInfo.name !== undefined) {
         return `${groupInfo.dlcAppName} — ${groupInfo.name}`;
@@ -55,19 +55,27 @@ export function AchievementGroup({
     }
 
     return gameInfo.name;
-  }
+  }, [groupInfo.dlcAppId, groupInfo.dlcAppName, groupInfo.name, title, gameInfo.name]);
 
-  function getImageUrl(): string | undefined {
+  // TODO: Add StoreItemCache in SteamTypes
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const imageUrl: string | undefined = useMemo(() => {
     const appId = groupInfo.dlcAppId ?? gameInfo.appId;
 
-    // TODO: Add StoreItemCache in SteamTypes
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
     return (StoreItemCache as any).GetApp(appId)?.m_Assets?.m_strSmallCapsuleURL ?? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg`;
-  }
+  }, [groupInfo.dlcAppId, gameInfo.appId]);
 
-  const unlockedAchievements = achievements.filter(achievement => achievement.unlocked);
-  const progressPercentage = unlockedAchievements.length / achievements.length * 100;
-  const fullCompleted = unlockedAchievements.length === achievements.length;
+  // Memoize progress calculations
+  const { unlockedCount, progressPercentage, fullCompleted } = useMemo(() => {
+    const unlocked = achievements.filter(a => a.unlocked).length;
+
+    return {
+      unlockedCount: unlocked,
+      progressPercentage: achievements.length > 0 ? (unlocked / achievements.length) * 100 : 0,
+      fullCompleted: unlocked === achievements.length && achievements.length > 0,
+    };
+  }, [achievements]);
 
   return (
     <div className="achievement-group">
@@ -79,20 +87,22 @@ export function AchievementGroup({
       >
         <div className="group-header">
           <div className="group-info">
-            {getImageUrl() !== undefined && (
+            {imageUrl !== undefined && (
               <img
-                src={getImageUrl()}
-                alt={getTitle()}
+                src={imageUrl}
+                alt={groupTitle}
                 className="group-image"
                 onClick={(e) => {
                   SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`);
                   e.stopPropagation();
                 }}
+                loading="lazy"
+                decoding="async"
               />
             )}
             <div className="group-title">
               <div className="group-title-row">
-                <span className="group-title-text">{getTitle()}</span>
+                <span className="group-title-text">{groupTitle}</span>
                 {/* Date will be formatted like this: "1 Jan 2025" */}
                 {groupInfo.releaseDate && (
                   <span className="date">
@@ -103,7 +113,7 @@ export function AchievementGroup({
               <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
                 {fullCompleted && <AchievementIcon />}
                 <div className="progress-text">
-                  <span>{unlockedAchievements.length}</span>
+                  <span>{unlockedCount}</span>
                   <span>/</span>
                   <span>{achievements.length}</span>
                   <span>{` (${progressPercentage.toFixed(1)}%)`}</span>
@@ -137,4 +147,4 @@ export function AchievementGroup({
       )}
     </div>
   );
-}
+});

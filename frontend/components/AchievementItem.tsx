@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 
-import React, { JSX, PropsWithChildren, useRef } from 'react';
+import React, { JSX, PropsWithChildren, useMemo, useRef } from 'react';
 import { ControllerFocusable, SteamTooltip } from '../SteamComponents';
 import { GuideIcon, PointsIcon, UsersIcon } from './Icons';
 import { AchievementData, Obtainability, ObtainabilityNames, SortBy } from './types';
@@ -36,13 +36,13 @@ function TooltipAchievementItem({ achievement, sortedBy }: AchievementItemProps)
   );
 }
 
-export function AchievementItem({ achievement, sortedBy, showPoints = true }: AchievementItemProps): JSX.Element {
+export const AchievementItem = React.memo(({ achievement, sortedBy, showPoints = true }: AchievementItemProps): JSX.Element => {
   const toolTipDom = useRef<HTMLSpanElement>(null);
-  const fakeMouseOver = new MouseEvent('mouseover', { bubbles: true });
-  const fakeMouseOut = new MouseEvent('mouseout', { bubbles: true });
+
+  const fakeMouseOver = useMemo(() => new MouseEvent('mouseover', { bubbles: true }), []);
+  const fakeMouseOut = useMemo(() => new MouseEvent('mouseout', { bubbles: true }), []);
 
   const rarityClass = getRarityClass(achievement.localPercentage);
-
   const usedPercentage = sortedBy === SortBy.Steam ? achievement.steamPercentage : achievement.localPercentage;
 
   return (
@@ -57,7 +57,7 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
     >
       <div className="achievement-item">
         <div className="left">
-          <img className="achievement-image" alt={achievement.name} src={achievement.strImage} />
+          <img className="achievement-image" alt={achievement.name} src={achievement.strImage} loading="lazy" decoding="async" />
         </div>
         <div className="center">
           <div className={`achievement-progress ${achievement.unlocked ? 'unlocked' : 'locked'}`} style={{ width: `${usedPercentage}%` }} />
@@ -136,7 +136,7 @@ export function AchievementItem({ achievement, sortedBy, showPoints = true }: Ac
       </div>
     </ControllerFocusable>
   );
-}
+});
 
 export function Tooltip({ toolTipContent, children }: { readonly toolTipContent: React.ReactNode; } & PropsWithChildren): JSX.Element {
   const content = (
