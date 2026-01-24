@@ -1,9 +1,10 @@
 import { Millennium, sleep } from '@steambrew/client';
+import { useAchievementStore } from 'stores';
 import { getHltbData } from './HtlbData';
 
 function createInfoWithUrl(title: string, description: string, url: string): HTMLElement {
   const infoItem = document.createElement('div');
-  infoItem.classList.add('_2ZcNQxY8YknnhNa4ZvIoU4', 'hltb-info');
+  infoItem.classList.add('_2ZcNQxY8YknnhNa4ZvIoU4', 'time-hltb-info');
   infoItem.innerHTML = `
         <div class="_1vYL2q-91QLy-FBzntE7E5">${title}</div>
         <div class="_-9icu8LqT7inRSJISgnkh">
@@ -32,7 +33,7 @@ async function findElement<T extends Element = Element>(selector: string): Promi
 }
 
 async function injectHltbData(appId: string): Promise<void> {
-  mainDocument.querySelectorAll('.hltb-info').forEach((element) => {
+  mainDocument.querySelectorAll('.time-hltb-info').forEach((element) => {
     element.remove();
   });
   const infoContainer = await findElement('._3cntzF30xAuwn1ARWJjvCb._1uS70KI6ZbUE94jUB27ioB');
@@ -52,7 +53,7 @@ async function injectHltbData(appId: string): Promise<void> {
 
   function createBr(): HTMLElement {
     const infoBr = mainDocument.createElement('br');
-    infoBr.classList.add('hltb-info');
+    infoBr.classList.add('time-hltb-info');
 
     return infoBr;
   }
@@ -93,6 +94,11 @@ function attachListeners(appId: string, infoButton: HTMLElement): void {
 }
 
 async function addHltbData(): Promise<void> {
+  const showHltbData = useAchievementStore.getState().showHltb;
+  if (!showHltbData) {
+    return;
+  }
+
   try {
     const appIconElement = await findElement<HTMLImageElement>('._3NBxSLAZLbbbnul8KfDFjw._2dzwXkCVAuZGFC-qKgo8XB');
     const infoButton = (await findElement('._3VQUewWB8g6Z5qB4C7dGFr ._3qDWQGB0rtwM3qpXTb11Q-.Focusable .zvLq1GUCH3yLuqv_TXBJ1'))?.parentElement;

@@ -85,6 +85,8 @@ export enum GroupBy {
 export interface GlobalPreferences {
   hideHidden: boolean;
   showGuides: boolean;
+  /** Temporary setting until hltb data get's moved */
+  showHltb: boolean;
   showObtainability: boolean;
   showPlayerCount: boolean;
   showPoints: boolean;

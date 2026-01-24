@@ -21,6 +21,7 @@ const defaultsGlobalPreferences: GlobalPreferences = {
   showPlayerCount: true,
   showPoints: true,
   showTags: true,
+  showHltb: false,
 };
 
 const standardDefaults: ViewSettings = {

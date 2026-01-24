@@ -1,4 +1,5 @@
 import { Button, Focusable, Toggle } from '@steambrew/client';
+import { initHltbInjection } from 'hltb/HltbInjection';
 import React, { JSX, useMemo } from 'react';
 import { ControllerFocusable } from 'SteamComponents';
 import { useAchievementStore } from '../stores';
@@ -142,6 +143,20 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
             description="Hides the name and description of hidden achievements until clicked (like Steam's spoiler protection)."
             value={settings.hideHidden}
             onChange={(val) => { setPreferences({ hideHidden: val }); }}
+          />
+
+          <hr />
+
+          <PreferenceItem
+            label="Show HLTB data"
+            description="HLTB data has temporarily been added to this plugin. This toggles if it will be displayed in the game details section. It has nothing to do with the achievements."
+            value={settings.showHltb}
+            onChange={(val) => {
+              setPreferences({ showHltb: val });
+              if (val) {
+                initHltbInjection();
+              }
+            }}
           />
         </div>
 
