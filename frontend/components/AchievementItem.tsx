@@ -64,6 +64,7 @@ function AchievementExtraInfo({
       {settings.showTags && achievement.tags && Object.entries(achievement.tags).map(([tag, count]) => (
         <Tooltip
           toolTipContent={`${tag} (${count} vote${count === 1 ? '' : 's'})`}
+          showTooltipOnContollerFocus={false}
           key={tag}
         >
           <span className="achievement-tag">

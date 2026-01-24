@@ -2,6 +2,7 @@ import React, { forwardRef, JSX, PropsWithChildren, useEffect, useImperativeHand
 import { SteamTooltip } from '../SteamComponents';
 
 export interface TooltipProps extends PropsWithChildren {
+  readonly showTooltipOnContollerFocus?: boolean;
   readonly toolTipContent: React.ReactNode;
 }
 
@@ -10,7 +11,7 @@ export interface TooltipRef {
   show(): void;
 }
 
-export const Tooltip = forwardRef<TooltipRef, TooltipProps>(({ toolTipContent, children }, ref): JSX.Element => {
+export const Tooltip = forwardRef<TooltipRef, TooltipProps>(({ toolTipContent, showTooltipOnContollerFocus = true, children }, ref): JSX.Element => {
   const content = (
     <>
       {toolTipContent}
@@ -60,9 +61,15 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>(({ toolTipContent, c
       nDelayShowMS={100}
       strTooltipClassname="steam-hunters-tooltip"
     >
-      <div ref={containerRef}>
-        {children}
-      </div>
+      {showTooltipOnContollerFocus
+        ? (
+            <div ref={containerRef}>
+              {children}
+            </div>
+          )
+        : (
+            children
+          )}
     </SteamTooltip>
   );
 });

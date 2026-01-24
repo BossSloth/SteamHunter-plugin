@@ -143,7 +143,6 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
             value={settings.hideHidden}
             onChange={(val) => { setPreferences({ hideHidden: val }); }}
           />
-          {/* TODO: also give options for player to choose what to hide (name, description, image) with multiple toggles */}
         </div>
 
         <div className="preferences-preview">
