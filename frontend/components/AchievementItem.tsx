@@ -1,7 +1,8 @@
-import React, { JSX, PropsWithChildren, useEffect, useMemo, useRef } from 'react';
-import { ControllerFocusable, SteamTooltip } from '../SteamComponents';
+import React, { JSX, useEffect, useRef } from 'react';
+import { ControllerFocusable } from '../SteamComponents';
 import { useAchievementStore } from '../stores';
 import { GuideIcon, PointsIcon, UsersIcon } from './Icons';
+import { Tooltip, TooltipRef } from './Tooltip';
 import { AchievementData, AchievementSettings, Obtainability, ObtainabilityNames, SortBy } from './types';
 
 interface AchievementItemProps {
@@ -92,10 +93,7 @@ function TooltipAchievementItem({ achievement, sortedBy }: { readonly achievemen
 export const AchievementItem = React.memo(({ achievement }: AchievementItemProps): JSX.Element => {
   const settings = useAchievementStore();
   const [revealed, setRevealed] = React.useState(false);
-  const toolTipDom = useRef<HTMLSpanElement>(null);
-
-  const fakeMouseOver = useMemo(() => new MouseEvent('mouseover', { bubbles: true }), []);
-  const fakeMouseOut = useMemo(() => new MouseEvent('mouseout', { bubbles: true }), []);
+  const percentageTooltipRef = useRef<TooltipRef>(null);
 
   const rarityClass = getRarityClass(achievement.localPercentage);
   const usedPercentage = settings.sortBy === SortBy.Steam ? achievement.steamPercentage : achievement.localPercentage;
@@ -121,10 +119,10 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
       onOKActionDescription={isHidden ? 'Reveal' : null}
       onClick={handleReveal}
       onGamepadFocus={() => {
-        toolTipDom.current?.dispatchEvent(fakeMouseOver);
+        percentageTooltipRef.current?.show();
       }}
       onGamepadBlur={() => {
-        toolTipDom.current?.dispatchEvent(fakeMouseOut);
+        percentageTooltipRef.current?.hide();
       }}
     >
       <div className="achievement-item">
@@ -162,9 +160,10 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
               )}
 
               <Tooltip
+                ref={percentageTooltipRef}
                 toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={settings.sortBy} />}
               >
-                <span className={`steam-hunters-percentage ${rarityClass}`} ref={toolTipDom}>
+                <span className={`steam-hunters-percentage ${rarityClass}`}>
                   {`${usedPercentage.toFixed(1)}%`}
                 </span>
               </Tooltip>
@@ -186,23 +185,3 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
     </ControllerFocusable>
   );
 });
-
-export function Tooltip({ toolTipContent, children }: { readonly toolTipContent: React.ReactNode; } & PropsWithChildren): JSX.Element {
-  const content = (
-    <>
-      {toolTipContent}
-      <div className="steam-hunters-tooltip-arrow" />
-    </>
-  );
-
-  return (
-    <SteamTooltip
-      toolTipContent={content}
-      direction="top"
-      nDelayShowMS={10}
-      strTooltipClassname="steam-hunters-tooltip"
-    >
-      {children}
-    </SteamTooltip>
-  );
-}

@@ -41,18 +41,14 @@ export const AchievementGroup = React.memo(({
   }
 
   const groupTitle = useMemo(() => {
-    if (groupInfo.dlcAppId !== undefined) {
-      if (groupInfo.name !== undefined) {
-        return `${groupInfo.dlcAppName} — ${groupInfo.name}`;
-      }
+    const { dlcAppName, name } = groupInfo;
 
-      return `${groupInfo.dlcAppName}`;
-    } else if (title !== undefined) {
-      return `${gameInfo.name} — ${title}`;
+    if (dlcAppName !== undefined) {
+      return name !== undefined ? `${dlcAppName} — ${name}` : dlcAppName;
     }
 
-    return gameInfo.name;
-  }, [groupInfo.dlcAppId, groupInfo.dlcAppName, groupInfo.name, title, gameInfo.name]);
+    return title !== undefined ? `${gameInfo.name} — ${title}` : gameInfo.name;
+  }, [groupInfo.dlcAppName, groupInfo.name, title, gameInfo.name]);
 
   // Memoize progress calculations
   const { unlockedCount, progressPercentage, fullCompleted } = useMemo(() => {
