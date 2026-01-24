@@ -1,28 +1,20 @@
 import { Spinner } from '@steambrew/client';
-import React, { createRef, JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { createRef, JSX, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
-import { getDefaultSettings } from '../utils/cache';
+import { useAchievementStore } from '../stores';
 import { AchievementGroup } from './AchievementGroup';
+import { ErrorBoundary } from './ErrorBoundary';
 import { ErrorDisplay } from './ErrorDisplay';
 import { Header } from './Header';
+import { PreferencesPopup } from './PreferencesPopup';
 import { Styles } from './Styles';
-import { AchievementData, AchievementGroupData, AchievementSettings, GroupBy, SortBy } from './types';
+import { AchievementData, AchievementGroupData, GroupBy, SortBy, ViewSettings } from './types';
 
 interface AchievementPageProps {
   readonly appId: string;
 }
 
-const defaultSettings: AchievementSettings = {
-  groupBy: GroupBy.DLCAndUpdate,
-  sortBy: SortBy.SteamHunters,
-  reverse: false,
-  expandAll: true,
-  showUnlocked: true,
-  showPoints: true,
-  searchQuery: '',
-};
-
-function filterAndSortAchievements(achievements: AchievementData[], settings: AchievementSettings): AchievementData[] {
+function filterAndSortAchievements(achievements: AchievementData[], settings: ViewSettings): AchievementData[] {
   const { sortBy, reverse, showUnlocked, searchQuery } = settings;
 
   return achievements
@@ -102,22 +94,24 @@ function getGroupedAchievements(
   }
 }
 
-const AchievementContent = React.memo(({
-  onSettingsChange,
-  onCacheCleared,
-  data,
-  settings,
-  appId,
-}: {
-  onSettingsChange(settings: Partial<AchievementSettings> | null): void;
-  onCacheCleared(): void;
-  readonly data: AchievementDataHook;
-  readonly settings: AchievementSettings;
-  readonly appId: string;
-}): JSX.Element => {
-  const { groupBy, sortBy, expandAll } = settings;
+export interface ProcessedGroup {
+  group: AchievementGroupData;
+  groupAchievements: AchievementData[];
+  totalPoints: number;
+}
 
-  // Build achievement lookup map
+interface AchievementContentProps {
+  onCacheCleared(): void;
+  readonly appId: string;
+  readonly data: AchievementDataHook;
+}
+
+function useAchievementGrouping(data: AchievementDataHook, viewSettings: ViewSettings): {
+  processedGroups: ProcessedGroup[];
+  groupedAchievementsLength: number;
+} {
+  const { groupBy } = viewSettings;
+
   const achievementMap = useMemo(() => {
     return new Map(data.achievements.map(a => [a.apiName, a]));
   }, [data.achievements]);
@@ -127,18 +121,76 @@ const AchievementContent = React.memo(({
     [data.achievements, data.groups, groupBy],
   );
 
-  // Initialize expandedGroups with all group indices
-  const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(() => new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)));
+  const getAchievementsForGroup = useCallback((apiNames: string[]): AchievementData[] => {
+    const result: AchievementData[] = [];
+    for (const apiName of apiNames) {
+      const achievement = achievementMap.get(apiName);
+      if (achievement) {
+        result.push(achievement);
+      }
+    }
+
+    return result;
+  }, [achievementMap]);
+
+  const processedGroups = useMemo(() => {
+    return groupedAchievements.map((group) => {
+      const groupAchievements = filterAndSortAchievements(
+        getAchievementsForGroup(group.achievementApiNames),
+        viewSettings,
+      );
+      const totalPoints = groupAchievements.reduce((sum, a) => sum + a.points, 0);
+
+      return { group, groupAchievements, totalPoints };
+    });
+  }, [groupedAchievements, getAchievementsForGroup, viewSettings]);
+
+  return { processedGroups, groupedAchievementsLength: groupedAchievements.length };
+}
+
+const AchievementContent = React.memo(({
+  onCacheCleared,
+  data,
+  appId,
+}: AchievementContentProps): JSX.Element => {
+  const settings = useAchievementStore();
+  const setViewSettings = useAchievementStore(s => s.setViewSettings);
+  const [showPreferences, setShowPreferences] = useState(false);
+  const { processedGroups, groupedAchievementsLength } = useAchievementGrouping(data, settings);
+
+  // Initialize expandedGroups based on store's expandAll state
+  const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(() => {
+    if (settings.expandAll) {
+      return new Set(Array.from({ length: groupedAchievementsLength }, (_, i) => i));
+    }
+
+    return new Set();
+  });
 
   const allGroupsExpanded = useMemo(() => {
-    return expandedGroups.size === groupedAchievements.length;
-  }, [expandedGroups, groupedAchievements.length]);
+    return expandedGroups.size === groupedAchievementsLength;
+  }, [expandedGroups, groupedAchievementsLength]);
 
+  // Sync expanded state with store's expandAll property ONLY when store changes externally (e.g. reset/load)
+  const lastStoreExpandAll = React.useRef(settings.expandAll);
   React.useEffect(() => {
-    if (expandAll !== allGroupsExpanded) {
-      onSettingsChange({ expandAll: allGroupsExpanded });
+    if (settings.expandAll !== lastStoreExpandAll.current) {
+      lastStoreExpandAll.current = settings.expandAll;
+      if (settings.expandAll) {
+        setExpandedGroups(new Set(Array.from({ length: groupedAchievementsLength }, (_, i) => i)));
+      } else {
+        setExpandedGroups(new Set());
+      }
     }
-  }, [allGroupsExpanded, expandAll, onSettingsChange]);
+  }, [settings.expandAll, groupedAchievementsLength]);
+
+  // Update store when local expansion state changes
+  React.useEffect(() => {
+    if (allGroupsExpanded !== settings.expandAll) {
+      lastStoreExpandAll.current = allGroupsExpanded;
+      setViewSettings({ expandAll: allGroupsExpanded });
+    }
+  }, [allGroupsExpanded, settings.expandAll, setViewSettings]);
 
   const handleGroupExpand = useCallback((index: number, isExpanded: boolean): void => {
     setExpandedGroups((prev) => {
@@ -157,44 +209,27 @@ const AchievementContent = React.memo(({
     if (allGroupsExpanded) {
       setExpandedGroups(new Set());
     } else {
-      setExpandedGroups(new Set(Array.from({ length: groupedAchievements.length }, (_, i) => i)));
+      setExpandedGroups(new Set(Array.from({ length: groupedAchievementsLength }, (_, i) => i)));
     }
-  }, [allGroupsExpanded, groupedAchievements.length]);
-
-  const getAchievementsForGroup = useCallback((apiNames: string[]): AchievementData[] => {
-    const result: AchievementData[] = [];
-    for (const apiName of apiNames) {
-      const achievement = achievementMap.get(apiName);
-      if (achievement) {
-        result.push(achievement);
-      }
-    }
-
-    return result;
-  }, [achievementMap]);
-
-  const processedGroups = useMemo(() => {
-    return groupedAchievements.map((group) => {
-      const groupAchievements = filterAndSortAchievements(
-        getAchievementsForGroup(group.achievementApiNames),
-        settings,
-      );
-      const totalPoints = groupAchievements.reduce((sum, a) => sum + a.points, 0);
-
-      return { group, groupAchievements, totalPoints };
-    });
-  }, [groupedAchievements, getAchievementsForGroup, settings]);
+  }, [allGroupsExpanded, groupedAchievementsLength]);
 
   return (
     <>
       <Header
-        settings={settings}
-        onSettingsChange={onSettingsChange}
         achievementCount={data.achievements.length}
         onExpandAllClick={handleExpandAllClick}
         onCacheCleared={onCacheCleared}
+        onPreferencesClick={() => { setShowPreferences(true); }}
         appId={appId}
       />
+
+      {showPreferences && (
+        <PreferencesPopup
+          onClose={() => { setShowPreferences(false); }}
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          processedGroup={processedGroups[0]!}
+        />
+      )}
 
       <div className="achievement-groups">
         {processedGroups.map(({ group, groupAchievements, totalPoints }, index) => (
@@ -206,11 +241,8 @@ const AchievementContent = React.memo(({
             achievements={groupAchievements}
             totalPoints={totalPoints}
             isExpanded={expandedGroups.has(index)}
-            sortedBy={sortBy}
-            showPoints={settings.showPoints}
             gameInfo={data.gameInfo}
             onExpandChange={(isExpanded) => { handleGroupExpand(index, isExpanded); }}
-            showUnlocked={settings.showUnlocked}
           />
         ))}
       </div>
@@ -218,24 +250,22 @@ const AchievementContent = React.memo(({
   );
 });
 
-// eslint-disable-next-line react/no-multi-comp
 export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
+  return (
+    <ErrorBoundary>
+      <AchievementPageContent appId={appId} />
+    </ErrorBoundary>
+  );
+}
+
+function AchievementPageContent({ appId }: AchievementPageProps): JSX.Element {
   const data = useAchievementData(appId);
-  const [settings, setSettings] = useState<AchievementSettings>(() => {
-    const savedSettings = getDefaultSettings();
-
-    return savedSettings ?? defaultSettings;
-  });
-
+  const resetToDefault = useAchievementStore(s => s.resetToDefault);
   const domElement = createRef<HTMLDivElement>();
 
-  function handleSettingsChange(newSettings: Partial<AchievementSettings> | null): void {
-    if (newSettings === null) {
-      setSettings(defaultSettings);
-    } else {
-      setSettings(prev => ({ ...prev, ...newSettings }));
-    }
-  }
+  useLayoutEffect(() => {
+    resetToDefault();
+  }, [appId, resetToDefault]);
 
   function handleCacheCleared(): void {
     data.reload();
@@ -266,8 +296,6 @@ export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
               <Styles />
               <AchievementContent
                 data={data}
-                settings={settings}
-                onSettingsChange={handleSettingsChange}
                 onCacheCleared={handleCacheCleared}
                 appId={appId}
               />

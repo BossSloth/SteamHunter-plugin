@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 
-import { AchievementSettings } from '../components/types';
-
 const CACHE_KEY = 'steamhunters_cache';
 const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
-const DEFAULT_SETTINGS_KEY = 'steamhunter_default_settings';
 
 interface CacheEntry<T> {
   data: T;
@@ -107,18 +104,4 @@ export function getCacheDate(appId: string, type: keyof AppCache = 'achievements
 
     return null;
   }
-}
-
-export function saveDefaultSettings(settings: AchievementSettings): void {
-  localStorage.setItem(DEFAULT_SETTINGS_KEY, JSON.stringify(settings));
-}
-
-export function getDefaultSettings(): AchievementSettings | null {
-  const settings = localStorage.getItem(DEFAULT_SETTINGS_KEY);
-
-  return settings !== null ? JSON.parse(settings) as AchievementSettings : null;
-}
-
-export function clearDefaultSettings(): void {
-  localStorage.removeItem(DEFAULT_SETTINGS_KEY);
 }

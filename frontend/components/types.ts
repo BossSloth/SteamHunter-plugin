@@ -13,6 +13,7 @@ export interface AchievementData {
    * URL to the guide for this achievement
    */
   guideUrl?: string;
+  isHidden: boolean;
   localPercentage: number;
   name: string;
   obtainability: Obtainability;
@@ -24,7 +25,6 @@ export interface AchievementData {
    * Key is tag name, value is tag count
    */
   tags?: Record<string, number>;
-
   /**
    * Total players qualified for this game
    */
@@ -51,6 +51,8 @@ export const ObtainabilityNames = {
 // https://steamhunters.com/api/Help/Api/GET-GetAchievementGroups-v1_appId_groupBy[0]_groupBy[1]_includeMultiplayerGroup
 export interface AchievementGroupData {
   achievementApiNames: ApiName[];
+  /** extra data added from steam */
+  bannerUrl?: string;
   dlcAppId?: number;
   dlcAppName?: string;
   name?: string;
@@ -80,15 +82,26 @@ export enum GroupBy {
   DLC = 'DLC',
 }
 
-export interface AchievementSettings {
+export interface GlobalPreferences {
+  hideHidden: boolean;
+  showGuides: boolean;
+  showObtainability: boolean;
+  showPlayerCount: boolean;
+  showPoints: boolean;
+  showTags: boolean;
+}
+
+export interface ViewSettings {
   expandAll: boolean;
   groupBy: GroupBy;
+  preferencesOpen: boolean;
   reverse: boolean;
   searchQuery?: string;
-  showPoints: boolean;
   showUnlocked: boolean;
   sortBy: SortBy;
 }
+
+export type AchievementSettings = GlobalPreferences & ViewSettings;
 
 export interface RequestAchievementGroupsResponse {
   groups: AchievementGroupData[];

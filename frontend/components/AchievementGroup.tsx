@@ -1,9 +1,10 @@
 import { ProgressBar } from '@steambrew/client';
 import React, { JSX, useMemo } from 'react';
 import { ControllerFocusable } from '../SteamComponents';
+import { useAchievementStore } from '../stores';
 import { AchievementItem } from './AchievementItem';
 import { AchievementIcon, PointsIcon } from './Icons';
-import { AchievementData, AchievementGroupData, SortBy, SteamGameInfo } from './types';
+import { AchievementData, AchievementGroupData, SteamGameInfo } from './types';
 
 interface AchievementGroupProps {
   onExpandChange(isExpanded: boolean): void;
@@ -12,9 +13,6 @@ interface AchievementGroupProps {
   readonly gameInfo: SteamGameInfo;
   readonly groupInfo: AchievementGroupData;
   readonly isExpanded?: boolean;
-  readonly showPoints?: boolean;
-  readonly showUnlocked?: boolean;
-  readonly sortedBy: SortBy;
   readonly title?: string;
   readonly totalPoints: number;
 }
@@ -26,12 +24,11 @@ export const AchievementGroup = React.memo(({
   achievements,
   totalPoints,
   isExpanded = false,
-  sortedBy,
   gameInfo,
-  showPoints = true,
-  showUnlocked = true,
   onExpandChange,
 }: AchievementGroupProps): JSX.Element => {
+  const settings = useAchievementStore();
+
   const [expanded, setExpanded] = React.useState(isExpanded);
 
   React.useEffect(() => {
@@ -57,15 +54,6 @@ export const AchievementGroup = React.memo(({
     return gameInfo.name;
   }, [groupInfo.dlcAppId, groupInfo.dlcAppName, groupInfo.name, title, gameInfo.name]);
 
-  // TODO: Add StoreItemCache in SteamTypes
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const imageUrl: string | undefined = useMemo(() => {
-    const appId = groupInfo.dlcAppId ?? gameInfo.appId;
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-    return (StoreItemCache as any).GetApp(appId)?.m_Assets?.m_strSmallCapsuleURL ?? `https://steamcdn-a.akamaihd.net/steam/apps/${appId}/capsule_184x69.jpg`;
-  }, [groupInfo.dlcAppId, gameInfo.appId]);
-
   // Memoize progress calculations
   const { unlockedCount, progressPercentage, fullCompleted } = useMemo(() => {
     const unlocked = achievements.filter(a => a.unlocked).length;
@@ -87,9 +75,9 @@ export const AchievementGroup = React.memo(({
       >
         <div className="group-header">
           <div className="group-info">
-            {imageUrl !== undefined && (
+            {groupInfo.bannerUrl !== undefined && (
               <img
-                src={imageUrl}
+                src={groupInfo.bannerUrl}
                 alt={groupTitle}
                 className="group-image"
                 onClick={(e) => {
@@ -110,7 +98,7 @@ export const AchievementGroup = React.memo(({
                   </span>
                 )}
               </div>
-              <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
+              <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: settings.showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
                 {fullCompleted && <AchievementIcon />}
                 <div className="progress-text">
                   <span>{unlockedCount}</span>
@@ -125,8 +113,8 @@ export const AchievementGroup = React.memo(({
           <div className="group-right">
             <div className="group-stats">
               <span>
-                {`${achievements.length} achievements${showPoints ? ` worth ${totalPoints}` : ''}`}
-                {showPoints && <PointsIcon />}
+                {`${achievements.length} achievements${settings.showPoints ? ` worth ${totalPoints}` : ''}`}
+                {settings.showPoints && <PointsIcon />}
               </span>
               <span className="expand-button">{expanded ? '▼' : '▶'}</span>
             </div>
@@ -139,8 +127,6 @@ export const AchievementGroup = React.memo(({
             <AchievementItem
               key={achievement.apiName}
               achievement={achievement}
-              sortedBy={sortedBy}
-              showPoints={showPoints}
             />
           ))}
         </div>

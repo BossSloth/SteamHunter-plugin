@@ -145,6 +145,7 @@ $danger-color: #e63946;
       .toggle-group {
         display: flex;
         align-items: center;
+        gap: 8px;
 
         .toggle-item {
           display: flex;
@@ -155,7 +156,7 @@ $danger-color: #e63946;
           border-radius: 4px;
           transition: background-color 0.2s ease;
 
-          &:hover {
+          &:hover, &.gpfocuswithin {
             background: rgba(255, 255, 255, 0.05);
           }
 
@@ -342,15 +343,15 @@ $danger-color: #e63946;
     margin: 15px;
 
     .center {
-      @include flex-between;
+      @include flex-center;
       position: relative;
       width: 100%;
       padding: 0 1rem;
       transition: background-color 0.2s ease;
+      border-radius: 5px;
 
       &:hover {
         background-color: $hover-background;
-        border-radius: 5px;
       }
     }
 
@@ -374,24 +375,69 @@ $danger-color: #e63946;
 
     .achievement-image {
       width: 64px;
+      min-width: 64px;
       height: 64px;
+      min-height: 64px;
       font-size: 0;
       border-radius: 5px;
+      transition: filter 0.3s ease;
     }
 
-  .achievement-content {
-    margin: 3px 0;
+    .achievement-content {
+      margin: 3px 0;
+      position: relative;
+      overflow: hidden;
+      width: 100%;
 
-    h3 {
-      margin: 0 0 5px 0;
-      font-size: 16px;
-      color: $text-color;
+      .achievement-inner-content {
+        transition: opacity 0.3s ease;
+        opacity: 1;
+
+        h3 {
+          margin: 0 0 5px 0;
+          font-size: 16px;
+          color: $text-color;
+        }
+
+        p {
+          margin: 0;
+          color: $secondary-text;
+          font-size: 14px;
+        }
+      }
+
+      .spoiler-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        @include flex-center;
+        background: transparent;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 2;
+
+        span {
+          background: rgba(0, 0, 0, 0.6);
+          padding: 4px 12px;
+          border-radius: 4px;
+          color: #fff;
+          font-size: 14px;
+          backdrop-filter: blur(4px);
+        }
+      }
     }
 
-    p {
-      margin: 0;
-      color: $secondary-text;
-      font-size: 14px;
+    &:hover, &.gpfocuswithin {
+      .achievement-inner-content.is-spoiler {
+        opacity: 0;
+      }
+
+      .spoiler-overlay {
+        opacity: 1;
+      }
     }
 
     .achievement-extra-info {
@@ -455,6 +501,7 @@ $danger-color: #e63946;
       flex-direction: column;
       align-items: end;
       gap: 10px;
+      margin-left: auto;
     }
 
     .achievement-stats {
@@ -465,6 +512,101 @@ $danger-color: #e63946;
         display: flex;
         align-items: center;
         gap: 4px;
+      }
+    }
+
+  // Preferences Popup Styles
+  .preferences-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    @include flex-center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+    animation: slideDown 0.2s ease-out;
+  }
+
+  .preferences-popup {
+    background: $background-color;
+    margin: 1rem;
+    max-height: 80%;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+
+    .preferences-header {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      @include flex-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        color: #fff;
+      }
+    }
+
+    .preferences-list {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .preference-item {
+        @include flex-between;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        transition: background 0.2s;
+
+        &:hover, &.gpfocuswithin {
+          background: rgba(255, 255, 255, 0.06);
+        }
+
+        .preference-info {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          .preference-label {
+            font-weight: 600;
+            color: #e1e1e1;
+          }
+
+          .preference-description {
+            font-size: 12px;
+            color: $secondary-text;
+          }
+        }
+      }
+    }
+
+    .preferences-preview {
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+
+      .preview-text {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        text-transform: uppercase;
+        color: $secondary-text;
+        letter-spacing: 1px;
+      }
+
+      .preview-window {
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        border: 1px dashed rgba(255, 255, 255, 0.1);
       }
     }
   }
@@ -569,6 +711,15 @@ $danger-color: #e63946;
   display: flex;
   padding-bottom: 70vh;
   padding-top: 100px;
+}
+
+// Big picture mode styles
+.__GamepadUIPopupWindowBody__ {
+  .preferences-popup {
+    max-height: 85%;
+    margin-top: 7rem;
+    width: 70%;
+  }
 }
 
 // Hide the scrolledDown background when in normal ui but keep showing it in big picture mode where AchievementsPageContainer is not present

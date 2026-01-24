@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { getBannerImage } from 'shared';
 import {
   AchievementData,
   AchievementGroupData,
@@ -73,6 +74,7 @@ export function useAchievementData(appId: string): AchievementDataHook {
           tags: scrapedAchievement?.tags,
           completedCount: scrapedAchievement?.completedCount,
           totalPlayers: scrapedAchievement?.totalPlayers,
+          isHidden: steamAchievement?.bHidden ?? false,
         } as AchievementData;
       });
 
@@ -89,6 +91,7 @@ export function useAchievementData(appId: string): AchievementDataHook {
         name: undefined,
         achievementApiNames: baseGameAchievements,
         releaseDate: baseGameReleaseDate !== undefined ? new Date(baseGameReleaseDate) : undefined,
+        bannerUrl: await getBannerImage(Number(appId)),
       };
 
       const updatedGroupsData = groupsData.map((group, index) => {

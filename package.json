@@ -39,9 +39,10 @@
     "@steambrew/ttc": "^2.8.6",
     "@steambrew/webkit": "^5.8.3",
     "react-icons": "^5.5.0",
-    "sass-embedded": "^1.97.0"
+    "sass-embedded": "^1.97.0",
+    "zustand": "^5.0.10"
   },
   "patchedDependencies": {
-    "@steambrew/client@4.2.1": "patches/@steambrew%2Fclient@4.2.1.patch"
+    "@steambrew/client@5.8.3": "patches/@steambrew%2Fclient@5.8.3.patch"
   }
 }

@@ -1,4 +1,5 @@
 import { callable } from '@steambrew/client';
+import { getBannerImage } from 'shared';
 import {
   AchievementData,
   AchievementGroupData,
@@ -67,7 +68,16 @@ async function fetchAndCache<T>(
 }
 
 export async function getGroups(appId: string): Promise<AchievementGroupData[] | null> {
-  return fetchAndCache<RequestAchievementGroupsResponse>(appId, API.groups, 'groups').then(response => response.groups);
+  const data = (await fetchAndCache<RequestAchievementGroupsResponse>(appId, API.groups, 'groups')).groups;
+  const queuePromises: Promise<void>[] = [];
+  for (const group of data) {
+    queuePromises.push(getBannerImage(Number(group.dlcAppId ?? appId)).then((bannerUrl) => {
+      group.bannerUrl = bannerUrl;
+    }));
+  }
+  await Promise.all(queuePromises);
+
+  return data;
 }
 
 export async function getAchievements(appId: string): Promise<AchievementData[] | null> {

@@ -81,7 +81,11 @@ function addAchievementGroupsTab(props: Partial<Props> | null): void {
 
     const appid = String(tabs[0].content.props.appid);
 
-    tabs.push({ content: <AchievementPage appId={appid} />, id: 'achievement-groups', title: 'Achievement Groups' });
+    tabs.push({
+      content: <AchievementPage key={`achievement-groups-${appid}`} appId={appid} />,
+      id: 'achievement-groups',
+      title: 'Achievement Groups',
+    });
 
     props.tabs = tabs;
     if (!hasOpened.has(appid)) {

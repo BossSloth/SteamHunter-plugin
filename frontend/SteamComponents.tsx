@@ -30,7 +30,7 @@ export const SteamTooltip = findModuleExport((e?: Function) =>
   && createPropListRegex(['children']).test(e.toString())
   && (/tooltipProps:\w/).test(e.toString())) as FC<SteamTooltipProps>;
 
-interface ControllerFocusableProps extends PropsWithChildren {
+interface ControllerFocusableProps extends PropsWithChildren, React.HTMLAttributes<HTMLDivElement> {
   onActivate?(e: unknown): void;
   onClick?(): void;
   onFocusWithin?(): void;

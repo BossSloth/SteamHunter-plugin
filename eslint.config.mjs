@@ -120,6 +120,8 @@ export default defineConfig(
       'no-console': 'off',
       'no-alert': 'off',
       'react/display-name': 'off',
+      'react/no-multi-comp': 'off',
+      camelcase: 'off',
       // #endregion
 
       // #region React

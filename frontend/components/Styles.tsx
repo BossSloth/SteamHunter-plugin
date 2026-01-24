@@ -1,6 +1,7 @@
 import { constSysfsExpr, findClass } from '@steambrew/client';
 import React from 'react';
 
+// Css file is compiled from the scss file adjacent to it.
 let achievementsStyles = constSysfsExpr('achievements.css', { basePath: '../../public' }).content;
 const steamClassNames = [...achievementsStyles.matchAll(/\.__(\w+)__/g)];
 steamClassNames.forEach((className) => {
