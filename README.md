@@ -1,59 +1,64 @@
 # Achievement groups plugin for Millennium
 
-This plugin ports the achievement groups and many other features of the [SteamHunters website](https://steamhunters.com/) right into your Steam client using Millennium.
+This plugin brings the achievement groups and many other features of the [SteamHunters website](https://steamhunters.com/) right into your Steam client using Millennium. With a beautiful interface and a lot of customization options, it's the perfect tool for achievement hunters.
 
 ## Features
-- Achievement groups based on updates and dlc from [SteamHunters.com](https://steamhunters.com/)
-- Achievement points
-- A better achievements screen (that also works in the steam overlay)
 
-|           **Main interface**             |                **Groups**                 |
-|:----------------------------------------:|:-----------------------------------------:|
-| ![Main interface](images/main-view.png)<img width="1000" />  |      ![Groups](images/grouping.png)<img width="1000" />       |
-|               **Sorting**                |       **Working in steam overlay**        |
-|      ![Sorting](images/sorting.png)      |   ![Steam overlay](images/overlay.png)    |
-|           **Reverse sorting**            |      **Great grouping for many dlc**      |
-| ![Reverse sorting](images/reverse-sorting.png) | ![Many dlc grouping](images/many-dlc-grouping.png) |
+- **Dynamic Grouping**: Automatically group achievements by DLC, Updates, and more using SteamHunters data.
+- **Achievement Points**: View point values for every achievement, giving you a better sense of rarity and difficulty.
+- **Enhanced Overlay**: A modernized achievements interface that also works seamlessly in the Steam Overlay and also Big Picture Mode while playing.
+- **Full controller support**: Navigate the interface in Big Picture Mode fully using your controller.
+- **Deep Customization**: Toggle points, tags, guides, and player counts to tailor the experience to your hunting style.
+- **Advanced Sorting**: Sort by SH%, rarity, or date, with support for reverse ordering.
 
+## Preview
+
+| **Achievement Groups View** | **Customization & Preferences** |
+|:---:|:---:|
+| ![Main interface](images/main-view.png) | ![Preferences](images/preferences.png) |
+| **Works in the steam overlay** | **Sorting & Filtering** |
+| ![Steam overlay](images/overlay.png) | ![Sorting](images/sorting.png) |
+| **Big Picture Mode** | **Great grouping for many dlc** |
+| ![Big Picture Mode](images/BPM.png) | ![Many dlc grouping](images/many-dlc-grouping.png) |
 
 ## Installation
-1. Ensure you have Millennium installed on your Steam client
-2. Download the [latest release](https://github.com/tddebart/SteamHunter-plugin/releases/latest) of this plugin from GitHub or from the [Steambrew](https://steambrew.app/plugins) website
-3. Place the plugin files in your Millennium plugins directory (should be a plugins folder in your Steam client directory)
-4. Restart your Steam client
-5. Enable the Achievement Groups plugin in the Millennium plugin menu
-6. Right click steam on your taskbar and Click "Exit Steam" to make sure the plugin is fully loaded
-7. Startup steam
 
+1. Ensure you have [Millennium](https://steambrew.app/) installed.
+2. Download the [latest release](https://github.com/tddebart/SteamHunter-plugin/releases/latest) of this plugin from GitHub or install it automatically from the [Steambrew](https://steambrew.app/plugin?id=13f2dcc363c8) website.
+3. Place the plugin folder into your Millennium plugins directory if you installed it manually.
+4. Restart Steam.
+5. Enable **Achievement Groups** in the Millennium settings menu.
+
+> [!TIP]
+> If the plugin doesn't appear immediately, fully exit Steam via the taskmanager and restart.
 
 ## Usage
 
-Once installed it should just work out of the box.
-<br>
-To see if the plugin is working click the View my achievements button on a game page and see that there is a new tab called `ACHIEVEMENT GROUPS`.
+Once installed, navigate to any game in your library and click **"View my achievements"**. You will see a new **ACHIEVEMENT GROUPS** tab next to the default Steam tabs.
 ![Main interface](images/main-view.png)
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Whether it's a bug fix or a new feature, feel free to open a Pull Request.
 
-### Steps on how to set up the project
+### Development Setup
 
 > It is recommended to put the plugin repository in your Steam plugins folder or make some symbolic links to the
 > repository for easier development.
 
-1. Clone the repository using `git clone https://github.com/tddebart/SteamHunter-plugin.git`
-2. Run `bun install` or use your favorite package manager
-3. Now you can run `bun watch` or `bun dev` to build the plugin and watch for changes
+1. Clone the repo: `git clone https://github.com/tddebart/SteamHunter-plugin.git`
+2. Install dependencies: `bun install`
+3. Start development mode: `bun watch` (watches frontend and styles).
+4. Press `F5` in Steam to reload the UI changes.
 
-> Note: `bun dev` will only watch for changes in the webkit and frontend folder and the scss file, to reload the plugin just press `F5` in the steam client to reload
-> For changes to the backend, you will need to fully restart the Steam client.
+> [!NOTE]
+> Backend changes require a full Steam restart to take effect.
 
-## Special thanks
+## Special Thanks
 
-- [SteamHunters website and their API](https://steamhunters.com/)
-- [Millennium](https://github.com/shdwmtr/millennium)
+- **[SteamHunters](https://steamhunters.com/)**: For their incredible API and community data.
+- **[Millennium](https://github.com/SteamClientHomebrew/Millennium)**: The framework making this all possible.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License. See [LICENSE](LICENSE) for details.
