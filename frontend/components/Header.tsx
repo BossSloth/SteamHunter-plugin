@@ -14,8 +14,8 @@ interface HeaderProps {
   onCacheCleared(): void;
   onExpandAllClick(): void;
   onPreferencesClick(): void;
-
   readonly achievementCount: number;
+  readonly allGroupsExpanded: boolean;
   readonly appId: string;
 }
 
@@ -23,6 +23,7 @@ interface HeaderProps {
 export function Header({
   achievementCount,
   onExpandAllClick,
+  allGroupsExpanded,
   onCacheCleared,
   onPreferencesClick,
   appId,
@@ -57,7 +58,7 @@ export function Header({
 
         <Focusable className="header-actions">
           <Button onClick={onExpandAllClick}>
-            {viewSettings.expandAll ? 'Collapse All' : 'Expand All'}
+            {allGroupsExpanded ? 'Collapse All' : 'Expand All'}
           </Button>
 
           <Tooltip toolTipContent={<CacheTooltipContent appId={appId} />}>

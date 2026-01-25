@@ -560,6 +560,7 @@ $danger-color: #e63946;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      min-height: 85px;
 
       .preference-item {
         @include flex-between;

@@ -165,43 +165,17 @@ const AchievementContent = React.memo(({
   appId,
 }: AchievementContentProps): JSX.Element => {
   const settings = useAchievementStore();
-  const setViewSettings = useAchievementStore(s => s.setViewSettings);
   const [showPreferences, setShowPreferences] = useState(false);
   const { processedGroups, groupedAchievementsLength } = useAchievementGrouping(data, settings);
 
-  // Initialize expandedGroups based on store's expandAll state
+  // Initialize expandedGroups (default to all expanded)
   const [expandedGroups, setExpandedGroups] = React.useState<Set<number>>(() => {
-    if (settings.expandAll) {
-      return new Set(Array.from({ length: groupedAchievementsLength }, (_, i) => i));
-    }
-
-    return new Set();
+    return new Set(Array.from({ length: groupedAchievementsLength }, (_, i) => i));
   });
 
   const allGroupsExpanded = useMemo(() => {
     return expandedGroups.size === groupedAchievementsLength;
   }, [expandedGroups, groupedAchievementsLength]);
-
-  // Sync expanded state with store's expandAll property ONLY when store changes externally (e.g. reset/load)
-  const lastStoreExpandAll = React.useRef(settings.expandAll);
-  React.useEffect(() => {
-    if (settings.expandAll !== lastStoreExpandAll.current) {
-      lastStoreExpandAll.current = settings.expandAll;
-      if (settings.expandAll) {
-        setExpandedGroups(new Set(Array.from({ length: groupedAchievementsLength }, (_, i) => i)));
-      } else {
-        setExpandedGroups(new Set());
-      }
-    }
-  }, [settings.expandAll, groupedAchievementsLength]);
-
-  // Update store when local expansion state changes
-  React.useEffect(() => {
-    if (allGroupsExpanded !== settings.expandAll) {
-      lastStoreExpandAll.current = allGroupsExpanded;
-      setViewSettings({ expandAll: allGroupsExpanded });
-    }
-  }, [allGroupsExpanded, settings.expandAll, setViewSettings]);
 
   const handleGroupExpand = useCallback((index: number, isExpanded: boolean): void => {
     setExpandedGroups((prev) => {
@@ -229,6 +203,7 @@ const AchievementContent = React.memo(({
       <Header
         achievementCount={data.achievements.length}
         onExpandAllClick={handleExpandAllClick}
+        allGroupsExpanded={allGroupsExpanded}
         onCacheCleared={onCacheCleared}
         onPreferencesClick={() => { setShowPreferences(true); }}
         appId={appId}

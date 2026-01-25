@@ -25,7 +25,6 @@ const defaultsGlobalPreferences: GlobalPreferences = {
 };
 
 const standardDefaults: ViewSettings = {
-  expandAll: true,
   groupBy: GroupBy.DLCAndUpdate,
   reverse: false,
   showUnlocked: true,
@@ -60,7 +59,6 @@ const persistOptions: PersistOptions<AchievementState> = {
   },
 };
 
-// @ts-expect-error ignore weird error that randomly appears
 export const useAchievementStore = create<AchievementState>()(persist(
   (set, get) => ({
     // Global Preferences
@@ -85,7 +83,6 @@ export const useAchievementStore = create<AchievementState>()(persist(
       set({
         savedDefaults: {
           // View Settings Only (exclude Global Preferences)
-          expandAll: state.expandAll,
           groupBy: state.groupBy,
           reverse: state.reverse,
           showUnlocked: state.showUnlocked,

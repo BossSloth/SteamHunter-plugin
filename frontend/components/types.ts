@@ -94,7 +94,6 @@ export interface GlobalPreferences {
 }
 
 export interface ViewSettings {
-  expandAll: boolean;
   groupBy: GroupBy;
   preferencesOpen: boolean;
   reverse: boolean;
