@@ -15,7 +15,7 @@ This plugin brings the achievement groups and many other features of the [SteamH
 
 | **Achievement Groups View** | **Customization & Preferences** |
 |:---:|:---:|
-| ![Main interface](images/main-view.png) | ![Preferences](images/preferences.png) |
+| ![Main interface](images/main-view.png)<img width="1000" /> | ![Preferences](images/preferences.png)<img width="1000" /> |
 | **Works in the steam overlay** | **Sorting & Filtering** |
 | ![Steam overlay](images/overlay.png) | ![Sorting](images/sorting.png) |
 | **Big Picture Mode** | **Great grouping for many dlc** |
