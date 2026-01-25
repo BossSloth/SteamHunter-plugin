@@ -1,3 +1,27 @@
+# [2.0.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.3.1...v2.0.0) (2026-01-25)
+
+
+### Features
+
+* added achievement tags, player count and guide links to achievements. Closes [#12](https://github.com/BossSloth/SteamHunter-plugin/issues/12) ([67b6f5e](https://github.com/BossSloth/SteamHunter-plugin/commit/67b6f5ea83c9ca48747770d578304688a780dcd5))
+* added toggle for temp hltb data ([e6bd28c](https://github.com/BossSloth/SteamHunter-plugin/commit/e6bd28c940197dcc3e282dc889204a88cf9974aa)), closes [#22](https://github.com/BossSloth/SteamHunter-plugin/issues/22)
+* Massive refactor of code and added preferences ui ([c2d0cb0](https://github.com/BossSloth/SteamHunter-plugin/commit/c2d0cb046172336fa037be563245b8ef5856eda3))
+* redesigned the header to be more modern and have an consistent look ([dac6869](https://github.com/BossSloth/SteamHunter-plugin/commit/dac68694ce80312f8abb5210b8daa6d58f3becdd))
+* refactor backend fully to lua and inject styles better ([ed28eec](https://github.com/BossSloth/SteamHunter-plugin/commit/ed28eeca2fdd2aa60c7fc8e1b6724c897471014b))
+* reload achievement page data on achievement obtained ([6262d9a](https://github.com/BossSloth/SteamHunter-plugin/commit/6262d9a75fba975e01813ecc30b9d683776dab9e))
+* show obtainability as tag ([b50c76d](https://github.com/BossSloth/SteamHunter-plugin/commit/b50c76d5f0cca4dd1af24e42649898ab0f79c4c1))
+* updated readme, images and also added new images for preferences and Big Picture Mode ([c3b3d02](https://github.com/BossSloth/SteamHunter-plugin/commit/c3b3d02b9ab236bb4d08ae13f4da21979e931785))
+
+
+### Performance Improvements
+
+* improved performance slightly ([d15b2d9](https://github.com/BossSloth/SteamHunter-plugin/commit/d15b2d962b446838853b1730dfe30c035c61937e))
+
+
+### BREAKING CHANGES
+
+* This changes how preferences are saved and isn't compatible with the old way. So all previous preferences will be lost
+
 ## [1.3.1](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.3.0...v1.3.1) (2025-10-05)
 
 
