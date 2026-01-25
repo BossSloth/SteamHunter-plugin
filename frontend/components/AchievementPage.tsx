@@ -56,6 +56,9 @@ function getGroupedAchievements(
 ): AchievementGroupData[] {
   // if (!groups || !achievements) return [];
 
+  const baseBannerUrl = groups[0]?.bannerUrl;
+  const baseReleaseDate = groups[0]?.releaseDate;
+
   switch (groupBy) {
     case GroupBy.DLCAndUpdate:
       return groups;
@@ -64,6 +67,8 @@ function getGroupedAchievements(
         {
           name: undefined,
           achievementApiNames: achievements.map(a => a.apiName),
+          bannerUrl: baseBannerUrl,
+          releaseDate: baseReleaseDate,
         },
       ];
     case GroupBy.Unlocked:
@@ -71,10 +76,14 @@ function getGroupedAchievements(
         {
           name: 'Achieved',
           achievementApiNames: achievements.filter(a => a.unlocked).map(a => a.apiName),
+          bannerUrl: baseBannerUrl,
+          releaseDate: baseReleaseDate,
         },
         {
           name: 'Unachieved',
           achievementApiNames: achievements.filter(a => !a.unlocked).map(a => a.apiName),
+          bannerUrl: baseBannerUrl,
+          releaseDate: baseReleaseDate,
         },
       ];
     case GroupBy.DLC: {
@@ -85,6 +94,8 @@ function getGroupedAchievements(
         {
           name: baseAchievements[0]?.name,
           achievementApiNames: baseAchievements.flatMap(a => a.achievementApiNames),
+          bannerUrl: baseBannerUrl,
+          releaseDate: baseReleaseDate,
         },
         ...dlcAchievements,
       ];
