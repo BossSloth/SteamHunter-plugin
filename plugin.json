@@ -3,6 +3,6 @@
   "name": "achievement-groups",
   "common_name": "Achievement Groups",
   "description": "SteamHunters achievement groups and other info right in your Steam client",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "backendType": "lua"
 }

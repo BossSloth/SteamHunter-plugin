@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/BossSloth/SteamHunter-plugin/compare/v2.0.0...v2.0.1) (2026-01-26)
+
+
+### Bug Fixes
+
+* Fixed ErrorDisplay not working due to too early of a return ([b9c8c27](https://github.com/BossSloth/SteamHunter-plugin/commit/b9c8c279e3ad81c50c690c6601a5bf63baaa33c6))
+
 # [2.0.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v1.3.1...v2.0.0) (2026-01-25)
 
 
