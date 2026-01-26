@@ -58,13 +58,15 @@ async function injectHltbData(appId: string): Promise<void> {
     return infoBr;
   }
 
-  if (appData.hltb !== undefined) {
+  const settings = useAchievementStore.getState();
+
+  if (appData.hltb !== undefined && settings.showHltb) {
     infoContainer.appendChild(createBr());
     infoContainer.appendChild(createInfoWithUrl('Main Story:', toHrs(appData.hltb.story), appData.hltb.url));
     infoContainer.appendChild(createInfoWithUrl('Main + Extras:', toHrs(appData.hltb.extras), appData.hltb.url));
     infoContainer.appendChild(createInfoWithUrl('Completionist:', toHrs(appData.hltb.complete), appData.hltb.url));
   }
-  if (appData.players !== undefined) {
+  if (appData.players !== undefined && settings.showHltbPlayerCount) {
     const steamdbUrl = `https://steamdb.info/app/${appId}/charts/`;
     infoContainer.appendChild(createBr());
     infoContainer.appendChild(createInfoWithUrl('Playing now:', numberFormatter.format(appData.players.recent), steamdbUrl));
@@ -94,8 +96,8 @@ function attachListeners(appId: string, infoButton: HTMLElement): void {
 }
 
 async function addHltbData(): Promise<void> {
-  const showHltbData = useAchievementStore.getState().showHltb;
-  if (!showHltbData) {
+  const settings = useAchievementStore.getState();
+  if (!settings.showHltb && !settings.showHltbPlayerCount) {
     return;
   }
 

@@ -22,6 +22,7 @@ const defaultsGlobalPreferences: GlobalPreferences = {
   showPoints: true,
   showTags: true,
   showHltb: false,
+  showHltbPlayerCount: false,
 };
 
 const standardDefaults: ViewSettings = {

@@ -87,6 +87,8 @@ export interface GlobalPreferences {
   showGuides: boolean;
   /** Temporary setting until hltb data get's moved */
   showHltb: boolean;
+  /** Temporary setting until hltb data get's moved */
+  showHltbPlayerCount: boolean;
   showObtainability: boolean;
   showPlayerCount: boolean;
   showPoints: boolean;

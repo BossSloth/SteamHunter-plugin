@@ -158,6 +158,18 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
               }
             }}
           />
+
+          <PreferenceItem
+            label="Show playercount in game details"
+            description="HLTB playercount data has temporarily been added to this plugin. This toggles if it will be displayed in the game details section. It has nothing to do with the achievements."
+            value={settings.showHltbPlayerCount}
+            onChange={(val) => {
+              setPreferences({ showHltbPlayerCount: val });
+              if (val) {
+                initHltbInjection();
+              }
+            }}
+          />
         </div>
 
         <div className="preferences-preview">
