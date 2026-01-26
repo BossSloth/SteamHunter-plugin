@@ -257,10 +257,6 @@ function AchievementPageContent({ appId }: AchievementPageProps): JSX.Element {
     data.reload();
   }
 
-  if (data.errors.length > 0) {
-    return <ErrorDisplay errors={data.errors} />;
-  }
-
   useEffect(() => {
     const achievementSubscriber = SteamClient.GameSessions.RegisterForAchievementNotification(() => {
       data.silentReload();
@@ -270,6 +266,10 @@ function AchievementPageContent({ appId }: AchievementPageProps): JSX.Element {
       achievementSubscriber.unregister();
     };
   }, []);
+
+  if (data.errors.length > 0) {
+    return <ErrorDisplay errors={data.errors} />;
+  }
 
   return (
     <div className="steam-hunters-achievements-page" ref={domElement}>
