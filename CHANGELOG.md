@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/BossSloth/SteamHunter-plugin/compare/v2.0.1...v2.0.2) (2026-01-26)
+
+
+### Bug Fixes
+
+* Added separate toggles for temp game details player count and HLTB data ([0869aae](https://github.com/BossSloth/SteamHunter-plugin/commit/0869aae0836b0354d51fc9e94c79dea74c329d0a))
+
 ## [2.0.1](https://github.com/BossSloth/SteamHunter-plugin/compare/v2.0.0...v2.0.1) (2026-01-26)
 
 
