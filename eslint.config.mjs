@@ -109,6 +109,7 @@ export default defineConfig(
       'require-unicode-regexp': 'off',
       'sort-imports': 'off',
       'sort-keys': 'off',
+      '@typescript-eslint/strict-void-return': 'off',
       // #endregion
 
       // #region Project specific

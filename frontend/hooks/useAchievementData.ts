@@ -20,7 +20,7 @@ export interface AchievementDataHook {
 export function useAchievementData(appId: string): AchievementDataHook {
   const [achievements, setAchievements] = useState<AchievementData[]>([]);
   const [groups, setGroups] = useState<AchievementGroupData[]>([]);
-  const [gameInfo, setGameInfo] = useState<SteamGameInfo>({} as SteamGameInfo);
+  const [gameInfo, setGameInfo] = useState({} as SteamGameInfo);
   const [errors, setErrors] = useState<Error[]>([]);
   const [loading, setLoading] = useState(true);
   const [reloadTrigger, setReloadTrigger] = useState(0);

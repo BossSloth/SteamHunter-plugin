@@ -2,6 +2,35 @@ local logger = require("logger")
 local millennium = require("millennium")
 local http = require("http")
 local json = require("json")
+local utils = require("utils")
+local fs = require("fs")
+
+local function GetPluginDir()
+    return fs.parent_path(utils.get_backend_path() or "")
+end
+
+local SETTINGS_FILE = fs.join(GetPluginDir(), "settings.json")
+
+local settings = {}
+
+local function LoadSettings()
+    if not fs.exists(SETTINGS_FILE) then
+        return
+    end
+
+    local content, err = utils.read_file(SETTINGS_FILE)
+    if not content then
+        logger:error("Failed to read settings: " .. (err or "unknown error"))
+        return
+    end
+
+    local ok, decoded = pcall(json.decode, content)
+    if ok and decoded then
+        settings = decoded
+    else
+        logger:error("Failed to parse settings JSON")
+    end
+end
 
 local DEFAULT_HEADERS = {
     ["Accept"] = "application/json,text/html",
@@ -16,9 +45,15 @@ local function Request(url, headers)
         timeout = 20
     }
 
+    if settings.proxyUrl and settings.proxyUrl ~= "" then
+        options.proxy = settings.proxyUrl
+        options.verify_ssl = false
+    end
+
     local response, err = http.get(url, options)
 
     if not response then
+        logger:error("Request failed: " .. (err or "No response"))
         return json.encode({
             success = false,
             error = err or "No response"
@@ -88,7 +123,28 @@ function ScrapeAchievementDetails(appId)
     })
 end
 
+function GetSettings()
+    return json.encode(settings)
+end
+
+function SaveSettings(newSettings)
+    local ok, decoded = pcall(json.decode, newSettings)
+    if not ok or not decoded then
+        return json.encode({ success = false, error = "Invalid JSON" })
+    end
+
+    settings = decoded
+
+    local success, err = utils.write_file(SETTINGS_FILE, json.encode(settings))
+    if not success then
+        return json.encode({ success = false, error = err or "Failed to write settings" })
+    end
+
+    return json.encode({ success = true })
+end
+
 function on_load()
+    LoadSettings()
     millennium.ready()
 end
 

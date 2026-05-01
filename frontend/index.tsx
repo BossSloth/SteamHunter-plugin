@@ -1,11 +1,19 @@
+import { definePlugin, IconsModule } from '@steambrew/client';
+import React from 'react';
+import { SettingsContent } from 'SettingsContent';
 import { installCreateElementPatches } from './createElementOverride';
 import { initHltbInjection } from './hltb/HltbInjection';
 
-// Entry point on the front end of your plugin
-export default async function PluginMain(): Promise<void> {
+export default definePlugin(async () => {
   await App.WaitForServicesInitialized();
 
   installCreateElementPatches();
 
   initHltbInjection();
-}
+
+  return {
+    title: 'Achievement Groups',
+    icon: <IconsModule.Settings />,
+    content: <SettingsContent />,
+  };
+});
