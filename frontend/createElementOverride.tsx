@@ -16,13 +16,9 @@ interface Props {
   tabs: Tab[];
 }
 
-type JsxArgs = [type: unknown, props: Record<string, unknown> | null, key?: unknown];
+type JsxArgs = [type: unknown, props: Partial<Props> | null, key?: unknown];
 
-type PatchHandler = (context: {
-  readonly type: JsxArgs[0];
-  readonly props: JsxArgs[1];
-  readonly children: unknown;
-}) => void;
+type PatchHandler = (args: JsxArgs) => void;
 
 interface JsxRuntimeModule {
   jsx(...args: JsxArgs): unknown;
@@ -64,9 +60,8 @@ export function patchCreateElement(options: {
       const entry = patches.get(prop) ?? { patch: undefined, last: undefined };
       entry.last = runtime[prop];
       entry.patch = beforePatch(runtime, prop, (args: JsxArgs) => {
-        const [type, props] = args;
         try {
-          onBeforeCreate({ type, props, children: props?.children });
+          onBeforeCreate(args);
         } catch (err) {
           // Never let handler exceptions break React rendering
           console.error(`[${name}] onBeforeCreate error`, err);
@@ -95,43 +90,84 @@ export function patchCreateElement(options: {
   }, 1000);
 }
 
-// Set of appids that have opened the achievement groups tab
-const hasOpened = new Set<string>();
+function isAchievementsTabContainer(props: Partial<Props> | null): props is Props {
+  if (!props) return false;
 
-function addAchievementGroupsTab(props: Partial<Props> | null): void {
-  if (!props) return;
-
-  const tabs = props.tabs;
-  if (
-    tabs
-    && props.onShowTab
+  return Array.isArray(props.tabs)
+    && typeof props.onShowTab === 'function'
     && props.autoFocusContents !== undefined
-    && tabs.some(t => t.id === 'achievements')
-    && !tabs.some(t => t.id === 'achievement-groups')
-  ) {
-    if (!tabs[0]) throw new Error('Missing tabs?');
+    && props.tabs.some(t => t.id === 'achievements');
+}
 
-    const appid = String(tabs[0].content.props.appid);
+function ensureGroupsTab(tabs: Tab[]): void {
+  if (tabs.some(t => t.id === 'achievement-groups')) return;
+  if (!tabs[0]) throw new Error('Missing tabs?');
 
-    tabs.push({
-      content: <AchievementPage key={`achievement-groups-${appid}`} appId={appid} />,
-      id: 'achievement-groups',
-      title: 'Achievement Groups',
-    });
+  const appid = String(tabs[0].content.props.appid);
 
-    props.tabs = tabs;
-    if (!hasOpened.has(appid)) {
-      props.onShowTab('achievement-groups');
-      hasOpened.add(appid);
-    }
+  tabs.push({
+    content: <AchievementPage key={`achievement-groups-${appid}`} appId={appid} />,
+    id: 'achievement-groups',
+    title: 'Achievement Groups',
+  });
+}
+
+/**
+ * Stable wrapper component cache, keyed by the original tab container type.
+ * Wrapping the type lets React track mount/unmount: `useEffect` with empty
+ * deps fires exactly once when the achievements view opens, and never on
+ * re-renders (e.g. scrolling). Closing and reopening creates a fresh mount,
+ * so it focuses again. The user can still freely switch tabs after the
+ * initial focus. The ref ensures we only sync once per mount.
+ */
+const wrapperCache = new WeakMap<object, React.ComponentType<Props>>();
+
+function getTabContainerWrapper(OriginalType: object): React.ComponentType<Props> {
+  let wrapped = wrapperCache.get(OriginalType);
+  if (wrapped) return wrapped;
+
+  const Original = OriginalType as React.ComponentType<Props>;
+  wrapped = (props: Props): ReactElement => {
+    // Steam's parent component owns `activeTab` via useState (default
+    // 'achievements'). To avoid a 1-frame flash of the wrong tab, override
+    // `activeTab` on the very first render and sync the parent's state in
+    // a layout effect. Subsequent renders pass through unchanged so the
+    // user can freely switch tabs.
+    const syncedRef = React.useRef(false);
+    const onShowTabRef = React.useRef(props.onShowTab);
+    onShowTabRef.current = props.onShowTab;
+
+    React.useLayoutEffect(() => {
+      onShowTabRef.current('achievement-groups');
+      syncedRef.current = true;
+    }, []);
+
+    const finalProps = syncedRef.current
+      ? props
+      : ({ ...props, activeTab: 'achievement-groups' });
+
+    return React.createElement(Original, finalProps);
+  };
+  wrapperCache.set(OriginalType, wrapped);
+
+  return wrapped;
+}
+
+function handleAchievementsTabs(args: JsxArgs): void {
+  const props = args[1];
+  if (!isAchievementsTabContainer(props)) return;
+
+  ensureGroupsTab(props.tabs);
+
+  const type = args[0];
+  if (typeof type === 'function' || (typeof type === 'object' && type !== null)) {
+    args[0] = getTabContainerWrapper(type);
   }
 }
 
 export function installCreateElementPatches(): void {
   patchCreateElement({
     name: 'SteamHunter/AchievementGroupsTab',
-    onBeforeCreate: ({ props }) => {
-      addAchievementGroupsTab(props as Partial<Props> | null);
-    },
+    onBeforeCreate: handleAchievementsTabs,
   });
 }
