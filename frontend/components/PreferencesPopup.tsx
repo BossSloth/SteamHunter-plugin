@@ -139,7 +139,7 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
             value={settings.showPoints}
             onChange={(val) => { setPreferences({ showPoints: val }); }}
           />
-          <PreferenceItem
+          {/* <PreferenceItem
             label="Show tags"
             description="Display community tags (e.g., 'Skill', 'Grind') for achievements."
             value={settings.showTags}
@@ -162,7 +162,7 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
             description="Display guide links for achievements that have available guides."
             value={settings.showGuides}
             onChange={(val) => { setPreferences({ showGuides: val }); }}
-          />
+          /> */}
           <PreferenceItem
             label="Hide hidden achievements"
             description="Hides the name and description of hidden achievements until clicked (like Steam's spoiler protection)."

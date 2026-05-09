@@ -89,6 +89,8 @@ export async function getSteamGameInfo(appId: string): Promise<SteamGameInfo | n
 }
 
 export async function getScrapedDetails(appId: string): Promise<ScrapedAchievementsResponse | null> {
+  return null;
+
   const cachedData = getCachedData<ScrapedAchievementsResponse>(appId, 'scrapedDetails');
   if (cachedData !== null) {
     return cachedData;
@@ -99,7 +101,7 @@ export async function getScrapedDetails(appId: string): Promise<ScrapedAchieveme
     return { success: false, achievements: {}, updates: [] };
   }
 
-  const { achievements, updates } = processScrapedModel(backendResponse.modelText);
+  const { achievements, updates } = processScrapedModel(backendResponse.modelText!);
 
   const finalResponse: ScrapedAchievementsResponse = {
     success: true,
