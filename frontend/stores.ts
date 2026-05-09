@@ -15,6 +15,7 @@ interface AchievementState extends GlobalPreferences, ViewSettings {
 }
 
 const defaultsGlobalPreferences: GlobalPreferences = {
+  cacheDurationDays: 90,
   hideHidden: false,
   showGuides: true,
   showObtainability: true,
@@ -42,7 +43,7 @@ const persistOptions: PersistOptions<AchievementState> = {
     // Dynamically make it from the GlobalPreferences interface
     const globalPrefs: Partial<GlobalPreferences> = {};
     for (const key of Object.keys(defaultsGlobalPreferences)) {
-      globalPrefs[key as keyof GlobalPreferences] = state[key as keyof GlobalPreferences];
+      globalPrefs[key as keyof GlobalPreferences] = state[key as keyof GlobalPreferences] as never;
     }
 
     const persisted = {

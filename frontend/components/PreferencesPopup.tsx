@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import { Button, Focusable, Toggle } from '@steambrew/client';
 import { initHltbInjection } from 'hltb/HltbInjection';
 import React, { JSX, useMemo } from 'react';
@@ -61,6 +62,30 @@ const PREVIEW_GAME_INFO = {
   playersQualifiedCount: 10000,
   releaseDate: '2024-01-01',
 };
+
+interface CacheDurationSelectorProps {
+  onChange(days: number): void;
+  readonly value: number;
+}
+
+function CacheDurationSelector({ value, onChange }: CacheDurationSelectorProps): JSX.Element {
+  return (
+    <div className="preference-item">
+      <div className="preference-info">
+        <div className="preference-label">Cache duration</div>
+        <div className="preference-description">How long achievement data is stored locally (in days) before being re-fetched from SteamHunters.</div>
+      </div>
+      <input
+        className="cache-duration-input"
+        type="number"
+        min={1}
+        max={3650}
+        value={value}
+        onChange={(e) => { onChange(Math.max(1, parseInt(e.target.value) || 1)); }}
+      />
+    </div>
+  );
+}
 
 interface PreferenceItemProps {
   onChange(value: boolean): void;
@@ -143,6 +168,13 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
             description="Hides the name and description of hidden achievements until clicked (like Steam's spoiler protection)."
             value={settings.hideHidden}
             onChange={(val) => { setPreferences({ hideHidden: val }); }}
+          />
+
+          <hr />
+
+          <CacheDurationSelector
+            value={settings.cacheDurationDays}
+            onChange={(days) => { setPreferences({ cacheDurationDays: days }); }}
           />
 
           <hr />

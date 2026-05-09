@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 
+import { useAchievementStore } from '../stores';
+
 const CACHE_KEY = 'steamhunters_cache';
-const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 interface CacheEntry<T> {
   data: T;
@@ -42,7 +44,7 @@ export function getCachedData<T>(appId: string, type: keyof AppCache): T | null 
     }
 
     // Check if cache is expired
-    if (Date.now() - entry.timestamp < 0) {
+    if (Date.now() > entry.timestamp) {
       delete appCache[type];
       if (Object.keys(appCache).length === 0) {
         delete store[appId];
@@ -67,7 +69,7 @@ export function setCachedData(appId: string, type: keyof AppCache, data: unknown
 
     store[appId][type] = {
       data,
-      timestamp: Date.now() + CACHE_DURATION + extraCacheDuration,
+      timestamp: Date.now() + useAchievementStore.getState().cacheDurationDays * DAY_IN_MS + extraCacheDuration,
     };
     setStore(store);
   } catch (error) {

@@ -83,6 +83,7 @@ export enum GroupBy {
 }
 
 export interface GlobalPreferences {
+  cacheDurationDays: number;
   hideHidden: boolean;
   showGuides: boolean;
   /** Temporary setting until hltb data get's moved */
