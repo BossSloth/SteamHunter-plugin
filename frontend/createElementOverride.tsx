@@ -1,4 +1,4 @@
-import { beforePatch, Patch } from '@steambrew/client';
+import { beforePatch, findModuleByExport, Patch } from '@steambrew/client';
 import React, { ReactElement } from 'react';
 import { AchievementPage } from './components/AchievementPage';
 
@@ -16,49 +16,81 @@ interface Props {
   tabs: Tab[];
 }
 
-type CreateElementArgs = Parameters<typeof React.createElement>;
+type JsxArgs = [type: unknown, props: Record<string, unknown> | null, key?: unknown];
 
 type PatchHandler = (context: {
-  readonly type: CreateElementArgs[0];
-  readonly props: CreateElementArgs[1];
-  readonly children: CreateElementArgs[2];
+  readonly type: JsxArgs[0];
+  readonly props: JsxArgs[1];
+  readonly children: unknown;
 }) => void;
 
+interface JsxRuntimeModule {
+  jsx(...args: JsxArgs): unknown;
+  jsxs(...args: JsxArgs): unknown;
+  Fragment: unknown;
+}
+
+/**
+ * Patches the `react/jsx-runtime` module (webpack module 3326, re-exported by
+ * 62540) which is what modern Steam UI uses to create React elements instead
+ * of `React.createElement`. Both `jsx` and `jsxs` on that module are plain
+ * writable data properties (not webpack getters), so `beforePatch` works on
+ * them directly.
+ */
 export function patchCreateElement(options: {
   readonly name: string;
   readonly onBeforeCreate: PatchHandler;
 }): void {
   const { name, onBeforeCreate } = options;
 
-  let currentPatch: Patch | undefined;
-  let lastPatchedCreateElement: typeof React.createElement | undefined;
+  const found = findModuleByExport((e, key) =>
+    (key === 'jsx' || key === 'jsxs') && typeof e === 'function') as JsxRuntimeModule | undefined;
 
-  function applyPatch(): void {
+  if (!found || typeof found.jsx !== 'function' || typeof found.jsxs !== 'function') {
+    console.error(`[${name}] Could not find react/jsx-runtime module`);
+
+    return;
+  }
+  const runtime: JsxRuntimeModule = found;
+
+  const versions = ['jsx', 'jsxs'] as const;
+
+  type versionsType = typeof versions[number];
+
+  const patches = new Map<versionsType, { patch: Patch | undefined; last: unknown; }>();
+
+  function applyPatch(prop: versionsType): void {
     try {
-      lastPatchedCreateElement = React.createElement;
-      currentPatch = beforePatch(React, 'createElement', (args: CreateElementArgs) => {
-        const [type, props, ...children] = args;
+      const entry = patches.get(prop) ?? { patch: undefined, last: undefined };
+      entry.last = runtime[prop];
+      entry.patch = beforePatch(runtime, prop, (args: JsxArgs) => {
+        const [type, props] = args;
         try {
-          onBeforeCreate({ type, props, children });
+          onBeforeCreate({ type, props, children: props?.children });
         } catch (err) {
           // Never let handler exceptions break React rendering
           console.error(`[${name}] onBeforeCreate error`, err);
         }
       });
-      console.debug(`[${name}] Patched React.createElement`);
+      patches.set(prop, entry);
+      console.debug(`[${name}] Patched react/jsx-runtime.${prop}`);
     } catch (err) {
-      console.error(`[${name}] Failed to patch React.createElement`, err);
+      console.error(`[${name}] Failed to patch ${prop}`, err);
     }
   }
 
-  applyPatch();
+  applyPatch('jsx');
+  applyPatch('jsxs');
 
   setInterval(() => {
-    // If React.createElement reference changed or patch disappeared, re-apply.
-    // This seems to happen when launching game for the first time since launch.
-    if (!currentPatch || React.createElement === lastPatchedCreateElement) {
-      console.debug(`[${name}] Detected unpatch/swap, re-patching`);
-      applyPatch();
+    // If a property reference changed or the patch disappeared, re-apply.
+    // observed to happen occasionally on first game launch of a session.
+    for (const prop of versions) {
+      const entry = patches.get(prop);
+      if (entry?.patch === undefined || runtime[prop] === entry.last) {
+        console.debug(`[${name}] Detected unpatch/swap on ${prop}, re-patching`);
+        applyPatch(prop);
+      }
     }
   }, 1000);
 }
