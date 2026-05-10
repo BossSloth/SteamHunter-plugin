@@ -1,3 +1,18 @@
+# [2.1.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v2.0.2...v2.1.0) (2026-05-10)
+
+
+### Bug Fixes
+
+* improved achievements popup now always defaulting to the custom groups tab ([66de666](https://github.com/BossSloth/SteamHunter-plugin/commit/66de6661872aa847d41b613fe1b11aa844484ac1))
+* migrate from React.createElement to react/jsx-runtime patching as steam no longer uses createElement in react 19, closes [#27](https://github.com/BossSloth/SteamHunter-plugin/issues/27) ([ebfb577](https://github.com/BossSloth/SteamHunter-plugin/commit/ebfb577e33f1fc82f713df32ad41ed172b59f698))
+* Temporarily disable scraped data like tags, playercount, etc. until further cloudflare issues can be resolved ([f6cde22](https://github.com/BossSloth/SteamHunter-plugin/commit/f6cde22a61ab3816858372d7949cda4067561fa1))
+
+
+### Features
+
+* Added easy proxy configuration ([a249ae7](https://github.com/BossSloth/SteamHunter-plugin/commit/a249ae7a8ab412410dcf7c51db14c5ed2dbb6e79))
+* Made cache duration configurable in preferences ([44f8c9a](https://github.com/BossSloth/SteamHunter-plugin/commit/44f8c9aab72fe10406e11668fb298f573cb7f244))
+
 ## [2.0.2](https://github.com/BossSloth/SteamHunter-plugin/compare/v2.0.1...v2.0.2) (2026-01-26)
 
 

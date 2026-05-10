@@ -28,7 +28,7 @@
   },
   "type": "module",
   "name": "steamhunters-plugin",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "A SteamHunters plugin for Millennium",
   "main": "./frontend/index.jsx",
   "author": "BossSloth",
