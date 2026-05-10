@@ -59,9 +59,9 @@ export function patchCreateElement(options: {
     try {
       const entry = patches.get(prop) ?? { patch: undefined, last: undefined };
       entry.last = runtime[prop];
-      entry.patch = beforePatch(runtime, prop, (args: JsxArgs) => {
+      entry.patch = beforePatch(runtime, prop, (args) => {
         try {
-          onBeforeCreate(args);
+          onBeforeCreate(args as JsxArgs);
         } catch (err) {
           // Never let handler exceptions break React rendering
           console.error(`[${name}] onBeforeCreate error`, err);

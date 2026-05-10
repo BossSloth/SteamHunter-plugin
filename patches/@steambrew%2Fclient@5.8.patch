@@ -1,0 +1,31 @@
+diff --git a/build/globals/index.d.ts b/home/user/.bun/install/cache/@steambrew/client@5.8.5@@@1/build/globals/index.d.ts
+deleted file mode 100644
+index c749319b4d070f0a6bd6d80448b6f49ce107d537..0000000000000000000000000000000000000000
+diff --git a/build/globals/index.js b/home/user/.bun/install/cache/@steambrew/client@5.8.5@@@1/build/globals/index.js
+deleted file mode 100644
+index c749319b4d070f0a6bd6d80448b6f49ce107d537..0000000000000000000000000000000000000000
+diff --git a/build/hooks/toaster-hook.d.ts b/build/hooks/toaster-hook.d.ts
+index b24e87f083be9493dd1c3448ea641d0bdb83de2b..3e679ac4801f10e65400da56925799c9d5b238c0 100644
+--- a/build/hooks/toaster-hook.d.ts
++++ b/build/hooks/toaster-hook.d.ts
+@@ -29,8 +29,6 @@ export interface ToastNotification {
+ declare global {
+     interface Window {
+         __TOASTER_INSTANCE: any;
+-        settingsStore: any;
+-        NotificationStore: any;
+     }
+ }
+ declare class Toaster extends Logger {
+diff --git a/build/utils/index.d.ts b/build/utils/index.d.ts
+index d9eff69d5f8e9ddeb65e2dfcc90497d7025d428b..04464f5906fd724827cdc6bf5582493eab094d45 100644
+--- a/build/utils/index.d.ts
++++ b/build/utils/index.d.ts
+@@ -4,7 +4,6 @@ export * from './react/fc';
+ export * from './react/treepatcher';
+ export * from './static-classes';
+ declare global {
+-    var FocusNavController: any;
+     var GamepadNavTree: any;
+ }
+ export declare function joinClassNames(...classes: string[]): string;
