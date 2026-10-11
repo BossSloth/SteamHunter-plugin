@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { createPropListRegex, findModuleByExport, findModuleExport } from '@steambrew/client';
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import React, { FC, PropsWithChildren, ReactNode, useMemo } from 'react';
 
 // Tab component that is used by the achievements page. Might come in useful later
 /**
@@ -25,10 +25,26 @@ export interface SteamTooltipProps extends PropsWithChildren {
 }
 
 // Can be found in library.js
-export const SteamTooltip = findModuleExport((e?: Function) =>
-  e?.toString !== undefined
-  && createPropListRegex(['children']).test(e.toString())
-  && (/tooltipProps:\w/).test(e.toString())) as FC<SteamTooltipProps>;
+function resolveTooltip(): FC<SteamTooltipProps> | null {
+  try {
+    const found = findModuleExport((e?: Function) =>
+      e?.toString !== undefined
+      && createPropListRegex(['children']).test(e.toString())
+      && (/tooltipProps:\w/).test(e.toString()));
+    return (typeof found === 'function' ? found : null) as FC<SteamTooltipProps> | null;
+  } catch {
+    return null;
+  }
+}
+
+export const SteamTooltip: FC<SteamTooltipProps> = (props) => {
+  const Resolved = useMemo(resolveTooltip, []);
+  if (Resolved !== null) {
+    return <Resolved {...props} />;
+  }
+  const { children } = props;
+  return <>{children}</>;
+};
 
 interface ControllerFocusableProps extends PropsWithChildren, React.HTMLAttributes<HTMLDivElement> {
   onActivate?(e: unknown): void;
@@ -41,13 +57,32 @@ interface ControllerFocusableProps extends PropsWithChildren, React.HTMLAttribut
   onOKActionDescription?: string | null;
 }
 
-const focusableModule: object = findModuleByExport(e =>
-  e?.toString?.().includes('strEnterKeyLabel')
-  && e.toString().includes('refKeyboardHandle'));
+function resolveFocusable(): FC<ControllerFocusableProps> | null {
+  try {
+    const focusableModule = findModuleByExport(e =>
+      e?.toString?.().includes('strEnterKeyLabel')
+      && e.toString().includes('refKeyboardHandle'));
+    if (focusableModule === undefined || focusableModule === null) {
+      return null;
+    }
+    const found = Object.values(focusableModule).find(f =>
+      f?.toString?.().includes('forwardRef')
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      && !f.toString().includes('virtualKeyboardProps'));
+    if (typeof found !== 'function') {
+      return null;
+    }
+    return (found as (tag: string) => FC<ControllerFocusableProps>)('div');
+  } catch {
+    return null;
+  }
+}
 
-export const ControllerFocusable = (
-  Object.values(focusableModule).find(f =>
-    f?.toString?.().includes('forwardRef')
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    && !f.toString().includes('virtualKeyboardProps'))('div') ?? (async props => props.children)
-) as FC<ControllerFocusableProps>;
+export const ControllerFocusable: FC<ControllerFocusableProps> = (props) => {
+  const Resolved = useMemo(resolveFocusable, []);
+  if (Resolved !== null) {
+    return <Resolved {...props} />;
+  }
+  const { children, ...rest } = props;
+  return <div {...rest}>{children}</div>;
+};

@@ -273,6 +273,21 @@ $danger-color: #e63946;
     align-items: center;
     gap: 10px;
 
+    .steam-hunters-progress-track {
+      width: 125px;
+      height: 8px;
+      margin-top: 4px;
+      border-radius: 4px;
+      background-color: rgba(103, 112, 123, .35);
+      overflow: hidden;
+    }
+
+    .steam-hunters-progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background-color: #66c0f4;
+    }
+
     & >:last-child {
       width: 125px;
       margin-top: 4px;

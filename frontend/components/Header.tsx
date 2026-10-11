@@ -1,4 +1,5 @@
-import { Button, Dropdown, Focusable, SingleDropdownOption, TextField, Toggle } from '@steambrew/client';
+import { Button, Dropdown, Focusable, TextField, Toggle } from '@steambrew/client';
+import type { SingleDropdownOption } from '@steambrew/client';
 import React, { JSX } from 'react';
 import { FaGear } from 'react-icons/fa6';
 import { useAchievementStore } from '../stores';

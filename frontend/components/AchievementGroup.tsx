@@ -1,10 +1,18 @@
-import { ProgressBar } from '@steambrew/client';
 import React, { JSX, useMemo } from 'react';
 import { ControllerFocusable } from '../SteamComponents';
 import { useAchievementStore } from '../stores';
 import { AchievementItem } from './AchievementItem';
 import { AchievementIcon, PointsIcon } from './Icons';
 import { AchievementData, AchievementGroupData, SteamGameInfo } from './types';
+
+function GroupProgressBar({ nProgress }: { readonly nProgress: number }): JSX.Element {
+  const clamped = Math.min(100, Math.max(0, nProgress));
+  return (
+    <div className="steam-hunters-progress-track">
+      <div className="steam-hunters-progress-fill" style={{ width: `${clamped}%` }} />
+    </div>
+  );
+}
 
 interface AchievementGroupProps {
   onExpandChange(isExpanded: boolean): void;
@@ -102,7 +110,7 @@ export const AchievementGroup = React.memo(({
                   <span>{achievements.length}</span>
                   <span>{` (${progressPercentage.toFixed(1)}%)`}</span>
                 </div>
-                <ProgressBar nProgress={progressPercentage} />
+                <GroupProgressBar nProgress={progressPercentage} />
               </div>
             </div>
           </div>
