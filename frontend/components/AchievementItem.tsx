@@ -100,6 +100,7 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
   const usedPercentage = settings.sortBy === SortBy.Steam ? achievement.steamPercentage : achievement.localPercentage;
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- This hides manually revealed spoilers again when the preference changes and is a valid set use
     setRevealed(false);
   }, [settings.hideHidden]);
 

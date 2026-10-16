@@ -75,7 +75,7 @@ export function useAchievementData(appId: string): AchievementDataHook {
           completedCount: scrapedAchievement?.completedCount,
           totalPlayers: scrapedAchievement?.totalPlayers,
           isHidden: steamAchievement?.bHidden ?? false,
-        } as AchievementData;
+        };
       });
 
       // Create base game group

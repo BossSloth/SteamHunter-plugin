@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 import { Button, Focusable, Toggle } from '@steambrew/client';
 import { initHltbInjection } from 'hltb/HltbInjection';
 import React, { JSX, useMemo } from 'react';
@@ -122,7 +121,7 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
       { ...PREVIEW_ACHIEVEMENT, strImage: getRandomImage() },
       { ...SECOND_PREVIEW_ACHIEVEMENT, strImage: getRandomImage() },
     ];
-  }, [processedGroup.group.name]);
+  }, [processedGroup.groupAchievements]);
 
   return (
     <Focusable className="preferences-overlay" onClick={onClose}>

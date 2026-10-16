@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "rootDir": "./frontend",
       "outDir": ".millennium/Dist",
       "module": "ESNext",
       "target": "ES2022",

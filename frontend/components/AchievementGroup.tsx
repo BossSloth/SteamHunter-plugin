@@ -17,7 +17,6 @@ interface AchievementGroupProps {
   readonly totalPoints: number;
 }
 
-// eslint-disable-next-line max-lines-per-function
 export const AchievementGroup = React.memo(({
   groupInfo,
   title,
@@ -26,12 +25,14 @@ export const AchievementGroup = React.memo(({
   isExpanded = false,
   gameInfo,
   onExpandChange,
+  // eslint-disable-next-line max-lines-per-function
 }: AchievementGroupProps): JSX.Element => {
   const settings = useAchievementStore();
 
   const [expanded, setExpanded] = React.useState(isExpanded);
 
   React.useEffect(() => {
+    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Sync expand-all changes while retaining local preview toggles.
     setExpanded(isExpanded);
   }, [isExpanded]);
 
@@ -40,15 +41,15 @@ export const AchievementGroup = React.memo(({
     onExpandChange(newExpanded);
   }
 
-  const groupTitle = useMemo(() => {
-    const { dlcAppName, name } = groupInfo;
+  const { dlcAppName, name } = groupInfo;
 
+  const groupTitle = useMemo(() => {
     if (dlcAppName !== undefined) {
       return name !== undefined ? `${dlcAppName} — ${name}` : dlcAppName;
     }
 
     return title !== undefined ? `${gameInfo.name} — ${title}` : gameInfo.name;
-  }, [groupInfo.dlcAppName, groupInfo.name, title, gameInfo.name]);
+  }, [dlcAppName, name, title, gameInfo.name]);
 
   // Memoize progress calculations
   const { unlockedCount, progressPercentage, fullCompleted } = useMemo(() => {
@@ -90,11 +91,20 @@ export const AchievementGroup = React.memo(({
                 {/* Date will be formatted like this: "1 Jan 2025" */}
                 {groupInfo.releaseDate && (
                   <span className="date">
-                    {groupInfo.releaseDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+                    {groupInfo.releaseDate.toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
                   </span>
                 )}
               </div>
-              <div className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`} style={{ display: settings.showUnlocked && achievements.length > 0 ? 'flex' : 'none' }}>
+              <div
+                className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`}
+                style={{
+                  display: settings.showUnlocked && achievements.length > 0 ? 'flex' : 'none',
+                }}
+              >
                 {fullCompleted && <AchievementIcon />}
                 <div className="progress-text">
                   <span>{unlockedCount}</span>
@@ -120,10 +130,7 @@ export const AchievementGroup = React.memo(({
       {expanded && (
         <div className="group-content">
           {achievements.map(achievement => (
-            <AchievementItem
-              key={achievement.apiName}
-              achievement={achievement}
-            />
+            <AchievementItem key={achievement.apiName} achievement={achievement} />
           ))}
         </div>
       )}

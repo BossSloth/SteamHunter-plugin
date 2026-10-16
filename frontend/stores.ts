@@ -73,11 +73,11 @@ export const useAchievementStore = create<AchievementState>()(persist(
     savedDefaults: null,
 
     setPreferences: (preferences: Partial<GlobalPreferences>): void => {
-      set(state => ({ ...state, ...preferences }) as AchievementState);
+      set(state => ({ ...state, ...preferences }));
     },
 
     setViewSettings: (settings: Partial<ViewSettings>): void => {
-      set(state => ({ ...state, ...settings }) as AchievementState);
+      set(state => ({ ...state, ...settings }));
     },
 
     saveAsDefault: (): void => {

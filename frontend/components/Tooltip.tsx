@@ -21,15 +21,15 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>(({ toolTipContent, s
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const showEvent = useRef(new MouseEvent('mouseover', { bubbles: true }));
-  const hideEvent = useRef(new MouseEvent('mouseout', { bubbles: true }));
+  const showEventRef = useRef(new MouseEvent('mouseover', { bubbles: true }));
+  const hideEventRef = useRef(new MouseEvent('mouseout', { bubbles: true }));
 
   useImperativeHandle(ref, () => ({
     show(): void {
-      containerRef.current?.dispatchEvent(showEvent.current);
+      containerRef.current?.dispatchEvent(showEventRef.current);
     },
     hide(): void {
-      containerRef.current?.dispatchEvent(hideEvent.current);
+      containerRef.current?.dispatchEvent(hideEventRef.current);
     },
   }));
 
@@ -38,11 +38,11 @@ export const Tooltip = forwardRef<TooltipRef, TooltipProps>(({ toolTipContent, s
     if (element === null) return undefined;
 
     function handleFocus(): void {
-      element?.dispatchEvent(showEvent.current);
+      element?.dispatchEvent(showEventRef.current);
     }
 
     function handleBlur(): void {
-      element?.dispatchEvent(hideEvent.current);
+      element?.dispatchEvent(hideEventRef.current);
     }
 
     element.addEventListener('vgp_onfocus', handleFocus);

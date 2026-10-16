@@ -1,13 +1,13 @@
+import pluginReact from '@eslint-react/eslint-plugin';
 import pluginJs from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import perfectionist from 'eslint-plugin-perfectionist';
-import pluginReact from 'eslint-plugin-react';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig(
-  { files: ['**/*.{js,mjs,cjs,ts}'] },
+  { files: ['**/*.{js,mjs,cjs,ts,tsx}'] },
   globalIgnores(['.millennium/', '.venv/', './helpers']),
   {
     languageOptions: {
@@ -16,20 +16,19 @@ export default defineConfig(
         projectService: {
           allowDefaultProject: ['*config.mjs'],
         },
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-  {
-    settings: {
-      react: {
-        version: '16.14',
       },
     },
   },
   pluginJs.configs.all,
   ...tseslint.configs.all,
-  pluginReact.configs.flat.all,
+  pluginReact.configs.all,
+  {
+    settings: {
+      'react-x': {
+        version: '16.14',
+      },
+    },
+  },
   stylistic.configs.all,
   stylistic.configs['disable-legacy'],
   stylistic.configs.customize({
@@ -120,21 +119,13 @@ export default defineConfig(
       '@typescript-eslint/no-floating-promises': 'off',
       'no-console': 'off',
       'no-alert': 'off',
-      'react/display-name': 'off',
-      'react/no-multi-comp': 'off',
+      '@eslint-react/no-missing-component-display-name': 'off',
       camelcase: 'off',
       // #endregion
 
       // #region React
-      'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
-
       '@stylistic/jsx-one-expression-per-line': 'off',
-      'react/forbid-component-props': 'off',
-      'react/jsx-max-depth': 'off',
-      'react/jsx-no-literals': 'off',
-      'react/jsx-no-bind': 'off',
-      'react/require-default-props': 'off',
-      'react/jsx-no-leaked-render': 'off',
+      '@eslint-react/no-leaked-conditional-rendering': 'off',
       // #endregion
     },
   },

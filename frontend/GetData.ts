@@ -49,7 +49,7 @@ async function fetchAndCache<T>(
   try {
     response = JSON.parse(responseStr) as ApiResponse<T> | null;
   } catch (error) {
-    throw new Error(`Failed to parse ${cacheKey} response: ${error}\n${responseStr}`, { cause: error });
+    throw new Error(`Failed to parse ${cacheKey} response: ${String(error)}\n${responseStr}`, { cause: error });
   }
 
   if (!response) {
@@ -96,12 +96,16 @@ export async function getScrapedDetails(appId: string): Promise<ScrapedAchieveme
     return cachedData;
   }
 
-  const backendResponse = await fetchAndCache<BackendScrapedResponse>(appId, API.scrapedDetails, 'scrapedDetails' as keyof AppCache);
+  const backendResponse = await fetchAndCache<BackendScrapedResponse>(
+    appId,
+    API.scrapedDetails,
+    'scrapedDetails',
+  );
   if (!backendResponse.success || backendResponse.modelText === undefined) {
     return { success: false, achievements: {}, updates: [] };
   }
 
-  const { achievements, updates } = processScrapedModel(backendResponse.modelText!);
+  const { achievements, updates } = processScrapedModel(backendResponse.modelText ?? '');
 
   const finalResponse: ScrapedAchievementsResponse = {
     success: true,

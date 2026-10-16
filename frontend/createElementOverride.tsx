@@ -123,11 +123,11 @@ function ensureGroupsTab(tabs: Tab[]): void {
 const wrapperCache = new WeakMap<object, React.ComponentType<Props>>();
 
 function getTabContainerWrapper(OriginalType: object): React.ComponentType<Props> {
-  let wrapped = wrapperCache.get(OriginalType);
-  if (wrapped) return wrapped;
+  let Wrapped = wrapperCache.get(OriginalType);
+  if (Wrapped) return Wrapped;
 
   const Original = OriginalType as React.ComponentType<Props>;
-  wrapped = (props: Props): ReactElement => {
+  Wrapped = (props: Props): ReactElement => {
     // Steam's parent component owns `activeTab` via useState (default
     // 'achievements'). To avoid a 1-frame flash of the wrong tab, override
     // `activeTab` on the very first render and sync the parent's state in
@@ -135,10 +135,12 @@ function getTabContainerWrapper(OriginalType: object): React.ComponentType<Props
     // user can freely switch tabs.
     const syncedRef = React.useRef(false);
     const onShowTabRef = React.useRef(props.onShowTab);
+    /* eslint-disable @eslint-react/refs */
     onShowTabRef.current = props.onShowTab;
 
     React.useLayoutEffect(() => {
       onShowTabRef.current('achievement-groups');
+      /* eslint-disable @eslint-react/refs */
       syncedRef.current = true;
     }, []);
 
@@ -148,9 +150,9 @@ function getTabContainerWrapper(OriginalType: object): React.ComponentType<Props
 
     return React.createElement(Original, finalProps);
   };
-  wrapperCache.set(OriginalType, wrapped);
+  wrapperCache.set(OriginalType, Wrapped);
 
-  return wrapped;
+  return Wrapped;
 }
 
 function handleAchievementsTabs(args: JsxArgs): void {

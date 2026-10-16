@@ -1,5 +1,5 @@
 import { Spinner } from '@steambrew/client';
-import React, { createRef, JSX, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { JSX, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AchievementDataHook, useAchievementData } from '../hooks/useAchievementData';
 import { useAchievementStore } from '../stores';
 import { AchievementGroup } from './AchievementGroup';
@@ -220,7 +220,7 @@ const AchievementContent = React.memo(({
       <div className="achievement-groups">
         {processedGroups.map(({ group, groupAchievements, totalPoints }, index) => (
           <AchievementGroup
-            // eslint-disable-next-line react/no-array-index-key
+            // eslint-disable-next-line @eslint-react/no-array-index-key
             key={index}
             groupInfo={group}
             title={group.name}
@@ -246,8 +246,9 @@ export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
 
 function AchievementPageContent({ appId }: AchievementPageProps): JSX.Element {
   const data = useAchievementData(appId);
+  const { silentReload } = data;
   const resetToDefault = useAchievementStore(s => s.resetToDefault);
-  const domElement = createRef<HTMLDivElement>();
+  const domElementRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     resetToDefault();
@@ -259,20 +260,20 @@ function AchievementPageContent({ appId }: AchievementPageProps): JSX.Element {
 
   useEffect(() => {
     const achievementSubscriber = SteamClient.GameSessions.RegisterForAchievementNotification(() => {
-      data.silentReload();
+      silentReload();
     });
 
     return (): void => {
       achievementSubscriber.unregister();
     };
-  }, []);
+  }, [silentReload]);
 
   if (data.errors.length > 0) {
     return <ErrorDisplay errors={data.errors} />;
   }
 
   return (
-    <div className="steam-hunters-achievements-page" ref={domElement}>
+    <div className="steam-hunters-achievements-page" ref={domElementRef}>
       {data.loading
         ? (
             <Spinner className="steam-hunters-spinner" />

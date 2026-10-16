@@ -12,7 +12,7 @@ interface SHModelTag {
 }
 
 interface SHModelTagVote {
-  tagId: number;
+  tagId: AchievementTag;
 }
 
 interface SHModelAchievementItem {
