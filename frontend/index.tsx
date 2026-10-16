@@ -11,9 +11,13 @@ export default definePlugin(async () => {
 
   initHltbInjection();
 
+  const { Settings } = IconsModule as {
+    readonly Settings: React.ComponentType;
+  };
+
   return {
     title: 'Achievement Groups',
-    icon: <IconsModule.Settings />,
+    icon: <Settings />,
     content: <SettingsContent />,
   };
 });

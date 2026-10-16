@@ -2,9 +2,13 @@ import { IconsModule } from '@steambrew/client';
 import React, { JSX } from 'react';
 
 export function ErrorDisplay({ errors }: { readonly errors: Error[] }): JSX.Element {
+  const { ExclamationPoint } = IconsModule as {
+    readonly ExclamationPoint: React.ComponentType<React.SVGAttributes<SVGElement>>;
+  };
+
   return (
     <div className="steam-hunters-error-message">
-      <IconsModule.ExclamationPoint style={{ color: 'crimson', maxWidth: '10%' }} />
+      <ExclamationPoint style={{ color: 'crimson', maxWidth: '10%' }} />
       <p>
         An error occurred:
         <ul>

@@ -18,6 +18,7 @@ interface AchievementGroupProps {
 }
 
 export const AchievementGroup = React.memo(
+  // oxlint-disable-next-line max-lines-per-function
   ({
     groupInfo,
     title,
@@ -26,7 +27,6 @@ export const AchievementGroup = React.memo(
     isExpanded = false,
     gameInfo,
     onExpandChange,
-    // eslint-disable-next-line max-lines-per-function
   }: AchievementGroupProps): JSX.Element => {
     const settings = useAchievementStore();
 

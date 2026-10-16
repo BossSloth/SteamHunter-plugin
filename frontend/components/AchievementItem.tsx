@@ -74,7 +74,7 @@ function AchievementExtraInfo({
         && Object.entries(achievement.tags).map(([tag, count]) => (
           <Tooltip
             toolTipContent={`${tag} (${count} vote${count === 1 ? '' : 's'})`}
-            showTooltipOnContollerFocus={false}
+            showTooltipOnControllerFocus={false}
             key={tag}
           >
             <span className="achievement-tag">{tag}</span>
