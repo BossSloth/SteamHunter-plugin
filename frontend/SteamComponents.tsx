@@ -43,15 +43,20 @@ interface ControllerFocusableProps extends PropsWithChildren, React.HTMLAttribut
   onOKActionDescription?: string | null;
 }
 
-const focusableModule: object = findModuleByExport(
-  (e) => e?.toString?.().includes('strEnterKeyLabel') && e.toString().includes('refKeyboardHandle'),
+const focusableModule: object | undefined = findModuleByExport(
+  (e) =>
+    typeof e === 'function'
+    && e.toString().includes('forwardRef') === true
+    && e.toString().includes('virtualKeyboardProps') === true
+    && e.toString().includes('refKeyboardHandle') === true,
 );
 
-export const ControllerFocusable = (Object.values(focusableModule).find(
-  (f) =>
-    f?.toString?.().includes('forwardRef')
-    //
-    && !f.toString().includes('virtualKeyboardProps'),
-  /* eslint-disable @typescript-eslint/explicit-function-return-type */
-  /* eslint-disable @typescript-eslint/promise-function-async */
-)('div') ?? ((props) => props.children)) as FC<ControllerFocusableProps>;
+const createFocusable = Object.values(focusableModule ?? {}).find(
+  (e) =>
+    typeof e === 'function'
+    && e.toString().includes('forwardRef') === true
+    && e.toString().includes('virtualKeyboardProps') === false,
+) as ((tagName: 'div') => FC<ControllerFocusableProps>) | undefined;
+
+export const ControllerFocusable =
+  createFocusable?.('div') ?? ((async (props) => props.children) as FC<ControllerFocusableProps>);
