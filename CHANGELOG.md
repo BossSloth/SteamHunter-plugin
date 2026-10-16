@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/BossSloth/SteamHunter-plugin/compare/v2.1.0...v2.1.1) (2026-10-16)
+
+
+### Bug Fixes
+
+* Fixed ControllerFocusable retrieval to work on the latest steam client update, not crashing the plugin. ([56fc51f](https://github.com/BossSloth/SteamHunter-plugin/commit/56fc51f0742381790d8385323eb62f15d9c7b1c0)), closes [#32](https://github.com/BossSloth/SteamHunter-plugin/issues/32)
+
 # [2.1.0](https://github.com/BossSloth/SteamHunter-plugin/compare/v2.0.2...v2.1.0) (2026-05-10)
 
 ### Bug Fixes
