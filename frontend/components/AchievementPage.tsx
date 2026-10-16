@@ -23,14 +23,17 @@ function filterAndSortAchievements(achievements: AchievementData[], settings: Vi
       if (searchQuery !== undefined) {
         const query = searchQuery.toLowerCase();
 
-        return achievement.name.toLowerCase().includes(query)
+        return (
+          achievement.name.toLowerCase().includes(query)
           || achievement.description.toLowerCase().includes(query)
-          || (achievement.tags !== undefined && Object.keys(achievement.tags).some(tag => tag.toLowerCase().includes(query)));
+          || (achievement.tags !== undefined
+            && Object.keys(achievement.tags).some((tag) => tag.toLowerCase().includes(query)))
+        );
       }
 
       return true;
     })
-    .filter(achievement => showUnlocked || !achievement.unlocked)
+    .filter((achievement) => showUnlocked || !achievement.unlocked)
     .sort((a, b) => {
       switch (sortBy) {
         case SortBy.Default:
@@ -42,7 +45,9 @@ function filterAndSortAchievements(achievements: AchievementData[], settings: Vi
         case SortBy.Name:
           return reverse ? b.name.localeCompare(a.name) : a.name.localeCompare(b.name);
         case SortBy.Date:
-          return reverse ? (a.unlockedDate?.getTime() ?? Infinity) - (b.unlockedDate?.getTime() ?? Infinity) : (b.unlockedDate?.getTime() ?? 0) - (a.unlockedDate?.getTime() ?? 0);
+          return reverse
+            ? (a.unlockedDate?.getTime() ?? Infinity) - (b.unlockedDate?.getTime() ?? Infinity)
+            : (b.unlockedDate?.getTime() ?? 0) - (a.unlockedDate?.getTime() ?? 0);
         default:
           return 0;
       }
@@ -66,7 +71,7 @@ function getGroupedAchievements(
       return [
         {
           name: undefined,
-          achievementApiNames: achievements.map(a => a.apiName),
+          achievementApiNames: achievements.map((a) => a.apiName),
           bannerUrl: baseBannerUrl,
           releaseDate: baseReleaseDate,
         },
@@ -75,25 +80,25 @@ function getGroupedAchievements(
       return [
         {
           name: 'Achieved',
-          achievementApiNames: achievements.filter(a => a.unlocked).map(a => a.apiName),
+          achievementApiNames: achievements.filter((a) => a.unlocked).map((a) => a.apiName),
           bannerUrl: baseBannerUrl,
           releaseDate: baseReleaseDate,
         },
         {
           name: 'Unachieved',
-          achievementApiNames: achievements.filter(a => !a.unlocked).map(a => a.apiName),
+          achievementApiNames: achievements.filter((a) => !a.unlocked).map((a) => a.apiName),
           bannerUrl: baseBannerUrl,
           releaseDate: baseReleaseDate,
         },
       ];
     case GroupBy.DLC: {
-      const baseAchievements = groups.filter(g => g.dlcAppId === undefined);
-      const dlcAchievements = groups.filter(g => g.dlcAppId !== undefined);
+      const baseAchievements = groups.filter((g) => g.dlcAppId === undefined);
+      const dlcAchievements = groups.filter((g) => g.dlcAppId !== undefined);
 
       return [
         {
           name: baseAchievements[0]?.name,
-          achievementApiNames: baseAchievements.flatMap(a => a.achievementApiNames),
+          achievementApiNames: baseAchievements.flatMap((a) => a.achievementApiNames),
           bannerUrl: baseBannerUrl,
           releaseDate: baseReleaseDate,
         },
@@ -117,14 +122,17 @@ interface AchievementContentProps {
   readonly data: AchievementDataHook;
 }
 
-function useAchievementGrouping(data: AchievementDataHook, viewSettings: ViewSettings): {
+function useAchievementGrouping(
+  data: AchievementDataHook,
+  viewSettings: ViewSettings,
+): {
   processedGroups: ProcessedGroup[];
   groupedAchievementsLength: number;
 } {
   const { groupBy } = viewSettings;
 
   const achievementMap = useMemo(() => {
-    return new Map(data.achievements.map(a => [a.apiName, a]));
+    return new Map(data.achievements.map((a) => [a.apiName, a]));
   }, [data.achievements]);
 
   const groupedAchievements = useMemo(
@@ -132,17 +140,20 @@ function useAchievementGrouping(data: AchievementDataHook, viewSettings: ViewSet
     [data.achievements, data.groups, groupBy],
   );
 
-  const getAchievementsForGroup = useCallback((apiNames: string[]): AchievementData[] => {
-    const result: AchievementData[] = [];
-    for (const apiName of apiNames) {
-      const achievement = achievementMap.get(apiName);
-      if (achievement) {
-        result.push(achievement);
+  const getAchievementsForGroup = useCallback(
+    (apiNames: string[]): AchievementData[] => {
+      const result: AchievementData[] = [];
+      for (const apiName of apiNames) {
+        const achievement = achievementMap.get(apiName);
+        if (achievement) {
+          result.push(achievement);
+        }
       }
-    }
 
-    return result;
-  }, [achievementMap]);
+      return result;
+    },
+    [achievementMap],
+  );
 
   const processedGroups = useMemo(() => {
     return groupedAchievements.map((group) => {
@@ -159,11 +170,7 @@ function useAchievementGrouping(data: AchievementDataHook, viewSettings: ViewSet
   return { processedGroups, groupedAchievementsLength: groupedAchievements.length };
 }
 
-const AchievementContent = React.memo(({
-  onCacheCleared,
-  data,
-  appId,
-}: AchievementContentProps): JSX.Element => {
+const AchievementContent = React.memo(({ onCacheCleared, data, appId }: AchievementContentProps): JSX.Element => {
   const settings = useAchievementStore();
   const [showPreferences, setShowPreferences] = useState(false);
   const { processedGroups, groupedAchievementsLength } = useAchievementGrouping(data, settings);
@@ -205,13 +212,17 @@ const AchievementContent = React.memo(({
         onExpandAllClick={handleExpandAllClick}
         allGroupsExpanded={allGroupsExpanded}
         onCacheCleared={onCacheCleared}
-        onPreferencesClick={() => { setShowPreferences(true); }}
+        onPreferencesClick={() => {
+          setShowPreferences(true);
+        }}
         appId={appId}
       />
 
       {showPreferences && (
         <PreferencesPopup
-          onClose={() => { setShowPreferences(false); }}
+          onClose={() => {
+            setShowPreferences(false);
+          }}
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           processedGroup={processedGroups[0]!}
         />
@@ -228,7 +239,9 @@ const AchievementContent = React.memo(({
             totalPoints={totalPoints}
             isExpanded={expandedGroups.has(index)}
             gameInfo={data.gameInfo}
-            onExpandChange={(isExpanded) => { handleGroupExpand(index, isExpanded); }}
+            onExpandChange={(isExpanded) => {
+              handleGroupExpand(index, isExpanded);
+            }}
           />
         ))}
       </div>
@@ -247,7 +260,7 @@ export function AchievementPage({ appId }: AchievementPageProps): JSX.Element {
 function AchievementPageContent({ appId }: AchievementPageProps): JSX.Element {
   const data = useAchievementData(appId);
   const { silentReload } = data;
-  const resetToDefault = useAchievementStore(s => s.resetToDefault);
+  const resetToDefault = useAchievementStore((s) => s.resetToDefault);
   const domElementRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -274,20 +287,14 @@ function AchievementPageContent({ appId }: AchievementPageProps): JSX.Element {
 
   return (
     <div className="steam-hunters-achievements-page" ref={domElementRef}>
-      {data.loading
-        ? (
-            <Spinner className="steam-hunters-spinner" />
-          )
-        : (
-            <>
-              <Styles />
-              <AchievementContent
-                data={data}
-                onCacheCleared={handleCacheCleared}
-                appId={appId}
-              />
-            </>
-          )}
+      {data.loading ? (
+        <Spinner className="steam-hunters-spinner" />
+      ) : (
+        <>
+          <Styles />
+          <AchievementContent data={data} onCacheCleared={handleCacheCleared} appId={appId} />
+        </>
+      )}
     </div>
   );
 }

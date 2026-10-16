@@ -17,11 +17,11 @@ interface ResponseError {
 type ApiResponse<T> = T & ResponseError;
 
 const API = {
-  groups: callable<[{ appId: string; }], string>('RequestAchievementGroups'),
-  achievements: callable<[{ appId: string; }], string>('RequestAchievements'),
-  gameInfo: callable<[{ appId: string; }], string>('RequestSteamGameInfo'),
-  updates: callable<[{ appId: string; }], string>('RequestAchievementUpdates'),
-  scrapedDetails: callable<[{ appId: string; }], string>('ScrapeAchievementDetails'),
+  groups: callable<[{ appId: string }], string>('RequestAchievementGroups'),
+  achievements: callable<[{ appId: string }], string>('RequestAchievements'),
+  gameInfo: callable<[{ appId: string }], string>('RequestSteamGameInfo'),
+  updates: callable<[{ appId: string }], string>('RequestAchievementUpdates'),
+  scrapedDetails: callable<[{ appId: string }], string>('ScrapeAchievementDetails'),
 };
 
 function handleTimeoutError(error: string, context: string): never {
@@ -71,9 +71,11 @@ export async function getGroups(appId: string): Promise<AchievementGroupData[] |
   const data = (await fetchAndCache<RequestAchievementGroupsResponse>(appId, API.groups, 'groups')).groups;
   const queuePromises: Promise<void>[] = [];
   for (const group of data) {
-    queuePromises.push(getBannerImage(Number(group.dlcAppId ?? appId)).then((bannerUrl) => {
-      group.bannerUrl = bannerUrl;
-    }));
+    queuePromises.push(
+      getBannerImage(Number(group.dlcAppId ?? appId)).then((bannerUrl) => {
+        group.bannerUrl = bannerUrl;
+      }),
+    );
   }
   await Promise.all(queuePromises);
 
@@ -96,11 +98,7 @@ export async function getScrapedDetails(appId: string): Promise<ScrapedAchieveme
     return cachedData;
   }
 
-  const backendResponse = await fetchAndCache<BackendScrapedResponse>(
-    appId,
-    API.scrapedDetails,
-    'scrapedDetails',
-  );
+  const backendResponse = await fetchAndCache<BackendScrapedResponse>(appId, API.scrapedDetails, 'scrapedDetails');
   if (!backendResponse.success || backendResponse.modelText === undefined) {
     return { success: false, achievements: {}, updates: [] };
   }

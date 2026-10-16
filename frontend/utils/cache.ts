@@ -23,7 +23,7 @@ type CacheStore = Record<string, AppCache>;
 function getStore(): CacheStore {
   const storeData = localStorage.getItem(CACHE_KEY);
 
-  return storeData !== null ? JSON.parse(storeData) as CacheStore : {};
+  return storeData !== null ? (JSON.parse(storeData) as CacheStore) : {};
 }
 
 function setStore(store: CacheStore): void {

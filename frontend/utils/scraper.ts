@@ -88,7 +88,10 @@ function parseModelText(modelText: string): SHModel {
   }
 }
 
-export function processScrapedModel(modelText: string): { achievements: Record<string, ScrapedAchievement>; updates: ScrapedUpdate[]; } {
+export function processScrapedModel(modelText: string): {
+  achievements: Record<string, ScrapedAchievement>;
+  updates: ScrapedUpdate[];
+} {
   const model = parseModelText(modelText);
   if (model.listData === undefined) {
     return { achievements: {}, updates: [] };
@@ -108,20 +111,22 @@ export function processScrapedModel(modelText: string): { achievements: Record<s
       achievements[item.apiName] = {
         apiName: item.apiName,
         tags,
-        guideUrl: (item.guidesUrl !== undefined && item.guidesUrl !== '' && (item.publishedGuideCount ?? 0) > 0)
-          ? `https://steamhunters.com${item.guidesUrl}`
-          : undefined,
+        guideUrl:
+          item.guidesUrl !== undefined && item.guidesUrl !== '' && (item.publishedGuideCount ?? 0) > 0
+            ? `https://steamhunters.com${item.guidesUrl}`
+            : undefined,
         completedCount: item.validUnlockCount,
         totalPlayers: item.playersQualifiedCount,
       };
     });
   }
 
-  const updates: ScrapedUpdate[] = model.updates?.map(update => ({
-    updateId: update.updateId,
-    updateNumber: update.updateNumber,
-    displayReleaseDate: update.displayReleaseDate,
-  })) ?? [];
+  const updates: ScrapedUpdate[] =
+    model.updates?.map((update) => ({
+      updateId: update.updateId,
+      updateNumber: update.updateNumber,
+      displayReleaseDate: update.displayReleaseDate,
+    })) ?? [];
 
   return { achievements, updates };
 }

@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 import { AchievementPage } from './components/AchievementPage';
 
 interface Tab {
-  content: ReactElement<{ appid: number; }>;
+  content: ReactElement<{ appid: number }>;
   id: string;
   title: string;
 }
@@ -33,14 +33,12 @@ interface JsxRuntimeModule {
  * writable data properties (not webpack getters), so `beforePatch` works on
  * them directly.
  */
-export function patchCreateElement(options: {
-  readonly name: string;
-  readonly onBeforeCreate: PatchHandler;
-}): void {
+export function patchCreateElement(options: { readonly name: string; readonly onBeforeCreate: PatchHandler }): void {
   const { name, onBeforeCreate } = options;
 
-  const found = findModuleByExport((e, key) =>
-    (key === 'jsx' || key === 'jsxs') && typeof e === 'function') as JsxRuntimeModule | undefined;
+  const found = findModuleByExport((e, key) => (key === 'jsx' || key === 'jsxs') && typeof e === 'function') as
+    | JsxRuntimeModule
+    | undefined;
 
   if (!found || typeof found.jsx !== 'function' || typeof found.jsxs !== 'function') {
     console.error(`[${name}] Could not find react/jsx-runtime module`);
@@ -51,9 +49,9 @@ export function patchCreateElement(options: {
 
   const versions = ['jsx', 'jsxs'] as const;
 
-  type versionsType = typeof versions[number];
+  type versionsType = (typeof versions)[number];
 
-  const patches = new Map<versionsType, { patch: Patch | undefined; last: unknown; }>();
+  const patches = new Map<versionsType, { patch: Patch | undefined; last: unknown }>();
 
   function applyPatch(prop: versionsType): void {
     try {
@@ -93,14 +91,16 @@ export function patchCreateElement(options: {
 function isAchievementsTabContainer(props: Partial<Props> | null): props is Props {
   if (!props) return false;
 
-  return Array.isArray(props.tabs)
+  return (
+    Array.isArray(props.tabs)
     && typeof props.onShowTab === 'function'
     && props.autoFocusContents !== undefined
-    && props.tabs.some(t => t.id === 'achievements');
+    && props.tabs.some((t) => t.id === 'achievements')
+  );
 }
 
 function ensureGroupsTab(tabs: Tab[]): void {
-  if (tabs.some(t => t.id === 'achievement-groups')) return;
+  if (tabs.some((t) => t.id === 'achievement-groups')) return;
   if (!tabs[0]) throw new Error('Missing tabs?');
 
   const appid = String(tabs[0].content.props.appid);
@@ -144,9 +144,7 @@ function getTabContainerWrapper(OriginalType: object): React.ComponentType<Props
       syncedRef.current = true;
     }, []);
 
-    const finalProps = syncedRef.current
-      ? props
-      : ({ ...props, activeTab: 'achievement-groups' });
+    const finalProps = syncedRef.current ? props : { ...props, activeTab: 'achievement-groups' };
 
     return React.createElement(Original, finalProps);
   };

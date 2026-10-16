@@ -2,10 +2,7 @@ import { Button, Dropdown, Focusable, SingleDropdownOption, TextField, Toggle } 
 import React, { JSX } from 'react';
 import { FaGear } from 'react-icons/fa6';
 import { useAchievementStore } from '../stores';
-import {
-  clearAppCache,
-  getCacheDate,
-} from '../utils/cache';
+import { clearAppCache, getCacheDate } from '../utils/cache';
 import { ErrorDisplay } from './ErrorDisplay';
 import { Tooltip } from './Tooltip';
 import { GroupBy, SortBy } from './types';
@@ -29,7 +26,7 @@ export function Header({
   appId,
 }: HeaderProps): JSX.Element {
   const viewSettings = useAchievementStore();
-  const hasCustomDefaults = useAchievementStore(s => s.hasCustomDefaults());
+  const hasCustomDefaults = useAchievementStore((s) => s.hasCustomDefaults());
 
   function handleDefaultSettings(): void {
     viewSettings.saveAsDefault();
@@ -50,16 +47,16 @@ export function Header({
         <div className="search-container">
           <TextField
             value={viewSettings.searchQuery ?? ''}
-            onChange={(e) => { viewSettings.setViewSettings({ searchQuery: e.target.value }); }}
+            onChange={(e) => {
+              viewSettings.setViewSettings({ searchQuery: e.target.value });
+            }}
             // @ts-expect-error placeholder does exist
             placeholder="Search achievements..."
           />
         </div>
 
         <Focusable className="header-actions">
-          <Button onClick={onExpandAllClick}>
-            {allGroupsExpanded ? 'Collapse All' : 'Expand All'}
-          </Button>
+          <Button onClick={onExpandAllClick}>{allGroupsExpanded ? 'Collapse All' : 'Expand All'}</Button>
 
           <Tooltip toolTipContent={<CacheTooltipContent appId={appId} />}>
             <Button
@@ -74,9 +71,11 @@ export function Header({
 
           <Tooltip
             toolTipContent={
-              hasCustomDefaults
-                ? <span>Reset saved default settings to standard default values</span>
-                : <span>Save current settings as default</span>
+              hasCustomDefaults ? (
+                <span>Reset saved default settings to standard default values</span>
+              ) : (
+                <span>Save current settings as default</span>
+              )
             }
           >
             <Button onClick={hasCustomDefaults ? handleResetDefaults : handleDefaultSettings}>
@@ -100,7 +99,7 @@ export function Header({
             <span>{achievementCount} achievements grouped by</span>
             <div className="dropdown-container" style={{ minWidth: '125px' }}>
               <Dropdown
-                rgOptions={Object.values(GroupBy).map(group => ({ label: group, data: group }))}
+                rgOptions={Object.values(GroupBy).map((group) => ({ label: group, data: group }))}
                 selectedOption={viewSettings.groupBy}
                 onChange={(value: SingleDropdownOption) => {
                   viewSettings.setViewSettings({ groupBy: value.data as GroupBy });
@@ -113,7 +112,7 @@ export function Header({
             <span>sorted by</span>
             <div className="dropdown-container" style={{ minWidth: '88px' }}>
               <Dropdown
-                rgOptions={Object.values(SortBy).map(option => ({ label: option, data: option }))}
+                rgOptions={Object.values(SortBy).map((option) => ({ label: option, data: option }))}
                 selectedOption={viewSettings.sortBy}
                 onChange={(value: SingleDropdownOption) => {
                   viewSettings.setViewSettings({ sortBy: value.data as SortBy });
@@ -125,12 +124,32 @@ export function Header({
         </Focusable>
 
         <Focusable className="toggle-group">
-          <div className="toggle-item" onClick={() => { viewSettings.setViewSettings({ reverse: !viewSettings.reverse }); }}>
-            <Toggle value={viewSettings.reverse} onChange={(value) => { viewSettings.setViewSettings({ reverse: value }); }} />
+          <div
+            className="toggle-item"
+            onClick={() => {
+              viewSettings.setViewSettings({ reverse: !viewSettings.reverse });
+            }}
+          >
+            <Toggle
+              value={viewSettings.reverse}
+              onChange={(value) => {
+                viewSettings.setViewSettings({ reverse: value });
+              }}
+            />
             <span>Reverse</span>
           </div>
-          <div className="toggle-item" onClick={() => { viewSettings.setViewSettings({ showUnlocked: !viewSettings.showUnlocked }); }}>
-            <Toggle value={viewSettings.showUnlocked} onChange={(value) => { viewSettings.setViewSettings({ showUnlocked: value }); }} />
+          <div
+            className="toggle-item"
+            onClick={() => {
+              viewSettings.setViewSettings({ showUnlocked: !viewSettings.showUnlocked });
+            }}
+          >
+            <Toggle
+              value={viewSettings.showUnlocked}
+              onChange={(value) => {
+                viewSettings.setViewSettings({ showUnlocked: value });
+              }}
+            />
             <span>Show Unlocked</span>
           </div>
         </Focusable>
@@ -139,7 +158,7 @@ export function Header({
   );
 }
 
-function CacheTooltipContent({ appId }: { readonly appId: string; }): JSX.Element {
+function CacheTooltipContent({ appId }: { readonly appId: string }): JSX.Element {
   return (
     <span>
       Cache was last updated on

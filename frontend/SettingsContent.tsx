@@ -6,13 +6,16 @@ interface Settings {
 }
 
 const getSettings = callable<[], string>('GetSettings');
-const saveSettings = callable<[{ newSettings: string; }], string>('SaveSettings');
+const saveSettings = callable<[{ newSettings: string }], string>('SaveSettings');
 
 function ProxyDescription(): React.JSX.Element {
   return (
     <>
       URL of a proxy server to use for API requests. For a list see
-      <a href="https://github.com/themiralay/Proxy-List-World" target="_blank" rel="noreferrer"> https://github.com/themiralay/Proxy-List-World</a>
+      <a href="https://github.com/themiralay/Proxy-List-World" target="_blank" rel="noreferrer">
+        {' '}
+        https://github.com/themiralay/Proxy-List-World
+      </a>
     </>
   );
 }
@@ -21,10 +24,12 @@ export function SettingsContent(): React.JSX.Element {
   const [proxyUrl, setProxyUrl] = useState('');
 
   useEffect(() => {
-    getSettings().then((response) => {
-      const parsed = JSON.parse(response) as Settings;
-      setProxyUrl(parsed.proxyUrl ?? '');
-    }).catch(console.error);
+    getSettings()
+      .then((response) => {
+        const parsed = JSON.parse(response) as Settings;
+        setProxyUrl(parsed.proxyUrl ?? '');
+      })
+      .catch(console.error);
   }, []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>): void {

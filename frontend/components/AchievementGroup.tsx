@@ -17,123 +17,127 @@ interface AchievementGroupProps {
   readonly totalPoints: number;
 }
 
-export const AchievementGroup = React.memo(({
-  groupInfo,
-  title,
-  achievements,
-  totalPoints,
-  isExpanded = false,
-  gameInfo,
-  onExpandChange,
-  // eslint-disable-next-line max-lines-per-function
-}: AchievementGroupProps): JSX.Element => {
-  const settings = useAchievementStore();
+export const AchievementGroup = React.memo(
+  ({
+    groupInfo,
+    title,
+    achievements,
+    totalPoints,
+    isExpanded = false,
+    gameInfo,
+    onExpandChange,
+    // eslint-disable-next-line max-lines-per-function
+  }: AchievementGroupProps): JSX.Element => {
+    const settings = useAchievementStore();
 
-  const [expanded, setExpanded] = React.useState(isExpanded);
+    const [expanded, setExpanded] = React.useState(isExpanded);
 
-  React.useEffect(() => {
-    // eslint-disable-next-line @eslint-react/set-state-in-effect -- Sync expand-all changes while retaining local preview toggles.
-    setExpanded(isExpanded);
-  }, [isExpanded]);
+    React.useEffect(() => {
+      // eslint-disable-next-line @eslint-react/set-state-in-effect -- Sync expand-all changes while retaining local preview toggles.
+      setExpanded(isExpanded);
+    }, [isExpanded]);
 
-  function handleExpand(newExpanded: boolean): void {
-    setExpanded(newExpanded);
-    onExpandChange(newExpanded);
-  }
-
-  const { dlcAppName, name } = groupInfo;
-
-  const groupTitle = useMemo(() => {
-    if (dlcAppName !== undefined) {
-      return name !== undefined ? `${dlcAppName} — ${name}` : dlcAppName;
+    function handleExpand(newExpanded: boolean): void {
+      setExpanded(newExpanded);
+      onExpandChange(newExpanded);
     }
 
-    return title !== undefined ? `${gameInfo.name} — ${title}` : gameInfo.name;
-  }, [dlcAppName, name, title, gameInfo.name]);
+    const { dlcAppName, name } = groupInfo;
 
-  // Memoize progress calculations
-  const { unlockedCount, progressPercentage, fullCompleted } = useMemo(() => {
-    const unlocked = achievements.filter(a => a.unlocked).length;
+    const groupTitle = useMemo(() => {
+      if (dlcAppName !== undefined) {
+        return name !== undefined ? `${dlcAppName} — ${name}` : dlcAppName;
+      }
 
-    return {
-      unlockedCount: unlocked,
-      progressPercentage: achievements.length > 0 ? (unlocked / achievements.length) * 100 : 0,
-      fullCompleted: unlocked === achievements.length && achievements.length > 0,
-    };
-  }, [achievements]);
+      return title !== undefined ? `${gameInfo.name} — ${title}` : gameInfo.name;
+    }, [dlcAppName, name, title, gameInfo.name]);
 
-  return (
-    <div className="achievement-group">
-      <ControllerFocusable
-        onClick={() => {
-          handleExpand(!expanded);
-        }}
-        onOKActionDescription={expanded ? 'Collapse' : 'Expand'}
-      >
-        <div className="group-header">
-          <div className="group-info">
-            {groupInfo.bannerUrl !== undefined && (
-              <img
-                src={groupInfo.bannerUrl}
-                alt={groupTitle}
-                className="group-image"
-                onClick={(e) => {
-                  SteamClient.System.OpenInSystemBrowser(`https://steamhunters.com/apps/${gameInfo.appId}/achievements`);
-                  e.stopPropagation();
-                }}
-                loading="lazy"
-                decoding="async"
-              />
-            )}
-            <div className="group-title">
-              <div className="group-title-row">
-                <span className="group-title-text">{groupTitle}</span>
-                {/* Date will be formatted like this: "1 Jan 2025" */}
-                {groupInfo.releaseDate && (
-                  <span className="date">
-                    {groupInfo.releaseDate.toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </span>
-                )}
-              </div>
-              <div
-                className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`}
-                style={{
-                  display: settings.showUnlocked && achievements.length > 0 ? 'flex' : 'none',
-                }}
-              >
-                {fullCompleted && <AchievementIcon />}
-                <div className="progress-text">
-                  <span>{unlockedCount}</span>
-                  <span>/</span>
-                  <span>{achievements.length}</span>
-                  <span>{` (${progressPercentage.toFixed(1)}%)`}</span>
+    // Memoize progress calculations
+    const { unlockedCount, progressPercentage, fullCompleted } = useMemo(() => {
+      const unlocked = achievements.filter((a) => a.unlocked).length;
+
+      return {
+        unlockedCount: unlocked,
+        progressPercentage: achievements.length > 0 ? (unlocked / achievements.length) * 100 : 0,
+        fullCompleted: unlocked === achievements.length && achievements.length > 0,
+      };
+    }, [achievements]);
+
+    return (
+      <div className="achievement-group">
+        <ControllerFocusable
+          onClick={() => {
+            handleExpand(!expanded);
+          }}
+          onOKActionDescription={expanded ? 'Collapse' : 'Expand'}
+        >
+          <div className="group-header">
+            <div className="group-info">
+              {groupInfo.bannerUrl !== undefined && (
+                <img
+                  src={groupInfo.bannerUrl}
+                  alt={groupTitle}
+                  className="group-image"
+                  onClick={(e) => {
+                    SteamClient.System.OpenInSystemBrowser(
+                      `https://steamhunters.com/apps/${gameInfo.appId}/achievements`,
+                    );
+                    e.stopPropagation();
+                  }}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+              <div className="group-title">
+                <div className="group-title-row">
+                  <span className="group-title-text">{groupTitle}</span>
+                  {/* Date will be formatted like this: "1 Jan 2025" */}
+                  {groupInfo.releaseDate && (
+                    <span className="date">
+                      {groupInfo.releaseDate.toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  )}
                 </div>
-                <ProgressBar nProgress={progressPercentage} />
+                <div
+                  className={`progress-container ${fullCompleted ? 'progress-complete' : ''}`}
+                  style={{
+                    display: settings.showUnlocked && achievements.length > 0 ? 'flex' : 'none',
+                  }}
+                >
+                  {fullCompleted && <AchievementIcon />}
+                  <div className="progress-text">
+                    <span>{unlockedCount}</span>
+                    <span>/</span>
+                    <span>{achievements.length}</span>
+                    <span>{` (${progressPercentage.toFixed(1)}%)`}</span>
+                  </div>
+                  <ProgressBar nProgress={progressPercentage} />
+                </div>
+              </div>
+            </div>
+            <div className="group-right">
+              <div className="group-stats">
+                <span>
+                  {`${achievements.length} achievements${settings.showPoints ? ` worth ${totalPoints}` : ''}`}
+                  {settings.showPoints && <PointsIcon />}
+                </span>
+                <span className="expand-button">{expanded ? '▼' : '▶'}</span>
               </div>
             </div>
           </div>
-          <div className="group-right">
-            <div className="group-stats">
-              <span>
-                {`${achievements.length} achievements${settings.showPoints ? ` worth ${totalPoints}` : ''}`}
-                {settings.showPoints && <PointsIcon />}
-              </span>
-              <span className="expand-button">{expanded ? '▼' : '▶'}</span>
-            </div>
+        </ControllerFocusable>
+        {expanded && (
+          <div className="group-content">
+            {achievements.map((achievement) => (
+              <AchievementItem key={achievement.apiName} achievement={achievement} />
+            ))}
           </div>
-        </div>
-      </ControllerFocusable>
-      {expanded && (
-        <div className="group-content">
-          {achievements.map(achievement => (
-            <AchievementItem key={achievement.apiName} achievement={achievement} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-});
+        )}
+      </div>
+    );
+  },
+);

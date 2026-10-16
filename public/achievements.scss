@@ -54,7 +54,7 @@ $danger-color: #e63946;
   // background-color: $background-color;
   color: $text-color;
   padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   & * {
     box-sizing: border-box;
@@ -156,7 +156,8 @@ $danger-color: #e63946;
           border-radius: 4px;
           transition: background-color 0.2s ease;
 
-          &:hover, &.gpfocuswithin {
+          &:hover,
+          &.gpfocuswithin {
             background: rgba(255, 255, 255, 0.05);
           }
 
@@ -168,13 +169,17 @@ $danger-color: #e63946;
       }
     }
 
-    select, .__DropDownControlButton__, .DialogDropDown {
+    select,
+    .__DropDownControlButton__,
+    .DialogDropDown {
       background-color: rgba(0, 0, 0, 0.4) !important;
       border: 1px solid rgba(79, 148, 188, 0.5);
       color: $accent-color !important;
       padding: 6px 10px;
       border-radius: 4px;
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
       outline: none;
       font-family: 'Arial';
       width: 100%;
@@ -273,13 +278,13 @@ $danger-color: #e63946;
     align-items: center;
     gap: 10px;
 
-    & >:last-child {
+    & > :last-child {
       width: 125px;
       margin-top: 4px;
     }
 
     &.progress-complete {
-      & >:last-child {
+      & > :last-child {
         filter: drop-shadow(0 0 3px rgba(102, 192, 244, 0.8));
       }
     }
@@ -365,7 +370,7 @@ $danger-color: #e63946;
       top: 0;
       left: 0;
       bottom: 0;
-      background-color: rgba(103,112,123,.2);
+      background-color: rgba(103, 112, 123, 0.2);
       user-select: none;
       border-radius: 5px;
 
@@ -431,7 +436,8 @@ $danger-color: #e63946;
       }
     }
 
-    &:hover, &.gpfocuswithin {
+    &:hover,
+    &.gpfocuswithin {
       .achievement-inner-content.is-spoiler {
         opacity: 0;
       }
@@ -497,24 +503,24 @@ $danger-color: #e63946;
     }
   }
 
-    .right {
-      @include flex-between;
-      flex-direction: column;
-      align-items: end;
-      gap: 10px;
-      margin-left: auto;
-    }
+  .right {
+    @include flex-between;
+    flex-direction: column;
+    align-items: end;
+    gap: 10px;
+    margin-left: auto;
+  }
 
-    .achievement-stats {
-      @include flex-gap(15px);
+  .achievement-stats {
+    @include flex-gap(15px);
+    align-items: center;
+
+    .points {
+      display: flex;
       align-items: center;
-
-      .points {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-      }
+      gap: 4px;
     }
+  }
 
   // Preferences Popup Styles
   .preferences-overlay {
@@ -569,7 +575,8 @@ $danger-color: #e63946;
         border-radius: 6px;
         transition: background 0.2s;
 
-        &:hover, &.gpfocuswithin {
+        &:hover,
+        &.gpfocuswithin {
           background: rgba(255, 255, 255, 0.06);
         }
 
@@ -662,12 +669,12 @@ $danger-color: #e63946;
     transition: all 0.2s ease;
     height: 32px;
 
-    &:hover, &.gpfocuswithin {
+    &:hover,
+    &.gpfocuswithin {
       background-color: $button-hover-background;
       // transform: translateY(-1px);
     }
   }
-
 }
 
 // Achievement rarity colors
@@ -697,7 +704,7 @@ $danger-color: #e63946;
   text-align: center;
   background: none;
   background-color: $tooltip-background;
-  color: #FFF;
+  color: #fff;
   overflow: visible;
   text-shadow: none;
 }
@@ -717,7 +724,7 @@ $danger-color: #e63946;
 
 .steam-hunters-error-message {
   padding: 1rem;
-  color: #FFF;
+  color: #fff;
   user-select: text;
 
   svg {

@@ -18,7 +18,13 @@ function getRarityClass(percentage: number): string {
   return 'Common';
 }
 
-function AchievementDescription({ isHidden, achievement }: { readonly isHidden: boolean; readonly achievement: AchievementData; }): JSX.Element {
+function AchievementDescription({
+  isHidden,
+  achievement,
+}: {
+  readonly isHidden: boolean;
+  readonly achievement: AchievementData;
+}): JSX.Element {
   if (isHidden) {
     return <p>Details for this achievement will be revealed once unlocked</p>;
   }
@@ -50,33 +56,41 @@ function AchievementExtraInfo({
           Guide
         </a>
       )}
-      {settings.showPlayerCount && achievement.completedCount !== undefined && achievement.totalPlayers !== undefined && (
-        <span className="completed-count">
-          <UsersIcon />
-          {achievement.completedCount.toLocaleString()} / {achievement.totalPlayers.toLocaleString()}
-        </span>
-      )}
+      {settings.showPlayerCount
+        && achievement.completedCount !== undefined
+        && achievement.totalPlayers !== undefined && (
+          <span className="completed-count">
+            <UsersIcon />
+            {achievement.completedCount.toLocaleString()} / {achievement.totalPlayers.toLocaleString()}
+          </span>
+        )}
       {settings.showObtainability && achievement.obtainability !== Obtainability.Obtainable && (
         <span className={`obtainability ${Obtainability[achievement.obtainability]}`}>
           {ObtainabilityNames[achievement.obtainability]}
         </span>
       )}
-      {settings.showTags && achievement.tags && Object.entries(achievement.tags).map(([tag, count]) => (
-        <Tooltip
-          toolTipContent={`${tag} (${count} vote${count === 1 ? '' : 's'})`}
-          showTooltipOnContollerFocus={false}
-          key={tag}
-        >
-          <span className="achievement-tag">
-            {tag}
-          </span>
-        </Tooltip>
-      ))}
+      {settings.showTags
+        && achievement.tags
+        && Object.entries(achievement.tags).map(([tag, count]) => (
+          <Tooltip
+            toolTipContent={`${tag} (${count} vote${count === 1 ? '' : 's'})`}
+            showTooltipOnContollerFocus={false}
+            key={tag}
+          >
+            <span className="achievement-tag">{tag}</span>
+          </Tooltip>
+        ))}
     </div>
   );
 }
 
-function TooltipAchievementItem({ achievement, sortedBy }: { readonly achievement: AchievementData; readonly sortedBy: SortBy; }): JSX.Element {
+function TooltipAchievementItem({
+  achievement,
+  sortedBy,
+}: {
+  readonly achievement: AchievementData;
+  readonly sortedBy: SortBy;
+}): JSX.Element {
   const rarityClass = getRarityClass(achievement.localPercentage);
   const usedPercentage = sortedBy === SortBy.Steam ? achievement.localPercentage : achievement.steamPercentage;
 
@@ -104,11 +118,7 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
     setRevealed(false);
   }, [settings.hideHidden]);
 
-  const isHidden
-    = !revealed
-      && settings.hideHidden
-      && achievement.isHidden
-      && !achievement.unlocked;
+  const isHidden = !revealed && settings.hideHidden && achievement.isHidden && !achievement.unlocked;
 
   function handleReveal(): void {
     if (isHidden) {
@@ -139,7 +149,10 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
           />
         </div>
         <div className="center">
-          <div className={`achievement-progress ${achievement.unlocked ? 'unlocked' : 'locked'}`} style={{ width: `${usedPercentage}%` }} />
+          <div
+            className={`achievement-progress ${achievement.unlocked ? 'unlocked' : 'locked'}`}
+            style={{ width: `${usedPercentage}%` }}
+          />
           <div className="achievement-content">
             <div className={`achievement-inner-content ${isHidden ? 'is-spoiler' : ''}`}>
               <h3>{isHidden ? 'Hidden Achievement' : achievement.name}</h3>
@@ -165,9 +178,7 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
                 ref={percentageTooltipRef}
                 toolTipContent={<TooltipAchievementItem achievement={achievement} sortedBy={settings.sortBy} />}
               >
-                <span className={`steam-hunters-percentage ${rarityClass}`}>
-                  {`${usedPercentage.toFixed(1)}%`}
-                </span>
+                <span className={`steam-hunters-percentage ${rarityClass}`}>{`${usedPercentage.toFixed(1)}%`}</span>
               </Tooltip>
             </div>
             <div>
@@ -175,9 +186,7 @@ export const AchievementItem = React.memo(({ achievement }: AchievementItemProps
                 <Tooltip
                   toolTipContent={`Unlocked on ${achievement.unlockedDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}`}
                 >
-                  <span className="unlocked-date">
-                    {achievement.unlockedDate.toLocaleDateString()}
-                  </span>
+                  <span className="unlocked-date">{achievement.unlockedDate.toLocaleDateString()}</span>
                 </Tooltip>
               )}
             </div>

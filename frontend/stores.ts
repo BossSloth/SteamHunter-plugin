@@ -61,52 +61,54 @@ const persistOptions: PersistOptions<AchievementState> = {
   },
 };
 
-export const useAchievementStore = create<AchievementState>()(persist(
-  (set, get) => ({
-    // Global Preferences
-    ...defaultsGlobalPreferences,
+export const useAchievementStore = create<AchievementState>()(
+  persist(
+    (set, get) => ({
+      // Global Preferences
+      ...defaultsGlobalPreferences,
 
-    // Active View Settings
-    ...standardDefaults,
+      // Active View Settings
+      ...standardDefaults,
 
-    // Internal persistent state for defaults
-    savedDefaults: null,
+      // Internal persistent state for defaults
+      savedDefaults: null,
 
-    setPreferences: (preferences: Partial<GlobalPreferences>): void => {
-      set(state => ({ ...state, ...preferences }));
-    },
+      setPreferences: (preferences: Partial<GlobalPreferences>): void => {
+        set((state) => ({ ...state, ...preferences }));
+      },
 
-    setViewSettings: (settings: Partial<ViewSettings>): void => {
-      set(state => ({ ...state, ...settings }));
-    },
+      setViewSettings: (settings: Partial<ViewSettings>): void => {
+        set((state) => ({ ...state, ...settings }));
+      },
 
-    saveAsDefault: (): void => {
-      const state = get();
-      set({
-        savedDefaults: {
-          // View Settings Only (exclude Global Preferences)
-          groupBy: state.groupBy,
-          reverse: state.reverse,
-          showUnlocked: state.showUnlocked,
-          sortBy: state.sortBy,
-          searchQuery: '', // Always reset search in defaults
-        },
-      } as Partial<AchievementState>);
-    },
+      saveAsDefault: (): void => {
+        const state = get();
+        set({
+          savedDefaults: {
+            // View Settings Only (exclude Global Preferences)
+            groupBy: state.groupBy,
+            reverse: state.reverse,
+            showUnlocked: state.showUnlocked,
+            sortBy: state.sortBy,
+            searchQuery: '', // Always reset search in defaults
+          },
+        } as Partial<AchievementState>);
+      },
 
-    resetToDefault: (): void => {
-      const { savedDefaults } = get();
-      // Always merge with standardDefaults to ensure all keys are present
-      set({ ...standardDefaults, ...(savedDefaults ?? {}) } as Partial<AchievementState>);
-    },
+      resetToDefault: (): void => {
+        const { savedDefaults } = get();
+        // Always merge with standardDefaults to ensure all keys are present
+        set({ ...standardDefaults, ...(savedDefaults ?? {}) } as Partial<AchievementState>);
+      },
 
-    clearDefaults: (): void => {
-      set({ savedDefaults: null } as Partial<AchievementState>);
-      // After clearing, we should reset active settings to standard defaults
-      get().resetToDefault();
-    },
+      clearDefaults: (): void => {
+        set({ savedDefaults: null } as Partial<AchievementState>);
+        // After clearing, we should reset active settings to standard defaults
+        get().resetToDefault();
+      },
 
-    hasCustomDefaults: (): boolean => get().savedDefaults !== null,
-  }),
-  persistOptions,
-));
+      hasCustomDefaults: (): boolean => get().savedDefaults !== null,
+    }),
+    persistOptions,
+  ),
+);

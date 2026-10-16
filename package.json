@@ -11,7 +11,9 @@
     "sass": "sass ./public/achievements.scss ./public/achievements.css --style compressed --embed-sources --embed-source-map",
     "watch": "nodemon --watch public/achievements.scss --exec \"npm run sass && npm run dev\"",
     "build": "npm run sass && millennium-ttc --build prod",
-    "lint": "eslint ."
+    "typecheck": "bun check",
+    "lint": "eslint .",
+    "format": "oxfmt"
   },
   "dependencies": {
     "@steambrew/api": "^5.8.4",
@@ -41,6 +43,7 @@
     "eslint-plugin-perfectionist": "^5.12.1",
     "globals": "^17.13.0",
     "nodemon": "^3.1.14",
+    "oxfmt": "^0.73.0",
     "semantic-release": "^25.0.9",
     "steam-types": "^2.2.0",
     "typescript": "^6.0.3",

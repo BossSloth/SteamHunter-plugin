@@ -14,7 +14,7 @@ import { FC, PropsWithChildren, ReactNode } from 'react';
  * @example
  * <TabComponent tabs={props.tabs} onShowTab={(...e: any[]) => console.log('Clicked tab', e)}></TabComponent>
  */
-export const TabComponent = findModuleByExport(e => e?.toString?.().includes('bleedGlyphs')).JZ as FC<unknown>;
+export const TabComponent = findModuleByExport((e) => e?.toString?.().includes('bleedGlyphs')).JZ as FC<unknown>;
 
 export interface SteamTooltipProps extends PropsWithChildren {
   bDisabled?: boolean;
@@ -25,10 +25,12 @@ export interface SteamTooltipProps extends PropsWithChildren {
 }
 
 // Can be found in library.js
-export const SteamTooltip = findModuleExport((e?: Function) =>
-  e?.toString !== undefined
-  && createPropListRegex(['children']).test(e.toString())
-  && (/tooltipProps:\w/).test(e.toString())) as FC<SteamTooltipProps>;
+export const SteamTooltip = findModuleExport(
+  (e?: Function) =>
+    e?.toString !== undefined
+    && createPropListRegex(['children']).test(e.toString())
+    && /tooltipProps:\w/.test(e.toString()),
+) as FC<SteamTooltipProps>;
 
 interface ControllerFocusableProps extends PropsWithChildren, React.HTMLAttributes<HTMLDivElement> {
   onActivate?(e: unknown): void;
@@ -41,13 +43,15 @@ interface ControllerFocusableProps extends PropsWithChildren, React.HTMLAttribut
   onOKActionDescription?: string | null;
 }
 
-const focusableModule: object = findModuleByExport(e =>
-  e?.toString?.().includes('strEnterKeyLabel')
-  && e.toString().includes('refKeyboardHandle'));
+const focusableModule: object = findModuleByExport(
+  (e) => e?.toString?.().includes('strEnterKeyLabel') && e.toString().includes('refKeyboardHandle'),
+);
 
-export const ControllerFocusable = (
-  Object.values(focusableModule).find(f =>
+export const ControllerFocusable = (Object.values(focusableModule).find(
+  (f) =>
     f?.toString?.().includes('forwardRef')
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    && !f.toString().includes('virtualKeyboardProps'))('div') ?? (async props => props.children)
-) as FC<ControllerFocusableProps>;
+    //
+    && !f.toString().includes('virtualKeyboardProps'),
+  /* eslint-disable @typescript-eslint/explicit-function-return-type */
+  /* eslint-disable @typescript-eslint/promise-function-async */
+)('div') ?? ((props) => props.children)) as FC<ControllerFocusableProps>;

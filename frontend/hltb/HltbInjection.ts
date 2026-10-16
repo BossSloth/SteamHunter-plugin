@@ -69,9 +69,15 @@ async function injectHltbData(appId: string): Promise<void> {
   if (appData.players !== undefined && settings.showHltbPlayerCount) {
     const steamdbUrl = `https://steamdb.info/app/${appId}/charts/`;
     infoContainer.appendChild(createBr());
-    infoContainer.appendChild(createInfoWithUrl('Playing now:', numberFormatter.format(appData.players.recent), steamdbUrl));
-    infoContainer.appendChild(createInfoWithUrl('24-hour peak:', numberFormatter.format(appData.players.peak_today), steamdbUrl));
-    infoContainer.appendChild(createInfoWithUrl('All-time peak:', numberFormatter.format(appData.players.peak_all), steamdbUrl));
+    infoContainer.appendChild(
+      createInfoWithUrl('Playing now:', numberFormatter.format(appData.players.recent), steamdbUrl),
+    );
+    infoContainer.appendChild(
+      createInfoWithUrl('24-hour peak:', numberFormatter.format(appData.players.peak_today), steamdbUrl),
+    );
+    infoContainer.appendChild(
+      createInfoWithUrl('All-time peak:', numberFormatter.format(appData.players.peak_all), steamdbUrl),
+    );
   }
 }
 
@@ -103,7 +109,9 @@ async function addHltbData(): Promise<void> {
 
   try {
     const appIconElement = await findElement<HTMLImageElement>('._3NBxSLAZLbbbnul8KfDFjw._2dzwXkCVAuZGFC-qKgo8XB');
-    const infoButton = (await findElement('._3VQUewWB8g6Z5qB4C7dGFr ._3qDWQGB0rtwM3qpXTb11Q-.Focusable .zvLq1GUCH3yLuqv_TXBJ1'))?.parentElement;
+    const infoButton = (
+      await findElement('._3VQUewWB8g6Z5qB4C7dGFr ._3qDWQGB0rtwM3qpXTb11Q-.Focusable .zvLq1GUCH3yLuqv_TXBJ1')
+    )?.parentElement;
 
     if (!appIconElement || !infoButton) {
       setTimeout(addHltbData, 100);

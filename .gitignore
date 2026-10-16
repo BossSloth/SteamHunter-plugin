@@ -6,3 +6,4 @@ build/
 public/achievements.css
 metadata.json
 !.vscode
+settings.json

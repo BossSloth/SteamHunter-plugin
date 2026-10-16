@@ -21,7 +21,8 @@ const PREVIEW_ACHIEVEMENT: AchievementData = {
   localPercentage: 46.5,
   steamPercentage: 24.0,
   steamPoints: 10,
-  strImage: 'https://community.cloudflare.steamstatic.com/public/images/apps/570/7735399589d813735f448e89f6680a656a81180b.jpg',
+  strImage:
+    'https://community.cloudflare.steamstatic.com/public/images/apps/570/7735399589d813735f448e89f6680a656a81180b.jpg',
   unlocked: true,
   obtainability: Obtainability.ConditionallyObtainable,
   completedCount: 8123,
@@ -35,12 +36,14 @@ const SECOND_PREVIEW_ACHIEVEMENT: AchievementData = {
   achievementId: 1,
   apiName: 'second_preview_achievement',
   name: 'Another Preview Achievement',
-  description: 'This is a preview of how an achievement with everything will look with your current preferences. This achievement is hidden and has an extra long description that should wrap to multiple lines.',
+  description:
+    'This is a preview of how an achievement with everything will look with your current preferences. This achievement is hidden and has an extra long description that should wrap to multiple lines.',
   points: 100,
   localPercentage: 12.5,
   steamPercentage: 11.0,
   steamPoints: 10,
-  strImage: 'https://community.cloudflare.steamstatic.com/public/images/apps/570/7735399589d813735f448e89f6680a656a81180b.jpg',
+  strImage:
+    'https://community.cloudflare.steamstatic.com/public/images/apps/570/7735399589d813735f448e89f6680a656a81180b.jpg',
   unlocked: false,
   obtainability: Obtainability.Unobtainable,
   completedCount: 1234,
@@ -72,7 +75,9 @@ function CacheDurationSelector({ value, onChange }: CacheDurationSelectorProps):
     <div className="preference-item">
       <div className="preference-info">
         <div className="preference-label">Cache duration</div>
-        <div className="preference-description">How long achievement data is stored locally (in days) before being re-fetched from SteamHunters.</div>
+        <div className="preference-description">
+          How long achievement data is stored locally (in days) before being re-fetched from SteamHunters.
+        </div>
       </div>
       <input
         className="cache-duration-input"
@@ -80,7 +85,9 @@ function CacheDurationSelector({ value, onChange }: CacheDurationSelectorProps):
         min={1}
         max={3650}
         value={value}
-        onChange={(e) => { onChange(Math.max(1, parseInt(e.target.value) || 1)); }}
+        onChange={(e) => {
+          onChange(Math.max(1, parseInt(e.target.value) || 1));
+        }}
       />
     </div>
   );
@@ -95,7 +102,12 @@ interface PreferenceItemProps {
 
 function PreferenceItem({ description, label, onChange, value }: PreferenceItemProps): JSX.Element {
   return (
-    <ControllerFocusable className="preference-item" onClick={() => { onChange(!value); }}>
+    <ControllerFocusable
+      className="preference-item"
+      onClick={() => {
+        onChange(!value);
+      }}
+    >
       <div className="preference-info">
         <div className="preference-label">{label}</div>
         <div className="preference-description">{description}</div>
@@ -106,12 +118,12 @@ function PreferenceItem({ description, label, onChange, value }: PreferenceItemP
 }
 
 export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupProps): JSX.Element {
-  const setPreferences = useAchievementStore(s => s.setPreferences);
+  const setPreferences = useAchievementStore((s) => s.setPreferences);
 
   const settings = useAchievementStore();
 
   const achievements: AchievementData[] = useMemo(() => {
-    const images = processedGroup.groupAchievements.map(achievement => achievement.strImage);
+    const images = processedGroup.groupAchievements.map((achievement) => achievement.strImage);
 
     function getRandomImage(): string {
       return images[Math.floor(Math.random() * images.length)] ?? '';
@@ -125,7 +137,12 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
 
   return (
     <Focusable className="preferences-overlay" onClick={onClose}>
-      <Focusable className="preferences-popup" onClick={(e) => { e.stopPropagation(); }}>
+      <Focusable
+        className="preferences-popup"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
         <div className="preferences-header">
           <h2>Preferences</h2>
           <Button onClick={onClose}>Close</Button>
@@ -136,7 +153,9 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
             label="Show points"
             description="Display the point value for each achievement and group."
             value={settings.showPoints}
-            onChange={(val) => { setPreferences({ showPoints: val }); }}
+            onChange={(val) => {
+              setPreferences({ showPoints: val });
+            }}
           />
           {/* <PreferenceItem
             label="Show tags"
@@ -166,14 +185,18 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
             label="Hide hidden achievements"
             description="Hides the name and description of hidden achievements until clicked (like Steam's spoiler protection)."
             value={settings.hideHidden}
-            onChange={(val) => { setPreferences({ hideHidden: val }); }}
+            onChange={(val) => {
+              setPreferences({ hideHidden: val });
+            }}
           />
 
           <hr />
 
           <CacheDurationSelector
             value={settings.cacheDurationDays}
-            onChange={(days) => { setPreferences({ cacheDurationDays: days }); }}
+            onChange={(days) => {
+              setPreferences({ cacheDurationDays: days });
+            }}
           />
 
           <hr />
@@ -213,7 +236,9 @@ export function PreferencesPopup({ onClose, processedGroup }: PreferencesPopupPr
               totalPoints={achievements.reduce((acc, achievement) => acc + achievement.points, 0)}
               isExpanded
               gameInfo={PREVIEW_GAME_INFO}
-              onExpandChange={(): void => { /* empty */ }}
+              onExpandChange={(): void => {
+                /* empty */
+              }}
             />
           </div>
         </div>
